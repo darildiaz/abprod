@@ -216,3 +216,21 @@ ORDER BY
     o.id, 
     c.name, 
     p.code;
+
+
+select para mi produccion
+SELECT 
+    p.id,p.code AS product_code, 
+    SUM(oip.quantity) AS total_quantity
+FROM order_item_products oip
+JOIN order_items oi ON oip.order_item_id = oi.id
+JOIN order_references orf ON oip.reference_id = orf.id
+JOIN products p ON orf.product_id = p.id
+WHERE oi.order_id = 21
+GROUP BY p.code;
+
+
+
+
+
+

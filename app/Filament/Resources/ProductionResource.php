@@ -42,6 +42,39 @@ class ProductionResource extends Resource
                 Forms\Components\TextInput::make('quantity')
                     ->required()
                     ->numeric(),
+
+
+
+
+                    Forms\Components\Select::make('order_id')
+                    ->label('Order')
+                    ->relationship('order', 'reference_name')
+                  //  ->getOptionLabelFromRecordUsing(fn (Order $record) => "{$record->id} - {$record->reference_name}")
+                    ->searchable(['id','reference_name']) // Hacer searchable por referencia
+                    ->live() // Recargar el formulario al cambiar el pedido
+                    ->afterStateUpdated(fn ($state, $set) => 
+                    $set('products', self::getOrderProducts($state)))
+                    
+                    ->required(),
+
+                    Forms\Components\Section::make('Production Summary')
+                    ->hidden(fn ($get) => !$get('order_id')) // Se muestra solo si hay una orden
+                    ->schema([
+                        Forms\Components\Repeater::make('products')
+                            ->label('Products from Order')
+                            ->schema([
+                                Forms\Components\TextInput::make('product_code')
+                                    ->label('Product Code')
+                                    ->disabled(),
+    
+                                    Forms\Components\TextInput::make('total_quantity')
+                                    ->label('Total Quantity Ordered')
+                                    ->numeric()
+                                    ->disabled(),
+                            ])
+                            ->columns(2),
+                    ]),
+            
             ]);
     }
 
@@ -92,5 +125,23 @@ class ProductionResource extends Resource
             'create' => Pages\CreateProduction::route('/create'),
             'edit' => Pages\EditProduction::route('/{record}/edit'),
         ];
+    }
+    protected static function getOrderProducts($orderId)
+    {
+        if (!$orderId) return [];
+    
+        return DB::table('order_item_products as oip')
+            ->join('order_items as oi', 'oip.order_item_id', '=', 'oi.id')
+            ->join('order_references as orf', 'oip.reference_id', '=', 'orf.id')
+            ->join('products as p', 'orf.product_id', '=', 'p.id')
+            ->where('oi.order_id', $orderId)
+            ->groupBy('p.id', 'p.code')
+            ->selectRaw('p.id, p.code AS product_code, SUM(oip.quantity) AS total_quantity')
+            ->get()
+            ->map(fn ($item) => [
+                'product_code' => $item->product_code,
+                'total_quantity' => $item->total_quantity,
+            ])
+            ->toArray();
     }
 }
