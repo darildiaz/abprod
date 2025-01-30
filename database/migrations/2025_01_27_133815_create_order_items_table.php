@@ -14,14 +14,17 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Relación con pedidos
-            $table->foreignId('model_id')->constrained('order_molds')->onDelete('cascade'); // Relación con moldes
+            $table->string('model_id'); // Nombre personalizado del ítem
+            
+            //$table->foreignId('model_id')->constrained('order_molds')->onDelete('cascade'); // Relación con moldes
             $table->string('name'); // Nombre personalizado del ítem
             $table->string('number'); // Número personalizado
             $table->string('other'); // Otros datos personalizados
             $table->foreignId('size_id')->constrained('sizes')->onDelete('cascade'); // Relación con talles
             $table->integer('quantity'); // Cantidad
+            $table->integer('price'); // Precio
             $table->integer('subtotal'); // Precio
-            $table->json('products')->nullable();
+            //$table->json('productsdet')->nullable();
             $table->timestamps();
         });
     }

@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('questioncategories', function (Blueprint $table) {
+        Schema::create('question_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name'); // Nombre de la clasificación
             $table->text('description')->nullable(); // Descripción opcional
@@ -24,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('questioncategories');
+        Schema::dropIfExists('question_categories');
     }
 };

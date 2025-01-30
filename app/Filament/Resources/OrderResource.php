@@ -65,14 +65,13 @@ class OrderResource extends Resource
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
                                         ->required(),
-                                        Forms\Components\TextInput::make('total')->label('Total')->numeric()->required(),
                     ]) ->columns(3),
                     Forms\Components\Wizard\Step::make('Models')
                     ->schema([
                     // Tab 2: Cargar lista de modelos
                             Forms\Components\Repeater::make('models')->label('Models')->relationship('orderMolds')->schema([
                                // Forms\Components\TextInput::make('title')->label('Model Title')->required(),
-                                Forms\Components\Select::make('model_title')
+                                Forms\Components\Select::make('title')
                                     ->label('Modelo Title')
                                     ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
                                     ->required()
@@ -101,8 +100,7 @@ class OrderResource extends Resource
                                 ->schema([
                                     Forms\Components\TextInput::make('name')
                                         ->label('Product Name')
-                                        ->required()
-                                        ,
+                                        ->required()                                        ,
                                     Forms\Components\Select::make('product_id')
                                         ->label('Product')
                                         ->relationship('product', 'code') // Relación con la tabla products
@@ -113,6 +111,8 @@ class OrderResource extends Resource
                                         ->required(),
                                 ])
                                 ->columns(3)
+                                ->live() // Habilita la reactividad
+                                
                                 //->required()
                                 ,
                             ]),
@@ -128,7 +128,7 @@ class OrderResource extends Resource
                                 ->live()
                                 ->afterStateUpdated(function ($state, $set) {
                                     // Procesar el texto y actualizar el estado del Repeater
-                                    $items = self::parseOrderItemsText($state);
+                                    $items = self::parseOrderItemsText($state, $set);
                                     $set('orderItems', $items); // Actualiza el Repeater
                                 }),
                                         ]),
@@ -144,9 +144,7 @@ class OrderResource extends Resource
                                         ->required()
                                         ->searchable(),
                                         Forms\Components\TextInput::make('name')
-                                            ->label('Name')
-                                        //    ->required()
-                                        ,
+                                            ->label('Name'),
                                         Forms\Components\TextInput::make('number')
                                             ->label('Number'),
                                         Forms\Components\TextInput::make('other')
@@ -159,10 +157,21 @@ class OrderResource extends Resource
                                             ->label('Quantity')
                                             ->numeric()
                                             ->default(1)
-                                            ->required(),
+                                            ->required()
+                                            ->live()
+                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
+                                        Forms\Components\TextInput::make('price')
+                                            ->label('price')
+                                            ->numeric()
+                                            ->default(1)
+                                            ->live()
+                                            ->required()
+                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
                                             ->numeric()
+                                            //->disabled() // Deshabilita el campo para que no se pueda editar
+                                            ->live()
                                             ->default(0)
                                             ->required(),
                                         /*Forms\Components\MultiSelect::make('products')
@@ -172,22 +181,32 @@ class OrderResource extends Resource
                                             ->required(),*/
                                         Forms\Components\TagsInput::make('tags')
                                             ->label('Products')
+                                            ->live() // Habilita la reactividad
+                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
                                // ->dehydrated(false) // Indica que no debe ser guardado en la base de datos
 
                                         ->placeholder('Add product names (comma-separated)'), // Productos relacionados al ítem
                                     ])
-                                    ->columns(8)
+                                    ->columns(9)
+                                    ->afterStateUpdated(fn ($state, $set, $get) => self::updateTotal($set, $get))
                                     
                                     ->required(),
+                                    Forms\Components\TextInput::make('total')
+                                        ->label('Total')
+                                        ->live() // Habilita la reactividad
+                                        //->disabled() // Deshabilita el campo para que no se pueda editar
+                                        ->default(0)
+                                        ->numeric()
+                                        ->required(),
 
                                 ]),
-                               /* Forms\Components\Wizard\Step::make('Questions')
-                            ->schema([
-                                Forms\Components\Repeater::make('questionAnswers')
-                                    ->label('Questions')
-                                    ->relationship('questionAnswers')
-                                    ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
-                                    ->hidden(fn ($get) => !$get('classification_id')),
+                                /*Forms\Components\Wizard\Step::make('Questions')
+                                    ->schema([
+                                        Forms\Components\Repeater::make('questionAnswers')
+                                            ->label('Questions')
+                                            ->relationship('questionAnswers')
+                                            ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
+                                            ->hidden(fn ($get) => !$get('classification_id')),
                                 
                                 //Forms\Components\Section::make('Questions')->schema(fn ($get) => self::getQuestionFields($get('classification_id')))->visible(fn ($get) => !empty($get('classification_id')))
                             ]),*/
@@ -225,37 +244,8 @@ class OrderResource extends Resource
                 //
             ])
             ->actions([
-                Tables\Actions\Action::make('Import Items')
-               // ->icon('heroicon-o-upload')
-                ->modalHeading('Import Order Items')
-                ->modalSubheading('Enter each item on a new line in the format: Name, Quantity, Price.')
-                ->form([
-                    Forms\Components\TextArea::make('items')
-                        ->label('Items')
-                        ->placeholder("Example:\nItem 1, 2, 10\nItem 2, 3, 15")
-                        ->required()
-                        ->rows(6),
-                ])
-                ->action(function (Order $record, array $data) {
-                    $items = explode("\n", $data['items']); // Separar por líneas
-                    foreach ($items as $item) {
-                        $fields = explode(',', $item); // Separar por comas
-                        if (count($fields) !== 3) {
-                            continue; // Saltar líneas con formato incorrecto
-                        }
-
-                        [$name, $quantity, $price] = array_map('trim', $fields);
-
-                        $record->items()->create([
-                            'name' => $name,
-                            'quantity' => (int) $quantity,
-                            'price' => (float) $price,
-                        ]);
-                    }
-                })
-                ->color('success')
-                ->tooltip('Import items from a textarea')
-                ,
+                
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -277,6 +267,8 @@ class OrderResource extends Resource
         return [
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
+            'view' => Pages\ViewOrder::route('/{record}'),
+
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
@@ -292,11 +284,20 @@ class OrderResource extends Resource
     $questions = Question::where('category_id', $classificationId)->get();
 
     return $questions->map(function ($question) {
+        // Decodificar las opciones desde el campo JSON
+        $options = json_decode($question->options, true);
+
+        // Verificar si las opciones son un array válido
+        if (!is_array($options)) {
+            $options = []; // Si no es un array válido, usar un array vacío
+        }
+
+        // Crear el campo correspondiente según el tipo de pregunta
         return match ($question->type) {
             'string' => Forms\Components\TextInput::make("answers.{$question->id}")
                 ->label($question->text)
                 ->required($question->is_required),
-                
+
             'integer' => Forms\Components\TextInput::make("answers.{$question->id}")
                 ->label($question->text)
                 ->numeric()
@@ -304,7 +305,7 @@ class OrderResource extends Resource
 
             'list' => Forms\Components\Select::make("answers.{$question->id}")
                 ->label($question->text)
-                ->options(json_decode($question->options, true))
+                ->options($options) // Usar las opciones decodificadas
                 ->required($question->is_required),
 
             default => null,
@@ -312,14 +313,17 @@ class OrderResource extends Resource
     })->filter()->toArray();
 }
 
-protected static function parseOrderItemsText(string $text): array
+protected static function parseOrderItemsText(string $text,$set): array
     {
         $items = [];
+        $price=0;
         $lines = explode("\n", trim($text)); // Divide el texto en líneas
-
+        $total=0;
         foreach ($lines as $line) {
             $columns = explode("\t", trim($line)); // Divide cada línea en columnas
             if (count($columns) === 9) { // Asegúrate de que haya 9 columnas
+            $price=0;
+                
                 $items[] = [
                     'model_id' => $columns[1], // Obtener el ID del modelo
                     //'model_id' => self::getModelIdByName($columns[1]), // Obtener el ID del modelo
@@ -329,11 +333,17 @@ protected static function parseOrderItemsText(string $text): array
                     'size_id' => self::getSizeIdByName($columns[5]), // Obtener el ID del talle
                     'quantity' => (int) $columns[6],
                     'tags' => explode(',', $columns[7]), // Convertir productos en un array
-                    'subtotal' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
-                    //'subtotal' => (int) $columns[8],
+                   
+                    // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
+                    
+                    'price' => (int) $columns[8],
+                    'subtotal' => (int) $columns[8]*$columns[6],
+                    $total=$total+(int) $columns[8]*$columns[6],
+                   // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
                 ];
             }
         }
+        $set('total', $total );
 
         return $items;
     }
@@ -346,6 +356,37 @@ protected static function parseOrderItemsText(string $text): array
         $total = $total * $CANT;
             
         return $total;
+    }
+    protected static function updateSubtotal($set, $get): void
+    {
+        $quantity = $get('quantity') ?? 1;
+        $price = $get('price') ?? 1;
+       // $tags = $get('tags') ?? [];
+     //   $references = $get('references') ?? [];
+    
+        $total = 0;
+    $total = $price * $quantity;
+        /*foreach ($tags as $tag) {
+            foreach ($references as $reference) {
+                if ($reference['name'] === $tag) {
+                    $total += $reference['price'];
+                    break;
+                }
+            }
+        }
+    */
+        $set('subtotal', $total );
+    }
+
+    protected static function updateTotal($set, $get): void
+    {
+        $item = $get('orderItems') ;
+    
+        $total = 0;
+        foreach ($item as $item) {
+            $total = $total + $item['subtotal'];
+        }
+        $set('total', $total );
     }
     protected static function getPriceByName(?string $productName): ?int
     {

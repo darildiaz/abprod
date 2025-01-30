@@ -1,3 +1,8 @@
+
+-- Volcando datos para la tabla abprod.users: ~0 rows (aproximadamente)
+INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
+	(1, 'daril diaz', 'darildiaz29@gmail.com', NULL, '$2y$12$jTiVApGQp1l42JW6YtCea.ErO4rIXgLxc199h4cgwIFMoG9WamWG6', NULL, '2025-01-27 17:14:15', '2025-01-27 17:14:15');
+
 INSERT INTO `categories` (`id`, `name`, `description`, `order`, `is_important`, `created_at`, `updated_at`) VALUES
 	(1, 'Camiseta', NULL, 1, 1, '2025-01-27 17:17:12', '2025-01-27 17:17:12'),
 	(2, 'Short', NULL, 3, 1, '2025-01-28 16:34:38', '2025-01-28 16:36:14'),
@@ -118,7 +123,3 @@ INSERT INTO `sizes` (`id`, `name`, `created_at`, `updated_at`) VALUES
 	(71, '5XG-DAM', '2025-01-27 14:31:06', '2025-01-27 14:31:06'),
 	(72, '6XG-CAB', '2025-01-27 14:31:07', '2025-01-27 14:31:08'),
 	(73, '6XG-DAM', '2025-01-27 14:31:08', '2025-01-27 14:31:09');
-
--- Volcando datos para la tabla abprod.users: ~0 rows (aproximadamente)
-INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 'daril diaz', 'darildiaz29@gmail.com', NULL, '$2y$12$jTiVApGQp1l42JW6YtCea.ErO4rIXgLxc199h4cgwIFMoG9WamWG6', NULL, '2025-01-27 17:14:15', '2025-01-27 17:14:15');

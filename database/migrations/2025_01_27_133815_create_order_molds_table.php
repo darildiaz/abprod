@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('ordermolds', function (Blueprint $table) {
+        Schema::create('order_molds', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id') // Clave foránea a la tabla orders
                 ->constrained('orders') // Referencia a la tabla 'orders'
@@ -27,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('ordermolds');
+        Schema::dropIfExists('order_molds');
     }
 };
