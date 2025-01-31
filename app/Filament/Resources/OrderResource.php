@@ -15,6 +15,10 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use App\Models\Question;
 use App\Models\QuestionCategory;
+use Illuminate\Support\Facades\DB;
+use App\Models\Price;
+use App\Models\Product;
+use App\Models\Size;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -24,6 +28,7 @@ class OrderResource extends Resource
     public static function form(Form $form): Form
     {
         return $form
+
             ->schema([
                 Forms\Components\Wizard::make([
                     Forms\Components\Wizard\Step::make('General')
@@ -31,97 +36,73 @@ class OrderResource extends Resource
                             // Tab 1: Datos generales del cliente y pedido
                             Forms\Components\TextInput::make('reference_name')
                                         ->label('Reference Name')
+                                        ->default('ORD-'.date('Ymd').'-'.rand(1000,9999))
                                         ->required(),
                             Forms\Components\Select::make('customer_id')
                                         ->label('Customer')
                                         ->relationship('customer', 'name')
-                                        
+                                        ->default(1) // Predetermina el usuario logueado
                                         ->required(),
 
-                                        Forms\Components\Select::make('seller_id')
+                            Forms\Components\Select::make('seller_id')
                                         ->label('Seller')
                                         ->relationship('seller', 'name')
-                                         ->default(auth()->id()) // Predetermina el usuario logueado
-
+                                        ->default(auth()->id()) // Predetermina el usuario logueado
                                         ->required(),
 
-                                        
-
-                                        Forms\Components\TextInput::make('issue_date')
+                            Forms\Components\TextInput::make('issue_date')
                                         ->label('Issue Date')
                                         ->default(today()->toDateString())
                                         ->type('date')
                                         ->required(),
 
-                                        Forms\Components\TextInput::make('delivery_date')
+                            Forms\Components\TextInput::make('delivery_date')
                                         ->label('Delivery Date')
                                         //->default(today()->toDateString())
                                         ->default(today()->addDays(10)->toDateString())
                                         ->type('date')
                                         ->required(),
-                                        Forms\Components\Select::make('classification_id')
+
+                            Forms\Components\Select::make('classification_id')
                                         ->label('clasificacion')
                                         ->relationship('classification', 'name')
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
                                         ->required(),
                     ]) ->columns(3),
+                    
                     Forms\Components\Wizard\Step::make('Models')
                     ->schema([
                     // Tab 2: Cargar lista de modelos
-                            Forms\Components\Repeater::make('models')->label('Models')->relationship('orderMolds')->schema([
-                               // Forms\Components\TextInput::make('title')->label('Model Title')->required(),
-                                Forms\Components\Select::make('title')
-                                    ->label('Modelo Title')
-                                    ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
-                                    ->required()
-                                    ->searchable(),
-                                Forms\Components\FileUpload::make('imagen')->label('Image')
-                                //->required()
-                                ,
-                            ])->columns(2)->required(),
-                        ]),
-                    Forms\Components\Wizard\Step::make('References')
-                        ->schema([
-                    // Tab 3: Cargar lista de referencias
-  /*                          Forms\Components\TextArea::make('references_text')
-                                ->label('References (Paste Text)')
-                                ->placeholder("Producto Referencia\tCódigo de Producto\tPrecio\nCamiseta\tcam-s01\t100000\nShort\tsh-s01\t50000")
-                                ->rows(5)
-                                ->dehydrated(false) // Indica que no debe ser guardado en la base de datos
-                                ->helperText('Paste references separated by TAB for columns and ENTER for rows.')
-                                ->required(),
+                    Forms\Components\Repeater::make('models')
+                    ->label('Models')
+                    ->relationship('orderMolds')
+                    ->schema([
+                        Forms\Components\Select::make('title')
+                            ->label('Modelo Title')
+                            ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
+                            ->required()
+                            ->searchable()
+                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
+                                if (!$state) {
+                                    $models = $get('../../models') ?? []; // Obtener todos los modelos en el repeater
+                                    $nextIndex = count($models) ; // Definir el próximo número
+                                    $set('title', "MODELO $nextIndex"); // Asignar el valor predeterminado
+                                }
+                            }),
                             
-*/
-
-                                Forms\Components\Repeater::make('references')
-                                ->label('References')
-                                ->relationship('orderReferences') // Relación con la tabla order_references
-                                ->schema([
-                                    Forms\Components\TextInput::make('name')
-                                        ->label('Product Name')
-                                        ->required()                                        ,
-                                    Forms\Components\Select::make('product_id')
-                                        ->label('Product')
-                                        ->relationship('product', 'code') // Relación con la tabla products
-                                        ->required(),
-                                    Forms\Components\TextInput::make('price')
-                                        ->label('Price')
-                                        ->numeric()
-                                        ->required(),
-                                ])
-                                ->columns(3)
-                                ->live() // Habilita la reactividad
-                                
-                                //->required()
-                                ,
-                            ]),
-                            Forms\Components\Wizard\Step::make('Items import')
+                        Forms\Components\FileUpload::make('imagen')->label('Image'),
+                    ])
+                    ->columns(2)
+                    ->required(),
+                        ]),
+                        Forms\Components\Wizard\Step::make('Items import')
                                 ->schema([
                                     // Tab 4: Cargar lista de ítems de la orden
                                     Forms\Components\TextArea::make('order_items_text')
                                 ->label('Order Items (Paste Text)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tSubtotal\n1\tOficial\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\t150000\n2\tArquero\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short\t150000")
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tOficial\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tArquero\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short")
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Paste order items separated by TAB for columns and ENTER for rows.')
@@ -138,7 +119,7 @@ class OrderResource extends Resource
                                     ->label('Order Items')
                                     ->relationship('orderItems') // Relación con la tabla order_items
                                     ->schema([
-                                        Forms\Components\Select::make('model_id')
+                                        Forms\Components\Select::make('model')
                                         ->label('Modelo')
                                         ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
                                         ->required()
@@ -151,6 +132,8 @@ class OrderResource extends Resource
                                             ->label('Other'),
                                         Forms\Components\Select::make('size_id')
                                             ->label('Size')
+                                            ->live()
+                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
                                             ->relationship('size', 'name') // Relación con la tabla sizes
                                             ->required(),
                                         Forms\Components\TextInput::make('quantity')
@@ -159,36 +142,44 @@ class OrderResource extends Resource
                                             ->default(1)
                                             ->required()
                                             ->live()
-                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
-                                        Forms\Components\TextInput::make('price')
+                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
+                                           // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
+                                            ,                                       
+                                            Forms\Components\TextInput::make('price')
                                             ->label('price')
+                                            
                                             ->numeric()
-                                            ->default(1)
+                                            //->disabled()
+                                            ->default(0)
                                             ->live()
-                                            ->required()
-                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
+                                            ->required(),
+                                           // ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
                                             ->numeric()
-                                            //->disabled() // Deshabilita el campo para que no se pueda editar
+                                           // ->disabled() // Deshabilita el campo para que no se pueda editar
                                             ->live()
                                             ->default(0)
                                             ->required(),
-                                        /*Forms\Components\MultiSelect::make('products')
-                                            ->relationship('products', 'code') // Relación con `products` y muestra el campo `name`
+                                        
+                                        
+                                        Forms\Components\select::make('ProductsItem')
                                             ->label('Products')
-                                            ->placeholder('Select products for this order item')
-                                            ->required(),*/
-                                        Forms\Components\TagsInput::make('tags')
-                                            ->label('Products')
-                                            ->live() // Habilita la reactividad
-                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
+                                            ->searchable()
+                                            ->multiple()
+                                            ->relationship('product', 'code') // Relación con la tabla products
+                                        //    ->live() // Habilita la reactividad
+                                        ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
+
                                // ->dehydrated(false) // Indica que no debe ser guardado en la base de datos
 
-                                        ->placeholder('Add product names (comma-separated)'), // Productos relacionados al ítem
+                                        //->placeholder('Add product names (comma-separated)')
+                                        , // Productos relacionados al ítem
                                     ])
                                     ->columns(9)
-                                    ->afterStateUpdated(fn ($state, $set, $get) => self::updateTotal($set, $get))
+                                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getTotal($set, $get))
+                                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
+
                                     
                                     ->required(),
                                     Forms\Components\TextInput::make('total')
@@ -199,16 +190,53 @@ class OrderResource extends Resource
                                         ->numeric()
                                         ->required(),
 
-                                ]),
-                                /*Forms\Components\Wizard\Step::make('Questions')
+                                ])
+                                ,
+                                Forms\Components\Wizard\Step::make('References')
+                        ->schema([
+                            // Tab 3: Cargar lista de referencias
+                                Forms\Components\Repeater::make('references')
+                                ->label('References')
+                                ->relationship('orderReferences') // Relación con la tabla order_references
+                                ->schema([
+                                                                           
+                                    Forms\Components\Select::make('product_id')
+                                        ->label('Product')
+                                        ->relationship('product', 'code') // Relación con la tabla products
+                                        ->default(1)
+                                        ->required(),
+                                        Forms\Components\Select::make('size_id')
+                                        ->label('Size')
+                                        //->live()
+                                        ->relationship('size', 'name') // Relación con la tabla sizes
+                                        ->required(),
+                                    Forms\Components\TextInput::make('quantity')
+                                        ->label('Quantity')
+                                        ->numeric()
+                                        ->required(),
+                                    
+                                        Forms\Components\TextInput::make('price')
+                                        ->label('Price')
+                                        ->numeric()
+                                        ->required(),
+                                        Forms\Components\TextInput::make('subtotal')
+                                        ->disabled(), // Deshabilita el campo para que no se pueda editar
+                                        
+                                ])
+                                ->columns(5)
+                                ->live() // Habilita la reactividad
+                                
+                                //->required()
+                                ,
+                            ]),
+                              /*  Forms\Components\Wizard\Step::make('Questions')
                                     ->schema([
                                         Forms\Components\Repeater::make('questionAnswers')
                                             ->label('Questions')
                                             ->relationship('questionAnswers')
                                             ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
                                             ->hidden(fn ($get) => !$get('classification_id')),
-                                
-                                //Forms\Components\Section::make('Questions')->schema(fn ($get) => self::getQuestionFields($get('classification_id')))->visible(fn ($get) => !empty($get('classification_id')))
+                  
                             ]),*/
                             ])->columnSpan('full')
 
@@ -229,7 +257,7 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('reference_name')->label('Reference Name')->searchable(),
                 Tables\Columns\TextColumn::make('total')->label('Total')->money('USD')->sortable(),
                 Tables\Columns\TextColumn::make('classification.name')->label('Classification'), // Relación con QuestionCategory
-                Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
+                //Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -312,7 +340,41 @@ class OrderResource extends Resource
         };
     })->filter()->toArray();
 }
+protected static function getRefences(callable $set, callable $get)
+{
+    $item = $get('orderItems') ;
+    $refences = [];
+     $c=0;
+    foreach ($item as $item) {
+        foreach ($item['ProductsItem'] as $product) {
+        $c=$c+1;
+        if ($c==1) {
+            $refences[] = [
+                'product_id' => $product,
+                'size_id' => $item['size_id'],
+                'quantity' => $item['quantity'],
+                'price' => self::getPPrice($product, $item['size_id']),
+                'subtotal' => $item['subtotal'],
+            ];
+        }
 
+            foreach ($refences as $refence) {
+                if ($refence['product_id'] == $product && $refence['size_id'] == $item['size_id']) {
+                    $refence['quantity'] = $refence['quantity'] + $item['quantity'];
+                } else {
+                    $refences[] = [
+                        'product_id' => $product,
+                        'size_id' => $item['size_id'],
+                        'quantity' => $item['quantity'],
+                        'price' => self::getPPrice($product, $item['size_id']),
+                        'subtotal' => $item['subtotal'],
+                    ];
+                }
+            }
+        }
+    }
+    $set('references', $refences);
+}
 protected static function parseOrderItemsText(string $text,$set): array
     {
         $items = [];
@@ -321,24 +383,30 @@ protected static function parseOrderItemsText(string $text,$set): array
         $total=0;
         foreach ($lines as $line) {
             $columns = explode("\t", trim($line)); // Divide cada línea en columnas
-            if (count($columns) === 9) { // Asegúrate de que haya 9 columnas
-            $price=0;
-                
+            if (count($columns) === 8) { // Asegúrate de que haya 9 columnas
+                $price=0;
+                $productIds = [];
+                foreach (explode(',', $columns[7]) as $code) {
+                    $ids = self::getProductIdByName(trim($code)); // Obtener IDs de productos por código
+                    if (!empty($ids)) {
+                        $productIds[] = $ids; // Convertir en array y fusionar
+                    }
+                }
+                foreach ($productIds as $productId) {
+                    $price=$price+  self::getPPrice($productId, self::getSizeIdByName($columns[5]));
+                }
                 $items[] = [
-                    'model_id' => $columns[1], // Obtener el ID del modelo
-                    //'model_id' => self::getModelIdByName($columns[1]), // Obtener el ID del modelo
+                    'model' => $columns[1], // Obtener el ID del modelo
                     'name' => $columns[2],
                     'number' => $columns[3],
                     'other' => $columns[4],
                     'size_id' => self::getSizeIdByName($columns[5]), // Obtener el ID del talle
                     'quantity' => (int) $columns[6],
-                    'tags' => explode(',', $columns[7]), // Convertir productos en un array
+                    'ProductsItem' =>$productIds, // Convertir productos en un array
                    
-                    // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
-                    
-                    'price' => (int) $columns[8],
-                    'subtotal' => (int) $columns[8]*$columns[6],
-                    $total=$total+(int) $columns[8]*$columns[6],
+                    'price' => (int) $price,
+                    'subtotal' => (int) $price * (int) $columns[6],
+                    $total=$total+(int) $price * (int) $columns[6],
                    // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
                 ];
             }
@@ -347,59 +415,71 @@ protected static function parseOrderItemsText(string $text,$set): array
 
         return $items;
     }
-    protected static function getSUBTOTAL(?INT $CANT,?ARRAY $PROD): ?int
+    private static function getPrice(callable $set, callable $get)
     {
-        $total = 0; // Inicializar total
-            foreach ($PROD as $item) {
-                        $total = $total + self::getPriceByName($item);
-                    }
-        $total = $total * $CANT;
-            
-        return $total;
-    }
-    protected static function updateSubtotal($set, $get): void
-    {
-        $quantity = $get('quantity') ?? 1;
-        $price = $get('price') ?? 1;
-       // $tags = $get('tags') ?? [];
-     //   $references = $get('references') ?? [];
-    
-        $total = 0;
-    $total = $price * $quantity;
-        /*foreach ($tags as $tag) {
-            foreach ($references as $reference) {
-                if ($reference['name'] === $tag) {
-                    $total += $reference['price'];
-                    break;
-                }
+        $productIds = $get('ProductsItem'); // Es un array porque es múltiple
+        $sizeId = $get('size_id');
+
+        if (!empty($productIds) && $sizeId) {
+            $price = 0;
+            $id=0;
+            foreach ($productIds as $productId) {
+                $price=$price+  self::getPPrice($productId, $sizeId);
             }
+            $set('price', $price ?: 0);
+        self::updateSubtotal($set, $get);
+            
+        } else {
+            $set('price', 0);
         }
-    */
-        $set('subtotal', $total );
+    }
+    private static function getPPrice($productId, $sizeId): int
+    {
+        $price = Price::where('product_id', $productId)
+            ->where('size_id', $sizeId)
+            ->value('price');
+        // Si no hay precio para el tamaño seleccionado, buscar el tamaño 1 (Normal)
+        if (!$price) {
+            $price = Price::where('product_id', $productId)
+                ->where('size_id', 1)
+                ->value('price');
+        }
+
+        return $price ?: 0;
+
     }
 
-    protected static function updateTotal($set, $get): void
+    protected static function updateSubtotal($set, $get): void
+    {
+
+        $quantity = $get('quantity') ?? 1;
+        $price = $get('price') ?? 1;
+        $subtotal = 0;
+        if ($quantity && $price) {
+            $subtotal = $price * $quantity;
+            $set('subtotal', $subtotal );
+            
+        }
+    }
+    protected static function getTotal($set, $get): void
     {
         $item = $get('orderItems') ;
-    
         $total = 0;
         foreach ($item as $item) {
             $total = $total + $item['subtotal'];
         }
         $set('total', $total );
     }
-    protected static function getPriceByName(?string $productName): ?int
+    protected static function getproductIdByName(?string $sizeName): ?int
     {
-        
-        return \App\Models\Product::where('code', $productName)->value('price');
+        return Product::where('code', $sizeName)->value('id');
+      //return 1;
     }
-    protected static function getModelIdByName(?string $modelName): ?int
-    {
-        //return \App\Models\OrderMold::where('title', $modelName)->value('id');
-    }
+    
 
     protected static function getSizeIdByName(?string $sizeName): ?int
     {
-        return \App\Models\Size::where('name', $sizeName)->value('id');
+        return Size::where('name', $sizeName)->value('id');
     }
+    
 }

@@ -47,7 +47,7 @@ class OrderItemRelationManager extends RelationManager
                     ->relationship('size', 'name') // Relación con el modelo Size
                     ->required(),
 
-                Forms\Components\Select::make('model_id')
+                Forms\Components\Select::make('model')
                     ->label('Mold')
                     ->relationship('model', 'title') // Relación con el modelo Mold
                     ->required(),
@@ -61,7 +61,7 @@ class OrderItemRelationManager extends RelationManager
             ->columns([
                 
 
-            Tables\Columns\TextColumn::make('model.title')
+            Tables\Columns\TextColumn::make('model')
                 ->numeric()
                 ->sortable(),
             

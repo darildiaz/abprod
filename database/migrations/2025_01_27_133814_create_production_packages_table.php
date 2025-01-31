@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productcenters', function (Blueprint $table) {
+        Schema::create('production_packages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Relación con productos
-            $table->foreignId('center_id')->constrained('centers')->onDelete('cascade'); // Relación con centros
+            $table->date('date'); // Fecha de producción
+            $table->foreignId('order_id')->constrained()->onDelete('cascade');
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productcenters');
+        Schema::dropIfExists('production_packages');
     }
 };

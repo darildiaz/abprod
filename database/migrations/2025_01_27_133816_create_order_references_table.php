@@ -13,10 +13,13 @@ return new class extends Migration
     {
         Schema::create('order_references', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nombre del producto de referencia
-            $table->foreignId('order_id')->nullable()->constrained('orders')->onDelete('cascade');
-            $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Relación con productos
-            $table->integer('price'); // Precio
+            $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Relación con órdenes
+            $table->string('code'); // Código de referencia
+            $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Relación con productos
+            $table->foreignId('size_id')->constrained()->onDelete('cascade'); // Relación con talles/sizes
+            $table->integer('quantity'); // Cantidad total
+            $table->integer('price'); // Precio predefinido
+            $table->integer('discount')->default(0); // Descuento aplicado
             
             $table->timestamps();
         });

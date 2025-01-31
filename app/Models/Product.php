@@ -11,7 +11,16 @@ class Product extends Model
     {
         return $this->belongsTo(Category::class);
     }
+    public function line()
+    {
+        return $this->belongsTo(Line::class);
+    }
 
+    public function prices()
+    {
+        return $this->hasMany(Price::class);
+    }
+    
     public function productCenters()
     {
         return $this->hasMany(ProductCenter::class);

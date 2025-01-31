@@ -17,7 +17,7 @@ return new class extends Migration
                 ->constrained('orders') // Referencia a la tabla 'orders'
                 ->onDelete('cascade');
             $table->string('title'); // Título del molde
-            $table->text('imagen'); // Imagen del molde
+            $table->text('imagen')->nullable(); // Imagen del molde
             $table->timestamps();
         });
     }

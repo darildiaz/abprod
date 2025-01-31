@@ -17,7 +17,7 @@ return new class extends Migration
             $table->enum('type', ['string', 'integer', 'list']); // Tipo de dato de la pregunta
             $table->text('options')->nullable(); // Opciones en caso de que sea lista
             $table->boolean('is_required')->default(false); // Si es obligatoria
-            $table->foreignId('category_id')->constrained('questioncategories')->onDelete('cascade'); // Relación con categorías
+            $table->foreignId('category_id')->constrained('question_categories')->onDelete('cascade'); // Relación con categorías
             
             $table->timestamps();
         });

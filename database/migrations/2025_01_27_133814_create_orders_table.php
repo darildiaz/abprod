@@ -13,13 +13,14 @@ return new class extends Migration
     {
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
+            $table->integer('bitrix_id')->nullable(); // Número de pedido
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade'); // Relación con clientes
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade'); // Relación con vendedores
             $table->string('reference_name'); // Nombre de referencia
             $table->date('issue_date'); // Fecha de emisión
             $table->date('delivery_date'); // Fecha de entrega
             $table->integer('total'); // Total del pedido
-            $table->foreignId('classification_id')->constrained('questioncategories')->onDelete('cascade'); // Clasificación
+            $table->foreignId('classification_id')->constrained('question_categories')->onDelete('cascade'); // Clasificación
             $table->integer('status'); // Estado del pedido
             
             $table->timestamps();

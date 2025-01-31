@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name'); // Nombre de la categoría
+            $table->string('name')->unique(); // Nombre de la categoría
             $table->text('description')->nullable(); // Descripción opcional
             $table->integer('order')->default(0); // Orden de la categoría
             $table->boolean('is_important')->default(false); // Indicador de importancia
