@@ -8,13 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItemProduct extends Model
 {
     use HasFactory;
-    public function orderItem()
+    public function order()
     {
-        return $this->belongsTo(OrderItem::class);
+        return $this->belongsTo(Order::class);
     }
 
-    public function reference()
+    public function product()
     {
-        return $this->belongsTo(OrderReference::class, 'reference_id');
+        return $this->belongsTo(Product::class);
     }
 }

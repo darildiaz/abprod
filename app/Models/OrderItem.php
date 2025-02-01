@@ -35,4 +35,12 @@ class OrderItem extends Model
     protected $casts = [
         'productsItem' => 'array', // Convierte automáticamente a array
     ];
+    public function orderItemProducts()
+    {
+        return $this->hasMany(Product::class);
+    }
+public function products()
+{
+    return $this->belongsToMany(Product::class);
+}
 }

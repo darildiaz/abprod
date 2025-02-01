@@ -69,6 +69,21 @@ class OrderResource extends Resource
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
                                         ->required(),
+                            Forms\Components\TextInput::make('Code discount')
+                                        ->label('Code discount')
+                                        ->default('0')
+                                        ->dehydrated(false)
+                                        ->required(),
+                            Forms\Components\TextInput::make('aproved for')
+                                        ->default('0')
+                                        ->disabled()
+                                        ->dehydrated(false),
+                                        Forms\Components\TextInput::make('monto maximo')
+                                        ->default('0')
+                                        ->disabled()
+
+                                        ->dehydrated(false),
+                            
                     ]) ->columns(3),
                     
                     Forms\Components\Wizard\Step::make('Models')
@@ -143,13 +158,13 @@ class OrderResource extends Resource
                                             ->required()
                                             ->live()
                                             ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
-                                           // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
+                                                                                  // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
                                             ,                                       
                                             Forms\Components\TextInput::make('price')
                                             ->label('price')
                                             
                                             ->numeric()
-                                            //->disabled()
+                                           // ->disabled()
                                             ->default(0)
                                             ->live()
                                             ->required(),
@@ -157,7 +172,7 @@ class OrderResource extends Resource
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
                                             ->numeric()
-                                           // ->disabled() // Deshabilita el campo para que no se pueda editar
+                                            // ->disabled() // Deshabilita el campo para que no se pueda editar
                                             ->live()
                                             ->default(0)
                                             ->required(),
@@ -170,11 +185,7 @@ class OrderResource extends Resource
                                             ->relationship('product', 'code') // Relación con la tabla products
                                         //    ->live() // Habilita la reactividad
                                         ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
-
-                               // ->dehydrated(false) // Indica que no debe ser guardado en la base de datos
-
-                                        //->placeholder('Add product names (comma-separated)')
-                                        , // Productos relacionados al ítem
+                                        
                                     ])
                                     ->columns(9)
                                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getTotal($set, $get))
@@ -202,25 +213,38 @@ class OrderResource extends Resource
                                                                            
                                     Forms\Components\Select::make('product_id')
                                         ->label('Product')
+                                        // ->disabled()
+
                                         ->relationship('product', 'code') // Relación con la tabla products
                                         ->default(1)
                                         ->required(),
                                         Forms\Components\Select::make('size_id')
                                         ->label('Size')
+                                        // ->disabled()
+
                                         //->live()
                                         ->relationship('size', 'name') // Relación con la tabla sizes
                                         ->required(),
                                     Forms\Components\TextInput::make('quantity')
                                         ->label('Quantity')
+                                        // ->disabled()
+
                                         ->numeric()
                                         ->required(),
                                     
                                         Forms\Components\TextInput::make('price')
                                         ->label('Price')
+                                        // ->disabled()
                                         ->numeric()
                                         ->required(),
+                                        /* Forms\Components\TextInput::make('discount')
+                                        ->label('discount')
+                                        ->numeric()
+                                        ->required(), */
                                         Forms\Components\TextInput::make('subtotal')
-                                        ->disabled(), // Deshabilita el campo para que no se pueda editar
+                                        ->numeric()
+                                        ->disabled()
+                                        , // Deshabilita el campo para que no se pueda editar
                                         
                                 ])
                                 ->columns(5)
@@ -344,32 +368,27 @@ protected static function getRefences(callable $set, callable $get)
 {
     $item = $get('orderItems') ;
     $refences = [];
-     $c=0;
-    foreach ($item as $item) {
+    $no=true;
+    foreach ($item as $item) {        
         foreach ($item['ProductsItem'] as $product) {
-        $c=$c+1;
-        if ($c==1) {
-            $refences[] = [
-                'product_id' => $product,
-                'size_id' => $item['size_id'],
-                'quantity' => $item['quantity'],
-                'price' => self::getPPrice($product, $item['size_id']),
-                'subtotal' => $item['subtotal'],
-            ];
-        }
-
-            foreach ($refences as $refence) {
+            $no=true;
+        /*    foreach ($refences as $index => $refence) {
                 if ($refence['product_id'] == $product && $refence['size_id'] == $item['size_id']) {
-                    $refence['quantity'] = $refence['quantity'] + $item['quantity'];
-                } else {
-                    $refences[] = [
-                        'product_id' => $product,
-                        'size_id' => $item['size_id'],
-                        'quantity' => $item['quantity'],
-                        'price' => self::getPPrice($product, $item['size_id']),
-                        'subtotal' => $item['subtotal'],
-                    ];
-                }
+                    // Actualizar cantidad y subtotal si se encuentra una referencia existente
+                    $refences[$index]['quantity'] += $item['quantity'];
+                    $refences[$index]['subtotal'] = $refences[$index]['quantity'] * $refences[$index]['price'];
+                    $no = false;
+                    break; // Salir del bucle una vez que se encuentra la referencia
+                } 
+            }
+          */  if ($no) {
+                $refences[] = [
+                    'product_id' => $product,
+                    'size_id' => $item['size_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => self::getPPrice($product, $item['size_id']),
+                    'subtotal' => $item['subtotal'],
+                ];
             }
         }
     }
