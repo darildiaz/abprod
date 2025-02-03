@@ -9,7 +9,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use Illuminate\Support\Facades\DB;
 class OrderItemRelationManager extends RelationManager
 {
     protected static string $relationship = 'OrderItem';
@@ -57,10 +57,9 @@ class OrderItemRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('reference_name')
             ->columns([
-                
-
+            Tables\Columns\TextColumn::make('item')
+                ->searchable(),   
             Tables\Columns\TextColumn::make('model')
                 ->numeric()
                 ->sortable(),
@@ -77,8 +76,20 @@ class OrderItemRelationManager extends RelationManager
             Tables\Columns\TextColumn::make('quantity')
                 ->numeric()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('tags')
-                ->searchable(),
+            Tables\Columns\TextColumn::make('price')
+                ->numeric()
+                ->sortable(),
+            
+            Tables\Columns\TextColumn::make('references')
+                ->label('References')
+                ->getStateUsing(function ($record) {
+                    return DB::table('order_references')
+                        ->join('products', 'order_references.product_id', '=', 'products.id')
+                        ->where('order_references.order_id', $record->order_id)
+                        ->where('order_references.item', $record->item)
+                        ->pluck('products.code') // Cambiado a product.name
+                        ->implode(', ');
+                }),
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
                 ->sortable()

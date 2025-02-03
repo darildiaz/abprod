@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('order_references', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained()->onDelete('cascade'); // Relación con órdenes
-            $table->string('code'); // Código de referencia
+            $table->foreignId('order_item_id')->constrained('order_items')->onDelete('cascade'); // Relación con OrderItem
+           // $table->integer('item'); // Código de referencia
             $table->foreignId('product_id')->constrained()->onDelete('cascade'); // Relación con productos
             $table->foreignId('size_id')->constrained()->onDelete('cascade'); // Relación con talles/sizes
             $table->integer('quantity'); // Cantidad total

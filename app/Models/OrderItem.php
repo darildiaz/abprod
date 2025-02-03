@@ -16,7 +16,7 @@ class OrderItem extends Model
     }
     public function reference()
     {
-        return $this->belongsTo(OrderReference::class, 'reference_id');
+        return $this->belongsTo(OrderReference::class, 'order_id', 'item');
     }
     public function size()
     {
@@ -35,10 +35,10 @@ class OrderItem extends Model
     protected $casts = [
         'productsItem' => 'array', // Convierte automáticamente a array
     ];
-    public function orderItemProducts()
+    /*public function orderItemProducts()
     {
         return $this->hasMany(Product::class);
-    }
+    }*/
 public function products()
 {
     return $this->belongsToMany(Product::class);

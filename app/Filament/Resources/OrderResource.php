@@ -13,12 +13,16 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
+use App\Filament\Resources\OrderResource\RelationManagers\OrderReferenceRelationManager;
 use App\Models\Question;
 use App\Models\QuestionCategory;
 use Illuminate\Support\Facades\DB;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\Size;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Columns\Summarizers\Sum;
+
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -59,6 +63,7 @@ class OrderResource extends Resource
                             Forms\Components\TextInput::make('delivery_date')
                                         ->label('Delivery Date')
                                         //->default(today()->toDateString())
+                                      //  ->gt('issue_date')
                                         ->default(today()->addDays(10)->toDateString())
                                         ->type('date')
                                         ->required(),
@@ -121,7 +126,7 @@ class OrderResource extends Resource
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Paste order items separated by TAB for columns and ENTER for rows.')
-                                ->live()
+                                ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, $set) {
                                     // Procesar el texto y actualizar el estado del Repeater
                                     $items = self::parseOrderItemsText($state, $set);
@@ -139,6 +144,17 @@ class OrderResource extends Resource
                                         ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
                                         ->required()
                                         ->searchable(),
+                                        Forms\Components\TextInput::make('item')
+                                        ->numeric()
+                                        ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
+                                            if (!$state) {
+                                                $models = $get('../../orderItems') ?? []; // Obtener todos los modelos en el repeater
+                                                $nextIndex = count($models) ; // Definir el próximo número
+                                                $set('item', "$nextIndex"); // Asignar el valor predeterminado
+                                            }
+                                        })
+                                            ->label('Item'),
                                         Forms\Components\TextInput::make('name')
                                             ->label('Name'),
                                         Forms\Components\TextInput::make('number')
@@ -156,7 +172,8 @@ class OrderResource extends Resource
                                             ->numeric()
                                             ->default(1)
                                             ->required()
-                                            ->live()
+                                            ->live(onBlur: true)
+                                            // ->live()
                                             ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
                                                                                   // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
                                             ,                                       
@@ -183,7 +200,8 @@ class OrderResource extends Resource
                                             ->searchable()
                                             ->multiple()
                                             ->relationship('product', 'code') // Relación con la tabla products
-                                        //    ->live() // Habilita la reactividad
+                                            ->live()
+                                        
                                         ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
                                         
                                     ])
@@ -210,7 +228,8 @@ class OrderResource extends Resource
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
-                                                                           
+                                    Forms\Components\TextInput::make('item'),
+
                                     Forms\Components\Select::make('product_id')
                                         ->label('Product')
                                         // ->disabled()
@@ -271,6 +290,11 @@ class OrderResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->defaultGroup('delivery_date','status')
+            ->groups([ Group::make('classification.name')
+            ->collapsible(),
+            ])
+            ->defaultSort('id', 'desc')
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
@@ -279,9 +303,11 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('customer.name')->label('Customer'), // Relación con Customer
                 Tables\Columns\TextColumn::make('seller.name')->label('Seller'), // Relación con User
                 Tables\Columns\TextColumn::make('reference_name')->label('Reference Name')->searchable(),
-                Tables\Columns\TextColumn::make('total')->label('Total')->money('USD')->sortable(),
+                Tables\Columns\TextColumn::make('total')->label('Total')->money('USD')
+                ->summarize(Sum::make())
+                ->sortable(),
                 Tables\Columns\TextColumn::make('classification.name')->label('Classification'), // Relación con QuestionCategory
-                //Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
+                Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -293,7 +319,14 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                ->multiple()
+                ->options([
+            0 => 'Pending',
+            1 => 'Completed',
+            2 => 'Enviado',
+        ])
+        ->default(0, 1)
             ])
             ->actions([
                 
@@ -310,7 +343,8 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            OrderItemRelationManager::class 
+            OrderItemRelationManager::class,
+            OrderReferenceRelationManager::class
         ];
     }
 
@@ -320,7 +354,6 @@ class OrderResource extends Resource
             'index' => Pages\ListOrders::route('/'),
             'create' => Pages\CreateOrder::route('/create'),
             'view' => Pages\ViewOrder::route('/{record}'),
-
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
@@ -368,28 +401,20 @@ protected static function getRefences(callable $set, callable $get)
 {
     $item = $get('orderItems') ;
     $refences = [];
-    $no=true;
+    $c=0;
     foreach ($item as $item) {        
+        $c++;
         foreach ($item['ProductsItem'] as $product) {
-            $no=true;
-        /*    foreach ($refences as $index => $refence) {
-                if ($refence['product_id'] == $product && $refence['size_id'] == $item['size_id']) {
-                    // Actualizar cantidad y subtotal si se encuentra una referencia existente
-                    $refences[$index]['quantity'] += $item['quantity'];
-                    $refences[$index]['subtotal'] = $refences[$index]['quantity'] * $refences[$index]['price'];
-                    $no = false;
-                    break; // Salir del bucle una vez que se encuentra la referencia
-                } 
-            }
-          */  if ($no) {
+            
                 $refences[] = [
+                    'item' => $c,
                     'product_id' => $product,
                     'size_id' => $item['size_id'],
                     'quantity' => $item['quantity'],
                     'price' => self::getPPrice($product, $item['size_id']),
-                    'subtotal' => $item['subtotal'],
+                    'subtotal' => ($item['quantity'] * self::getPPrice($product, $item['size_id'])),
                 ];
-            }
+            
         }
     }
     $set('references', $refences);
@@ -474,28 +499,36 @@ protected static function parseOrderItemsText(string $text,$set): array
         $quantity = $get('quantity') ?? 1;
         $price = $get('price') ?? 1;
         $subtotal = 0;
+        $total = 0;        
+        $total = $get('total');
+
         if ($quantity && $price) {
             $subtotal = $price * $quantity;
             $set('subtotal', $subtotal );
-            
+            $total = $total + $subtotal;   
+            $set('total', $total ); 
         }
+
+
+        //self::getTotal($set, $get);
     }
     protected static function getTotal($set, $get): void
     {
-        $item = $get('orderItems') ;
+        $items = $get('orderItems') ;
         $total = 0;
-        foreach ($item as $item) {
+        foreach ($items as $item) {
             $total = $total + $item['subtotal'];
         }
         $set('total', $total );
     }
+    
+    
+    
     protected static function getproductIdByName(?string $sizeName): ?int
     {
         return Product::where('code', $sizeName)->value('id');
-      //return 1;
     }
     
-
     protected static function getSizeIdByName(?string $sizeName): ?int
     {
         return Size::where('name', $sizeName)->value('id');

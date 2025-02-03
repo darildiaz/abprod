@@ -21,7 +21,7 @@ return new class extends Migration
             $table->date('delivery_date'); // Fecha de entrega
             $table->integer('total'); // Total del pedido
             $table->foreignId('classification_id')->constrained('question_categories')->onDelete('cascade'); // Clasificación
-            $table->integer('status'); // Estado del pedido
+            $table->integer('status')->default(0); // Estado del pedido
             
             $table->timestamps();
         });
