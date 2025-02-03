@@ -79,7 +79,7 @@ class OrderItemRelationManager extends RelationManager
             Tables\Columns\TextColumn::make('price')
                 ->numeric()
                 ->sortable(),
-            
+            /*
             Tables\Columns\TextColumn::make('references')
                 ->label('References')
                 ->getStateUsing(function ($record) {
@@ -89,7 +89,7 @@ class OrderItemRelationManager extends RelationManager
                         ->where('order_references.item', $record->item)
                         ->pluck('products.code') // Cambiado a product.name
                         ->implode(', ');
-                }),
+                }),*/
             Tables\Columns\TextColumn::make('created_at')
                 ->dateTime()
                 ->sortable()
