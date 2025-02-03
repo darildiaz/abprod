@@ -18,6 +18,7 @@ class ProductionResource extends Resource
     protected static ?string $model = Production::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = "Production";
 
     public static function form(Form $form): Form
     {

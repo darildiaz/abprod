@@ -8,14 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class Production extends Model
 {
     use HasFactory;
+    public function productionPackage()
+    {
+        return $this->belongsTo(ProductionPackage::class);
+    }
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
-    public function orderItem()
-    {
-        return $this->belongsTo(OrderItem::class);
-    }
+    
     public function center()
     {
         return $this->belongsTo(Center::class);

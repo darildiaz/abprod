@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class OrderReference extends Model
 {
     use HasFactory;
+    
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id');

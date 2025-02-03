@@ -23,12 +23,14 @@ class OperatorResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
-                    ->required()
-                    ->numeric(),
-                Forms\Components\TextInput::make('center_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Select::make('user_id')
+                ->label('User')
+                ->relationship('user', 'name') // Relación con el modelo Category
+                ->required(),
+                Forms\Components\Select::make('center_id')
+                ->label('Center')
+                ->relationship('center', 'name') // Relación con el modelo Category
+                ->required(),
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),

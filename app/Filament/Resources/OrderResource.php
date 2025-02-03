@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\Size;
+use App\Models\category;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 
@@ -28,6 +29,8 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
     public static ?string $navigationIcon = 'heroicon-o-shopping-cart';
     public static ?string $navigationGroup = 'Orders';
+    public static ?string $recordTitleAttribute='id';
+    //public static ?string $recordTitleAttribute='reference_name';
 
     public static function form(Form $form): Form
     {
@@ -201,13 +204,14 @@ class OrderResource extends Resource
                                             ->multiple()
                                             ->relationship('product', 'code') // Relación con la tabla products
                                             ->live()
+                                ->dehydrated(false) // No se guarda en la base de datos
                                         
                                         ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
                                         
                                     ])
                                     ->columns(9)
                                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getTotal($set, $get))
-                                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
+                                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
 
                                     
                                     ->required(),
@@ -259,20 +263,20 @@ class OrderResource extends Resource
                                         /* Forms\Components\TextInput::make('discount')
                                         ->label('discount')
                                         ->numeric()
-                                        ->required(), */
+                                        ->required(), 
                                         Forms\Components\TextInput::make('subtotal')
                                         ->numeric()
                                         ->disabled()
                                         , // Deshabilita el campo para que no se pueda editar
-                                        
+                                        */
                                 ])
-                                ->columns(5)
+                                ->columns(6)
                                 ->live() // Habilita la reactividad
                                 
                                 //->required()
                                 ,
                             ]),
-                              /*  Forms\Components\Wizard\Step::make('Questions')
+                                Forms\Components\Wizard\Step::make('Questions')
                                     ->schema([
                                         Forms\Components\Repeater::make('questionAnswers')
                                             ->label('Questions')
@@ -280,7 +284,7 @@ class OrderResource extends Resource
                                             ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
                                             ->hidden(fn ($get) => !$get('classification_id')),
                   
-                            ]),*/
+                            ]),
                             ])->columnSpan('full')
 
 
@@ -289,8 +293,9 @@ class OrderResource extends Resource
 
     public static function table(Table $table): Table
     {
+        $categories = Category::all();
         return $table
-            ->defaultGroup('delivery_date','status')
+            ->defaultGroup('delivery_date')
             ->groups([ Group::make('classification.name')
             ->collapsible(),
             ])
@@ -299,7 +304,7 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
                 Tables\Columns\TextColumn::make('issue_date')->label('Issue Date')->date(),
-                Tables\Columns\TextColumn::make('delivery_date')->label('Delivery Date')->date(),                
+                Tables\Columns\TextColumn::make('delivery_date')->label('Fecha de entrega')->date(),                
                 Tables\Columns\TextColumn::make('customer.name')->label('Customer'), // Relación con Customer
                 Tables\Columns\TextColumn::make('seller.name')->label('Seller'), // Relación con User
                 Tables\Columns\TextColumn::make('reference_name')->label('Reference Name')->searchable(),
@@ -326,7 +331,6 @@ class OrderResource extends Resource
             1 => 'Completed',
             2 => 'Enviado',
         ])
-        ->default(0, 1)
             ])
             ->actions([
                 
@@ -347,7 +351,8 @@ class OrderResource extends Resource
             OrderReferenceRelationManager::class
         ];
     }
-
+   
+    
     public static function getPages(): array
     {
         return [

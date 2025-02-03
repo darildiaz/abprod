@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('order_items', function (Blueprint $table) {
             $table->id();
             $table->foreignId('order_id')->constrained('orders')->onDelete('cascade'); // Relación con pedidos
-           // $table->integer('item'); // Nombre personalizado del ítem
+            $table->integer('item'); // Nombre personalizado del ítem
             $table->string('model'); // Nombre personalizado del ítem
             $table->string('name')->nullable(); // Nombre personalizado del ítem
             $table->string('number')->nullable(); // Número personalizado

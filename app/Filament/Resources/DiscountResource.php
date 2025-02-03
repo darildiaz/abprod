@@ -17,25 +17,26 @@ class DiscountResource extends Resource
 {
     protected static ?string $model = Discount::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationIcon = 'heroicon-o-ticket';
+    public static ?string $navigationGroup = 'Orders';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('user_id')
+                Forms\Components\Hidden::make('user_id')
                     ->required()
-                    ->numeric(),
+                    ->default(auth()->user()->id),
                 Forms\Components\TextInput::make('code')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\DatePicker::make('date')
-                    ->required(),
+                ->default(now())    
+                ->required(),
+
                 Forms\Components\TextInput::make('max_amount')
                     ->required()
                     ->numeric(),
-                Forms\Components\Toggle::make('available')
-                    ->required(),
+                
             ]);
     }
 
@@ -43,11 +44,13 @@ class DiscountResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('id')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('code')
-                    ->searchable(),
+              //  Tables\Columns\TextColumn::make('code')
+              //      ->searchable(),
                 Tables\Columns\TextColumn::make('date')
                     ->date()
                     ->sortable(),

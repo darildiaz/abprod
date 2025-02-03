@@ -17,4 +17,18 @@ class ProductionPackage extends Model
     {
         return $this->hasMany(Production::class);
     }
+    public function product()
+    {
+        return $this->hasMany(Product::class);
+    }
+    
+    public function center()
+    {
+        return $this->belongsTo(Center::class);
+    }
+
+    public function operator()
+    {
+        return $this->belongsTo(Operator::class);
+    }
 }

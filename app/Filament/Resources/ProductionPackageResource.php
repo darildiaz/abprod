@@ -12,45 +12,55 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-
+use App\Models\OrderReference;
 class ProductionPackageResource extends Resource
 {
     protected static ?string $model = ProductionPackage::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = "Production";
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('order_id')
-                ->label('Order')
-                ->live() // Esto hace que cuando se seleccione, se actualicen los productos
-                ->afterStateUpdated(fn ($state, callable $set) => $set('productions', self::getOrderProducts($state))),
+                Forms\Components\select::make('order_id')
+                    ->label('Order')
+                    ->relationship('order', 
+                    'id')
+                    ->live()
+                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
 
+                    ->required(),
+                Forms\Components\Select::make('center_id')
+                    ->relationship('center', 'name')
+                    ->required(),
+                Forms\Components\Select::make('operator_id')
+                    ->relationship('operator', 'name')
+                    ->required(),
             Forms\Components\Repeater::make('productions')
-                ->label('Productions')
-                ->relationship('productions')
-                ->schema([
-                    Forms\Components\Select::make('product_id')
-                        ->label('Product')
-                        ->options(fn (callable $get) => self::getOrderProductOptions($get('order_id')))
-                        ->required(),
-                    Forms\Components\Select::make('size_id')
-                        ->label('Size')
-                        ->options(fn (callable $get) => self::getSizeOptions($get('product_id')))
-                        ->required(),
-                    Forms\Components\TextInput::make('quantity')
-                        ->label('Quantity')
-                        ->numeric()
-                        ->required(),
-                    Forms\Components\TextInput::make('price')
-                        ->label('Price')
-                        ->numeric()
-                        ->required(),
-                ])
+                    ->live()
+                    ->label('Productions')
+                        //->relationship('productions')
+                    ->schema([
+                            Forms\Components\Select::make('product_id')
+                            ->relationship('product', 'code')
+                        
+                    ->label('Product')
+                            // ->options(fn (callable $get) => self::getOrderProductOptions($get('order_id')))
+                                ->required(),
+
+                            Forms\Components\TextInput::make('quantity')
+                                ->label('Quantity')
+                                ->numeric()
+                                ->required(),
+                            Forms\Components\TextInput::make('price')
+                                ->label('Price')
+                                ->numeric()
+                                ->required(),
+                        ])
                 ->columns(2)
-                ->hidden(fn (callable $get) => !$get('order_id'))
+               // ->hidden(fn (callable $get) => !$get('order_id'))
             ]);
     }
 
@@ -105,5 +115,28 @@ class ProductionPackageResource extends Resource
             'view' => Pages\ViewProductionPackage::route('/{record}'),
             'edit' => Pages\EditProductionPackage::route('/{record}/edit'),
         ];
+    }
+    public static function getOrderProducts($set, $get)
+    {
+       // if(!$get('order_id')) {
+         
+        
+        $order_id = $get('order_id');
+        $products = OrderReference::where('order_id', $order_id)
+        ->selectRaw('product_id, SUM(quantity) AS quantity_t')
+        ->groupBy('product_id')
+        ->get();
+    
+        $prod = [];
+        foreach ($products as $product) {
+            $prod[] = [
+                'product_id' => $product->product_id,
+                'quantity' => $product->quantity_t,
+             //   'price' => $product->price,
+            ];
+        }
+    
+        $set('productions', $prod);
+  //  }
     }
 }

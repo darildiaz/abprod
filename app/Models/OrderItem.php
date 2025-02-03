@@ -10,13 +10,10 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class OrderItem extends Model
 {
     use HasFactory;
-    public function model()
-    {
-        return $this->belongsTo(OrderMold::class, 'model_id');
-    }
+    
     public function reference()
     {
-        return $this->belongsTo(OrderReference::class, 'order_id', 'item');
+        return $this->belongsTo(OrderReference::class, 'order_id');
     }
     public function size()
     {
@@ -35,12 +32,6 @@ class OrderItem extends Model
     protected $casts = [
         'productsItem' => 'array', // Convierte automáticamente a array
     ];
-    /*public function orderItemProducts()
-    {
-        return $this->hasMany(Product::class);
-    }*/
-public function products()
-{
-    return $this->belongsToMany(Product::class);
-}
+    
+
 }
