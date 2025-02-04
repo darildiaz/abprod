@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductionPackageResource\Pages;
 use App\Filament\Resources\ProductionPackageResource\RelationManagers;
+use App\Models\Operator;
 use App\Models\ProductionPackage;
 use Filament\Forms;
 use Filament\Forms\Form;
@@ -13,6 +14,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\OrderReference;
+
 class ProductionPackageResource extends Resource
 {
     protected static ?string $model = ProductionPackage::class;
@@ -26,7 +28,7 @@ class ProductionPackageResource extends Resource
             ->schema([
                 Forms\Components\select::make('order_id')
                     ->label('Order')
-                    ->relationship('order', 
+                    ->relationship('order',
                     'id')
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
@@ -34,18 +36,19 @@ class ProductionPackageResource extends Resource
                     ->required(),
                 Forms\Components\Select::make('center_id')
                     ->relationship('center', 'name')
+                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOperator($set, $get))
+
                     ->required(),
                 Forms\Components\Select::make('operator_id')
-                    ->relationship('operator', 'name')
+                    //->relationship('operator', 'name')
                     ->required(),
             Forms\Components\Repeater::make('productions')
                     ->live()
                     ->label('Productions')
-                        //->relationship('productions')
                     ->schema([
                             Forms\Components\Select::make('product_id')
                             ->relationship('product', 'code')
-                        
+
                     ->label('Product')
                             // ->options(fn (callable $get) => self::getOrderProductOptions($get('order_id')))
                                 ->required(),
@@ -60,7 +63,7 @@ class ProductionPackageResource extends Resource
                                 ->required(),
                         ])
                 ->columns(2)
-               // ->hidden(fn (callable $get) => !$get('order_id'))
+                ->hidden(fn (callable $get) => !$get('order_id')&&!$get('operator_id')&&!$get('center_id'))
             ]);
     }
 
@@ -116,17 +119,21 @@ class ProductionPackageResource extends Resource
             'edit' => Pages\EditProductionPackage::route('/{record}/edit'),
         ];
     }
+    public static function getOperator($set, $get){
+        $op= Operator::where ('center_id',$get('center_id'));
+      //  $set();
+    }
     public static function getOrderProducts($set, $get)
     {
        // if(!$get('order_id')) {
-         
-        
+
+
         $order_id = $get('order_id');
         $products = OrderReference::where('order_id', $order_id)
         ->selectRaw('product_id, SUM(quantity) AS quantity_t')
         ->groupBy('product_id')
         ->get();
-    
+
         $prod = [];
         foreach ($products as $product) {
             $prod[] = [
@@ -135,7 +142,7 @@ class ProductionPackageResource extends Resource
              //   'price' => $product->price,
             ];
         }
-    
+
         $set('productions', $prod);
   //  }
     }
