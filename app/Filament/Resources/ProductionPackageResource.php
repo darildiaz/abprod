@@ -28,19 +28,28 @@ class ProductionPackageResource extends Resource
             ->schema([
                 Forms\Components\select::make('order_id')
                     ->label('Order')
-                    ->relationship('order',
-                    'id')
+                    ->relationship('order','id')
+                    ->searchable()
+
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
 
                     ->required(),
                 Forms\Components\Select::make('center_id')
                     ->relationship('center', 'name')
+                    ->searchable()
+                    ->live()
+
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOperator($set, $get))
 
                     ->required(),
                 Forms\Components\Select::make('operator_id')
                     //->relationship('operator', 'name')
+                    ->options([
+                        
+                    ])
+                    ->live()
+
                     ->required(),
             Forms\Components\Repeater::make('productions')
                     ->live()
@@ -61,8 +70,9 @@ class ProductionPackageResource extends Resource
                                 ->label('Price')
                                 ->numeric()
                                 ->required(),
-                        ])
-                ->columns(2)
+                        ])->columns(3)
+                ->columnSpanFull()
+
                 ->hidden(fn (callable $get) => !$get('order_id')&&!$get('operator_id')&&!$get('center_id'))
             ]);
     }
@@ -121,7 +131,7 @@ class ProductionPackageResource extends Resource
     }
     public static function getOperator($set, $get){
         $op= Operator::where ('center_id',$get('center_id'));
-      //  $set();
+        $set('operator_id->opcions', $op);
     }
     public static function getOrderProducts($set, $get)
     {

@@ -23,7 +23,7 @@ use App\Models\Size;
 use App\Models\category;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
-
+use Illuminate\Database\Eloquent\Model;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -47,8 +47,42 @@ class OrderResource extends Resource
                                         ->required(),
                             Forms\Components\Select::make('customer_id')
                                         ->label('Customer')
-                                        ->relationship('customer', 'name')
+                                        ->relationship(
+                                            name: 'customer',
+                                            modifyQueryUsing: fn (Builder $query) => $query->orderBy('nif')->orderBy('name'),
+                                        )
+                                        
+                                        ->getOptionLabelFromRecordUsing(fn (Model $record) => "({$record->nif}) {$record->name} - {$record->phone}")
+                                        ->searchable(['name', 'nif','phone'])
                                         ->default(1) // Predetermina el usuario logueado
+                                        ->createOptionForm([
+                                            Forms\Components\TextInput::make('nif')
+                                            ->label('NIF')
+                                            ->required()
+                                            ->maxLength(20)
+                                            ->unique() // El NIF debe ser único
+                                            ->placeholder('Ingrese el NIF del cliente'),
+
+                                        Forms\Components\TextInput::make('name')
+                                            ->label('Name')
+                                            ->required()
+                                            ->maxLength(255)
+                                            ->placeholder('Ingrese el nombre del cliente'),
+
+                                        Forms\Components\Textarea::make('address')
+                                            ->label('Address')
+                                            ->rows(3)
+                                            ->placeholder('Ingrese la dirección del cliente'),
+
+                                        Forms\Components\TextInput::make('phone')
+                                            ->label('Phone')
+                                            ->maxLength(15)
+                                            ->tel() // Input con validación para números de teléfono
+                                            ->placeholder('Ingrese el número de teléfono'),
+
+                                        Forms\Components\hidden::make('user_id')
+                                            ->default(auth()->id()) // Predetermina el usuario logueado
+                                        ])
                                         ->required(),
 
                             Forms\Components\Select::make('seller_id')
@@ -81,7 +115,8 @@ class OrderResource extends Resource
                                         ->label('Code discount')
                                         ->default('0')
                                         ->dehydrated(false)
-                                        ->required(),
+                                       // ->required()
+                                       ,
                             Forms\Components\TextInput::make('aproved for')
                                         ->default('0')
                                         ->disabled()
@@ -148,8 +183,8 @@ class OrderResource extends Resource
                                         ->required()
                                         ->default('MODELO 1')
                                         ->searchable(),
-                                        Forms\Components\TextInput::make('item')
-                                        ->numeric()
+                                        Forms\Components\hidden::make('item')
+                                        //->numeric()
                                         ->afterStateHydrated(function ($state, callable $set, callable $get) {
                                             // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
                                             if (!$state) {
@@ -158,7 +193,8 @@ class OrderResource extends Resource
                                                 $set('item', "$nextIndex"); // Asignar el valor predeterminado
                                             }
                                         })
-                                            ->label('Item'),
+                                            //->label('Item')
+                                            ,
                                         Forms\Components\TextInput::make('name')
                                             ->label('Name'),
                                         Forms\Components\TextInput::make('number')
@@ -270,7 +306,7 @@ class OrderResource extends Resource
                                         ->numeric()
                                         ->disabled()
                                         , // Deshabilita el campo para que no se pueda editar
-                                        */
+                                    */    
                                 ])
                                 ->columns(6)
                                 ->live() // Habilita la reactividad
@@ -278,13 +314,15 @@ class OrderResource extends Resource
                                 //->required()
                                 ,
                             ]),
-                              /*  Forms\Components\Wizard\Step::make('Questions')
+                            /*   Forms\Components\Wizard\Step::make('Questions')
                                     ->schema([
-                                        Forms\Components\Repeater::make('questionAnswers')
+                                        
+                                        Forms\Components\Repeater::make('Question')
                                             ->label('Questions')
                                             ->relationship('questionAnswers')
                                             ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
-                                            ->hidden(fn ($get) => !$get('classification_id')),
+                                            ->hidden(fn ($get) => !$get('classification_id'))
+                                     //       ->default([]) ,
 
                             ]),*/
                             ])->columnSpan('full')

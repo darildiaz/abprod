@@ -12,5 +12,9 @@ class Question extends Model
     {
         return $this->belongsTo(QuestionCategory::class);
     }
+    public function answers()
+    {
+        return $this->hasMany(OrderQuestionAnswer::class);
+    }
 
 }
