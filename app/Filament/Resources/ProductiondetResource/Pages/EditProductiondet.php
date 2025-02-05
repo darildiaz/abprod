@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Filament\Resources\ProductionPackageResource\Pages;
+namespace App\Filament\Resources\ProductiondetResource\Pages;
 
-use App\Filament\Resources\ProductionPackageResource;
+use App\Filament\Resources\ProductiondetResource;
 use Filament\Actions;
 use Filament\Resources\Pages\EditRecord;
 
-class EditProductionPackage extends EditRecord
+class EditProductiondet extends EditRecord
 {
-    protected static string $resource = ProductionPackageResource::class;
+    protected static string $resource = ProductiondetResource::class;
 
     protected function getHeaderActions(): array
     {

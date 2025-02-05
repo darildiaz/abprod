@@ -11,12 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('productions', function (Blueprint $table) {
+        Schema::create('productiondets', function (Blueprint $table) {
             $table->id();
             $table->date('date'); // Fecha de producción
-            $table->foreignId('production_package_id')->constrained()->onDelete('cascade');
-            $table->foreignId('center_id')->constrained('centers')->onDelete('cascade'); // Relación con centros
-            $table->foreignId('operator_id')->constrained('operators')->onDelete('cascade'); // Relación con operadores
+            $table->foreignId('production_id')->constrained('productions')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Relación con productos
             $table->integer('quantity'); // Cantidad producida
             $table->integer('price');
@@ -30,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('productions');
+        Schema::dropIfExists('productiondets');
     }
 };

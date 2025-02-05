@@ -12,7 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 class OrderItemRelationManager extends RelationManager
 {
-    protected static string $relationship = 'OrderItem';
+    protected static string $relationship = 'OrderItems';
 
     public function form(Form $form): Form
     {
@@ -76,10 +76,7 @@ class OrderItemRelationManager extends RelationManager
             Tables\Columns\TextColumn::make('quantity')
                 ->numeric()
                 ->sortable(),
-            Tables\Columns\TextColumn::make('price')
-                ->numeric()
-                ->sortable(),
-            
+          
             Tables\Columns\TextColumn::make('references')
                 ->label('References')
                 ->getStateUsing(function ($record) {
@@ -114,13 +111,13 @@ class OrderItemRelationManager extends RelationManager
                     ]),
             ])
             ->actions([
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+               // Tables\Actions\EditAction::make(),
+               // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
-                ]),
+                // Tables\Actions\BulkActionGroup::make([
+                //     Tables\Actions\DeleteBulkAction::make(),
+                // ]),
             ]);
     }
     

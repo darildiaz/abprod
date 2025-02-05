@@ -14,6 +14,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderReferenceRelationManager;
+use App\Filament\Resources\OrderResource\RelationManagers\OrderModelRelationManager;
 use App\Models\Question;
 use App\Models\QuestionCategory;
 use Illuminate\Support\Facades\DB;
@@ -111,21 +112,7 @@ class OrderResource extends Resource
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
                                         ->required(),
-                            Forms\Components\TextInput::make('Code discount')
-                                        ->label('Code discount')
-                                        ->default('0')
-                                        ->dehydrated(false)
-                                       // ->required()
-                                       ,
-                            Forms\Components\TextInput::make('aproved for')
-                                        ->default('0')
-                                        ->disabled()
-                                        ->dehydrated(false),
-                                        Forms\Components\TextInput::make('monto maximo')
-                                        ->default('0')
-                                        ->disabled()
-
-                                        ->dehydrated(false),
+                            
 
                     ]) ->columns(3),
 
@@ -183,7 +170,7 @@ class OrderResource extends Resource
                                         ->required()
                                         ->default('MODELO 1')
                                         ->searchable(),
-                                        Forms\Components\hidden::make('item')
+                                        Forms\Components\TextInput::make('item')
                                         //->numeric()
                                         ->afterStateHydrated(function ($state, callable $set, callable $get) {
                                             // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
@@ -243,7 +230,7 @@ class OrderResource extends Resource
                                             ->multiple()
                                             ->relationship('product', 'code') // Relación con la tabla products
                                             ->live()
-                                ->dehydrated(false) // No se guarda en la base de datos
+                    //            ->dehydrated(false) // No se guarda en la base de datos
 
                                         ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
 
@@ -376,6 +363,35 @@ class OrderResource extends Resource
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('changeStatus')
+                    ->label('Change Status')
+                    ->action(function ($record, $data) {
+                        $record->status = $data['status'];
+                        $record->save();
+                    })
+                    ->form([
+                        Forms\Components\Select::make('status')
+                            ->options([
+                                0 => 'Pending',
+                                1 => 'Completed',
+                                2 => 'Enviado',
+                            ])
+                            ->required(),
+                    ]),
+                Tables\Actions\Action::make('sendToProductionPackage')
+                    ->label(' Production ')
+                    ->action(function ($record, $data) {
+                        // Aquí puedes agregar la lógica para enviar a productionPackage
+                        // Por ejemplo:
+                        $productionPackage = new ProductionPackage();
+                        $productionPackage->order_id = $record->id;
+                        $productionPackage->save();
+                    })
+                    ->form([
+                        Forms\Components\TextInput::make('order_id')
+                            ->default(fn ($record) => $record->id)
+                            ->disabled(),
+                    ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -388,7 +404,8 @@ class OrderResource extends Resource
     {
         return [
             OrderItemRelationManager::class,
-            OrderReferenceRelationManager::class
+            OrderReferenceRelationManager::class,
+            OrderModelRelationManager::class
         ];
     }
 
@@ -470,7 +487,9 @@ protected static function parseOrderItemsText(string $text,$set): array
         $price=0;
         $lines = explode("\n", trim($text)); // Divide el texto en líneas
         $total=0;
+        $c=0;
         foreach ($lines as $line) {
+            $c++;
             $columns = explode("\t", trim($line)); // Divide cada línea en columnas
             if (count($columns) === 8) { // Asegúrate de que haya 9 columnas
                 $price=0;
@@ -485,6 +504,7 @@ protected static function parseOrderItemsText(string $text,$set): array
                     $price=$price+  self::getPPrice($productId, self::getSizeIdByName($columns[5]));
                 }
                 $items[] = [
+                    'item' =>$c,
                     'model' => $columns[1], // Obtener el ID del modelo
                     'name' => $columns[2],
                     'number' => $columns[3],

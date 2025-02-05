@@ -29,15 +29,16 @@ para cronograma
 
 
 
+CREATE VIEW order_reference_summaries AS
 SELECT 
-    oref.order_id, 
-    CONCAT(REPLACE(p.code, '-', ''), s.name) AS new_code, 
-    p.code, 
-    s.name, 
-    p.name, 
-    SUM(oref.quantity) AS total_quantity, 
+    CONCAT(oref.order_id, '-', oref.product_id, '-', oref.size_id) AS id, -- Clave primaria falsa
+    oref.order_id,
+    product_id,
+    size_id,
+    CONCAT(REPLACE(p.code, '-', ''), REPLACE(s.name, '-', '')) AS new_code, -- Genera el new_code sin guiones
+    SUM(oref.quantity) AS total_quantity,
     SUM(oref.price) AS total_price
 FROM order_references oref
 JOIN products p ON p.id = oref.product_id
 JOIN sizes s ON s.id = oref.size_id
-GROUP BY oref.order_id, p.code, s.name, p.name;
+GROUP BY oref.order_id, product_id, size_id;

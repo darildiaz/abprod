@@ -5,10 +5,14 @@ use Filament\Pages\Page;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Filament\Tables\Columns\Summarizers\Sum;
-
+use Livewire\Component as LivewireComponent;
+use Filament\Facades\Filament;
+use Filament\Notifications\Notification;
+use Filament\Actions\RedirectAction;
 class CronogramaPage extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
@@ -42,23 +46,31 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     }
 
     // Agregar la columna "otros"
-    $columns[] = TextColumn::make('otros')->label('Otros')->sortable();
+    $columns[] = TextColumn::make('otros')->label('Otros')->sortable()->summarize(Sum::make());
 
     return $table
         ->defaultGroup('delivery_date')
         ->query($this->getOrdersQuery())
         ->columns($columns)
         ->striped()
+        
         ->filters([
             Tables\Filters\SelectFilter::make('status')
-            ->multiple()
-            ->options([
-        0 => 'Pending',
-        1 => 'Completed',
-        2 => 'Enviado',
-    ])
+                  //  ->multiple()
+                    ->options([
+                0 => 'Pending',
+                1 => 'Completed',
+                2 => 'Enviado',
+            ])
+            ->default(0)
         ])
-        
+        ->bulkActions([
+            Tables\Actions\BulkAction::make('showOrderReferenceSummaries')
+            ->label('Ver Detalle de Referencias')
+            ->action(fn (Collection $records) => $this->redirectToSummaryPage($records))
+            ->requiresConfirmation(),
+            
+        ])
         ->paginated(50);
 }
 
@@ -98,6 +110,12 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     ";
 
     return OrderSummary::query()->fromSub(DB::table(DB::raw("($sql) as order_summaries")), 'order_summaries');
+}
+public function redirectToSummaryPage(Collection $records)
+{
+    $orderIds = $records->pluck('id')->implode(','); // Convertimos los IDs en un string separado por comas
+
+    return redirect()->to('/admin/order-reference-summaries?orderIds=' . $orderIds);
 }
 
 

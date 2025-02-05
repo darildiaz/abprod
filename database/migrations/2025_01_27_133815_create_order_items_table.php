@@ -24,7 +24,7 @@ return new class extends Migration
             $table->integer('price'); // Precio
             $table->integer('subtotal'); // Precio
             $table->integer('discount')->default(0); // Descuento aplicado
-            $table->json('ProductsItem'); // Precio total
+            $table->json('product_id')->nullable(); // Precio total
             $table->timestamps();
         });
     }

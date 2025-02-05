@@ -14,7 +14,7 @@ use App\Models\QuestionCategory;
 use App\Models\Question;
 use App\Models\Line;
 use App\Models\Size;
-
+use Illuminate\Support\Facades\DB;
 class DatabaseSeeder extends Seeder
 {
     /**
@@ -104,9 +104,9 @@ class DatabaseSeeder extends Seeder
         }
         $questions = [
             ['text' => 'Color base', 'type' => 'string', 'is_required' => true, 'category_id' => 1],
-            ['text' => 'Va tener Nombre?', 'type' => 'list', 'options' => 'Si\nNo', 'is_required' => false, 'category_id' => 1],
+            ['text' => 'Va tener Nombre?', 'type' => 'list', 'options' => '["Si","No"]', 'is_required' => false, 'category_id' => 1],
             ['text' => 'Auspicio delantero', 'type' => 'integer', 'is_required' => true, 'category_id' => 1],
-            ['text' => 'Tipo de logo', 'type' => 'list', 'options' => 'Bordado\nUV\nSublimado', 'is_required' => true, 'category_id' => 2],
+            ['text' => 'Tipo de logo', 'type' => 'list', 'options' => '["Bordado","UV","Sublimado"]', 'is_required' => true, 'category_id' => 2],
         ];
 
         foreach ($questions as $question) {
@@ -138,6 +138,21 @@ class DatabaseSeeder extends Seeder
         foreach ($sizes as $size) {
             Size::create($size);
         }
+        DB::statement("
+            CREATE VIEW order_reference_summaries AS
+            SELECT 
+                CONCAT(oref.order_id, '-', oref.product_id, '-', oref.size_id) AS id, -- Clave primaria falsa
+                oref.order_id,
+                oref.product_id,
+                oref.size_id,
+                CONCAT(REPLACE(p.code, '-', ''), REPLACE(s.name, '-', '')) AS new_code, -- Genera el new_code sin guiones
+                SUM(oref.quantity) AS total_quantity,
+                SUM(oref.price) AS total_price
+            FROM order_references oref
+            JOIN products p ON p.id = oref.product_id
+            JOIN sizes s ON s.id = oref.size_id
+            GROUP BY oref.order_id, oref.product_id, oref.size_id;
+        ");
     }
     
 }

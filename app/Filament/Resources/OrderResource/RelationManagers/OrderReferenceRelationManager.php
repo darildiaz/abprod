@@ -15,7 +15,7 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 class OrderReferenceRelationManager extends RelationManager
 {
-    protected static string $relationship = 'orderReferences';
+    protected static string $relationship = 'orderReferenceSummaries';
 
     public function form(Form $form): Form
     {
@@ -26,6 +26,7 @@ class OrderReferenceRelationManager extends RelationManager
                     ->maxLength(255),
             ]);
     }
+   
 
     public function table(Table $table): Table
     {
@@ -34,19 +35,28 @@ class OrderReferenceRelationManager extends RelationManager
             ->defaultGroup('product.code')
 
             ->groups([
-                 
+                Group::make('product.code')
+                ->collapsible(), 
                 Group::make('size.name')
                 ->collapsible(),
             ])
             ->reorderable('size_id')
 
             ->columns([
+                Tables\Columns\TextColumn::make('new_code')
+                    ->label('Product code')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('product.code')
-                    ->label('Product ID'),
+                    ->label('Product ID')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('size.name')
-                    ->label('Size ID'),
-                Tables\Columns\TextColumn::make('quantity')
-                ->summarize(Sum::make())
+                    ->label('Size ID')
+                    ->sortable(),
+                    
+                Tables\Columns\TextColumn::make('total_quantity')
+              //  ->summarize(Sum::make())
                 
                     ->label('Total Quantity'),
             ])

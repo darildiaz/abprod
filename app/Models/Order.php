@@ -39,15 +39,15 @@ class Order extends Model
     {
         return $this->hasMany(OrderReference::class);
     }
-
+    public function orderReferenceSummaries()
+    {
+        return $this->hasMany(OrderReferenceSummary::class);
+    }
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
-    public function orderItem(): HasMany
-    {
-        return $this->hasMany(OrderItem::class);
-    }
+    
     
     
 }

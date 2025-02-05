@@ -35,6 +35,10 @@ class Product extends Model
     {
         return $this->hasMany(OrderReference::class);
     }
+    public function OrderReferenceSummarys()
+    {
+        return $this->hasMany(OrderReferenceSummary::class);
+    }
     public function orderItems()
         {
             return $this->belongsToMany(OrderItem::class, 'order_item_products')

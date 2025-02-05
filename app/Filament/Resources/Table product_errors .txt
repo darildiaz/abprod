@@ -1,0 +1,42 @@
+Table product_errors {
+  id int [pk] // Primary key
+  product_id int [ref: > products.id] // Producto con error
+  description text // Descripción del error
+  reported_by int [ref: > users.id] // Usuario que reporta el error
+  status enum("pending", "resolved", "rejected") // Estado del error
+  created_at timestamp
+  updated_at timestamp
+}
+Table order_parts {
+  id int [pk] // Primary key
+  order_id int [ref: > orders.id] // Relación con pedidos
+  name varchar // Nombre de la parte (Ej: "Manga", "Frente")
+  loss_percentage decimal(5,2) // Porcentaje de pérdida en producción
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_part_products {
+  id int [pk] // Primary key
+  order_part_id int [ref: > order_parts.id] // Relación con partes del pedido
+  product_id int [ref: > products.id] // Producto usado en la parte
+  quantity int // Cantidad utilizada
+  created_at timestamp
+  updated_at timestamp
+}
+Table reprint_requests {
+  id int [pk] // Primary key
+  order_id int [ref: > orders.id] // Pedido afectado
+  reason text // Razón de la reimpresión
+  requested_by int [ref: > users.id] // Usuario que solicita la reimpresión
+  status enum("pending", "approved", "rejected") // Estado de la solicitud
+  created_at timestamp
+  updated_at timestamp
+}
+Table reprint_request_parts {
+  id int [pk] // Primary key
+  reprint_request_id int [ref: > reprint_requests.id] // Relación con solicitud de reimpresión
+  order_part_id int [ref: > order_parts.id] // Parte del pedido afectada
+  created_at timestamp
+  updated_at timestamp
+}

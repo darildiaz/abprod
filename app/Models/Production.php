@@ -4,18 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-
+use Illuminate\Database\Eloquent\Relations\HasMany;
 class Production extends Model
 {
     use HasFactory;
-    public function productionPackage()
-    {
-        return $this->belongsTo(ProductionPackage::class);
-    }
     public function order()
     {
         return $this->belongsTo(Order::class);
     }
+
+    
+    
+    // public function product()
+    // {
+    //     return $this->belongsto(Product::class);
+    // }
     
     public function center()
     {
@@ -26,9 +29,8 @@ class Production extends Model
     {
         return $this->belongsTo(Operator::class);
     }
-
-    public function product()
+    public function details()
     {
-        return $this->belongsTo(Product::class);
+        return $this->hasMany(Productiondet::class);
     }
 }
