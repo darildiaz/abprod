@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderItemRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderReferenceRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderModelRelationManager;
+use App\Filament\Resources\OrderResource\RelationManagers\OrderQuestionAnswerRelationManager;
 use App\Models\Question;
 use App\Models\QuestionCategory;
 use Illuminate\Support\Facades\DB;
@@ -137,7 +138,9 @@ class OrderResource extends Resource
                                 }
                             }),
 
-                        Forms\Components\FileUpload::make('imagen')->label('Image'),
+                        Forms\Components\FileUpload::make('imagen')->label('Image')
+                        ->directory('orders')
+                        ,
                     ])
                     ->columns(2)
                     ->required(),
@@ -258,7 +261,8 @@ class OrderResource extends Resource
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
-                                    Forms\Components\TextInput::make('item'),
+                                    Forms\Components\TextInput::make('item')
+                                    ->default(1),
 
                                     Forms\Components\Select::make('product_id')
                                         ->label('Product')
@@ -269,6 +273,8 @@ class OrderResource extends Resource
                                         ->required(),
                                         Forms\Components\Select::make('size_id')
                                         ->label('Size')
+                                        ->default(1)
+
                                         // ->disabled()
                                         //->live()
                                         ->relationship('size', 'name') // Relación con la tabla sizes
@@ -283,6 +289,8 @@ class OrderResource extends Resource
                                         Forms\Components\TextInput::make('price')
                                         ->label('Price')
                                         // ->disabled()
+                                        ->default(1)
+
                                         ->numeric()
                                         ->required(),
                                         /* Forms\Components\TextInput::make('discount')
@@ -301,18 +309,29 @@ class OrderResource extends Resource
                                 //->required()
                                 ,
                             ]),
-                            /*   Forms\Components\Wizard\Step::make('Questions')
-                                    ->schema([
-                                        
-                                        Forms\Components\Repeater::make('Question')
-                                            ->label('Questions')
-                                            ->relationship('questionAnswers')
-                                            ->schema(fn ($get) => self::getQuestionFields($get('classification_id')))
-                                            ->hidden(fn ($get) => !$get('classification_id'))
-                                     //       ->default([]) ,
-
-                            ]),*/
+                            Forms\Components\Wizard\Step::make('Questions')
+                            ->schema([   
+                               Forms\Components\Repeater::make('questionAnswers')
+                               ->label('Questions')
+                               ->relationship('questionAnswers')
+                               ->schema([
+                                    Forms\Components\Select::make('question_id')
+                                    ->relationship('question','text')    
+                                    ->label('Question')
+                                    ->required(),
+                                    
+                                    Forms\Components\TextInput::make('answer')
+                                    ->label('Question')
+                                    ->required(),
+                                    ])
+                                
+                               ])                                             
+                            
                             ])->columnSpan('full')
+                            ->afterStateHydrated(function (callable $set, callable $get) {
+                                $classificationId = $get('classification_id');
+                                self::getQuestionFields($classificationId,$set);
+                            })
 
 
             ]);
@@ -406,6 +425,7 @@ class OrderResource extends Resource
             OrderItemRelationManager::class,
             OrderReferenceRelationManager::class,
             OrderModelRelationManager::class
+            ,OrderQuestionAnswerRelationManager::class
         ];
     }
 
@@ -419,46 +439,32 @@ class OrderResource extends Resource
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
-
-
-
-    protected static function getQuestionFields(?int $classificationId): array
+    protected static function getQuestionFields(?int $classificationId,callable $set)
 {
-    if (!$classificationId) {
-        return [];
-    }
+    // Si no hay clasificación, devolver un array vacío
+         if ($classificationId) {
+        
 
-    $questions = Question::where('category_id', $classificationId)->get();
+            // Obtener las preguntas relacionadas con esta clasificación
+            $questions = DB::table('questions')
+                ->where('category_id', $classificationId)
+                ->get(['id']);
 
-    return $questions->map(function ($question) {
-        // Decodificar las opciones desde el campo JSON
-        $options = json_decode($question->options, true);
-
-        // Verificar si las opciones son un array válido
-        if (!is_array($options)) {
-            $options = []; // Si no es un array válido, usar un array vacío
-        }
-
-        // Crear el campo correspondiente según el tipo de pregunta
-        return match ($question->type) {
-            'string' => Forms\Components\TextInput::make("answers.{$question->id}")
-                ->label($question->text)
-                ->required($question->is_required),
-
-            'integer' => Forms\Components\TextInput::make("answers.{$question->id}")
-                ->label($question->text)
-                ->numeric()
-                ->required($question->is_required),
-
-            'list' => Forms\Components\Select::make("answers.{$question->id}")
-                ->label($question->text)
-                ->options($options) // Usar las opciones decodificadas
-                ->required($question->is_required),
-
-            default => null,
-        };
-    })->filter()->toArray();
+            // Inicializar un array para los campos dinámicos
+            $fields = [];
+            
+            foreach ($questions as $question) {
+                $fields[] = [
+                    'question_id' =>$question->id
+                ];
+            }
+            $set('questionAnswers',$fields);
+     }
 }
+
+    
+    
+    
 protected static function getRefences(callable $set, callable $get)
 {
     $item = $get('orderItems') ;

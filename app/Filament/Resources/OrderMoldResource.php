@@ -30,10 +30,10 @@ class OrderMoldResource extends Resource
                 Forms\Components\TextInput::make('title')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Textarea::make('imagen')
-                    ->required()
-                    ->maxLength(65535)
-                    ->columnSpanFull(),
+                Forms\Components\FileUpload::make('imagen')->label('Image')
+                ->directory('orders')
+
+
             ]);
     }
 
@@ -46,6 +46,10 @@ class OrderMoldResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('title')
                     ->searchable(),
+                Tables\Columns\ImageColumn::make('imagen')
+                ->label('Imagen')
+                ->disk('public') // Especifica el disco de almacenamiento
+                ->size(100), 
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
