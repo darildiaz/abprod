@@ -18,17 +18,23 @@ class CenterResource extends Resource
     protected static ?string $model = Center::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = "Production";
+    protected static ?string $navigationGroup = "Produccion";
+    protected static ?string $navigationLabel = 'Centros';
+
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('name')
+                ->label('Nombre')
+
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('level')
-                    ->required()
+                ->label('nivel')
+                    
+                ->required()
                     ->numeric(),
             ]);
     }
@@ -38,15 +44,19 @@ class CenterResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('level')
+                ->label('Nivel')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

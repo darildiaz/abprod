@@ -17,7 +17,8 @@ class SizeResource extends Resource
 {
     protected static ?string $model = Size::class;
     public static ?string $navigationIcon = 'heroicon-o-scale';
-    protected static ?string $navigationGroup = "Mantenimiento";
+    protected static ?string $navigationGroup = "Productos";
+    protected static ?string $navigationLabel = "Talles";
 
     public static function form(Form $form): Form
     {
@@ -25,6 +26,7 @@ class SizeResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Nombre')
                     ->maxLength(255),
             ]);
     }

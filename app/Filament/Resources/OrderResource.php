@@ -30,9 +30,9 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     public static ?string $navigationIcon = 'heroicon-o-shopping-cart';
-    public static ?string $navigationGroup = 'Orders';
+    public static ?string $navigationGroup = 'Pedidos';
     public static ?string $recordTitleAttribute='id';
-    //public static ?string $recordTitleAttribute='reference_name';
+    protected static ?string $navigationLabel = 'Pedidos';
 
     public static function form(Form $form): Form
     {
@@ -44,11 +44,11 @@ class OrderResource extends Resource
                         ->schema([
                             // Tab 1: Datos generales del cliente y pedido
                             Forms\Components\TextInput::make('reference_name')
-                                        ->label('Reference Name')
-                                        ->default('ORD-'.date('Ymd').'-'.rand(1000,9999))
+                                        ->label('Referencia')
+                                       // ->default('ORD-'.date('Ymd').'-'.rand(1000,9999))
                                         ->required(),
                             Forms\Components\Select::make('customer_id')
-                                        ->label('Customer')
+                                        ->label('Cliente')
                                         ->relationship(
                                             name: 'customer',
                                             modifyQueryUsing: fn (Builder $query) => $query->orderBy('nif')->orderBy('name'),
@@ -66,18 +66,18 @@ class OrderResource extends Resource
                                             ->placeholder('Ingrese el NIF del cliente'),
 
                                         Forms\Components\TextInput::make('name')
-                                            ->label('Name')
+                                            ->label('nombre')
                                             ->required()
                                             ->maxLength(255)
                                             ->placeholder('Ingrese el nombre del cliente'),
 
                                         Forms\Components\Textarea::make('address')
-                                            ->label('Address')
+                                            ->label('Direccion')
                                             ->rows(3)
                                             ->placeholder('Ingrese la dirección del cliente'),
 
                                         Forms\Components\TextInput::make('phone')
-                                            ->label('Phone')
+                                            ->label('Celular')
                                             ->maxLength(15)
                                             ->tel() // Input con validación para números de teléfono
                                             ->placeholder('Ingrese el número de teléfono'),
@@ -88,19 +88,19 @@ class OrderResource extends Resource
                                         ->required(),
 
                             Forms\Components\Select::make('seller_id')
-                                        ->label('Seller')
+                                        ->label('Vendedor')
                                         ->relationship('seller', 'name')
                                         ->default(auth()->id()) // Predetermina el usuario logueado
                                         ->required(),
 
                             Forms\Components\TextInput::make('issue_date')
-                                        ->label('Issue Date')
+                                        ->label('Fecha de emision')
                                         ->default(today()->toDateString())
                                         ->type('date')
                                         ->required(),
 
                             Forms\Components\TextInput::make('delivery_date')
-                                        ->label('Delivery Date')
+                                        ->label('Fecha de entrega')
                                         //->default(today()->toDateString())
                                       //  ->gt('issue_date')
                                         ->default(today()->addDays(10)->toDateString())
@@ -108,7 +108,7 @@ class OrderResource extends Resource
                                         ->required(),
 
                             Forms\Components\Select::make('classification_id')
-                                        ->label('clasificacion')
+                                        ->label('Clasificacion')
                                         ->relationship('classification', 'name')
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
@@ -118,14 +118,15 @@ class OrderResource extends Resource
                     ]) ->columns(3),
 
                     Forms\Components\Wizard\Step::make('Models')
+                    ->label('Modelos')
                     ->schema([
                     // Tab 2: Cargar lista de modelos
                     Forms\Components\Repeater::make('models')
-                    ->label('Models')
+                    ->label('Modelos')
                     ->relationship('orderMolds')
                     ->schema([
                         Forms\Components\Select::make('title')
-                            ->label('Modelo Title')
+                            ->label('Titulo')
                             ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
                             ->required()
                             ->searchable()
@@ -138,7 +139,7 @@ class OrderResource extends Resource
                                 }
                             }),
 
-                        Forms\Components\FileUpload::make('imagen')->label('Image')
+                        Forms\Components\FileUpload::make('imagen')->label('Imagen')
                         ->directory('orders')
                         ,
                     ])
@@ -146,14 +147,15 @@ class OrderResource extends Resource
                     ->required(),
                         ]),
                         Forms\Components\Wizard\Step::make('Items import')
+                                ->label('Importar items')
                                 ->schema([
                                     // Tab 4: Cargar lista de ítems de la orden
                                     Forms\Components\TextArea::make('order_items_text')
-                                ->label('Order Items (Paste Text)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tOficial\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tArquero\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short")
+                                ->label('Pedido Items (Pegue Texto)')
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short")
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
-                                ->helperText('Paste order items separated by TAB for columns and ENTER for rows.')
+                                ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, $set) {
                                     // Procesar el texto y actualizar el estado del Repeater
@@ -186,13 +188,13 @@ class OrderResource extends Resource
                                             //->label('Item')
                                             ,
                                         Forms\Components\TextInput::make('name')
-                                            ->label('Name'),
+                                            ->label('Nombre'),
                                         Forms\Components\TextInput::make('number')
-                                            ->label('Number'),
+                                            ->label('Numero'),
                                         Forms\Components\TextInput::make('other')
-                                            ->label('Other'),
+                                            ->label('otros'),
                                         Forms\Components\Select::make('size_id')
-                                            ->label('Size')
+                                            ->label('Talle')
                                         ->default(1)
 
                                             ->live()
@@ -200,7 +202,7 @@ class OrderResource extends Resource
                                             ->relationship('size', 'name') // Relación con la tabla sizes
                                             ->required(),
                                         Forms\Components\TextInput::make('quantity')
-                                            ->label('Quantity')
+                                            ->label('Cantidad')
                                             ->numeric()
                                             ->default(1)
                                             ->required()
@@ -210,7 +212,7 @@ class OrderResource extends Resource
                                                                                   // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
                                             ,
                                             Forms\Components\TextInput::make('price')
-                                            ->label('price')
+                                            ->label('Precio')
 
                                             ->numeric()
                                            // ->disabled()
@@ -228,7 +230,7 @@ class OrderResource extends Resource
 
 
                                         Forms\Components\select::make('ProductsItem')
-                                            ->label('Products')
+                                            ->label('Productos')
                                             ->searchable()
                                             ->multiple()
                                             ->relationship('product', 'code') // Relación con la tabla products
@@ -255,6 +257,8 @@ class OrderResource extends Resource
                                 ])
                                 ,
                                 Forms\Components\Wizard\Step::make('References')
+                                ->label('Referencias')
+
                         ->schema([
                             // Tab 3: Cargar lista de referencias
                                 Forms\Components\Repeater::make('references')
@@ -265,14 +269,14 @@ class OrderResource extends Resource
                                     ->default(1),
 
                                     Forms\Components\Select::make('product_id')
-                                        ->label('Product')
+                                        ->label('Producto')
                                         // ->disabled()
 
                                         ->relationship('product', 'code') // Relación con la tabla products
                                         ->default(1)
                                         ->required(),
                                         Forms\Components\Select::make('size_id')
-                                        ->label('Size')
+                                        ->label('Talle')
                                         ->default(1)
 
                                         // ->disabled()
@@ -280,14 +284,14 @@ class OrderResource extends Resource
                                         ->relationship('size', 'name') // Relación con la tabla sizes
                                         ->required(),
                                     Forms\Components\TextInput::make('quantity')
-                                        ->label('Quantity')
+                                        ->label('Cantidad')
                                         // ->disabled()
 
                                         ->numeric()
                                         ->required(),
 
                                         Forms\Components\TextInput::make('price')
-                                        ->label('Price')
+                                        ->label('Precio')
                                         // ->disabled()
                                         ->default(1)
 
@@ -310,6 +314,8 @@ class OrderResource extends Resource
                                 ,
                             ]),
                             Forms\Components\Wizard\Step::make('Questions')
+                            ->label('Informacion adicional')
+
                             ->schema([   
                                Forms\Components\Repeater::make('questionAnswers')
                                ->label('Questions')
@@ -317,11 +323,11 @@ class OrderResource extends Resource
                                ->schema([
                                     Forms\Components\Select::make('question_id')
                                     ->relationship('question','text')    
-                                    ->label('Question')
+                                    ->label('Cuestionario')
                                     ->required(),
                                     
                                     Forms\Components\TextInput::make('answer')
-                                    ->label('Question')
+                                    ->label('Respuesta')
                                     ->required(),
                                     ])
                                 
@@ -342,24 +348,39 @@ class OrderResource extends Resource
         $categories = Category::all();
         return $table
             ->defaultGroup('delivery_date')
-            ->groups([ Group::make('classification.name')
-            ->collapsible(),
-            ])
+                ->groups([ 
+                    Group::make('classification.name')
+                    ->label('Clasificacion')
+                    ->collapsible(),
+                    Group::make('delivery_date')
+                    ->label('Fecha de entrega')
+                    ->collapsible(),
+                ])
             ->defaultSort('id', 'desc')
             ->columns([
 
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
-                Tables\Columns\TextColumn::make('issue_date')->label('Issue Date')->date(),
+                Tables\Columns\TextColumn::make('issue_date')->label('Fecha de emision')->date(),
                 Tables\Columns\TextColumn::make('delivery_date')->label('Fecha de entrega')->date(),
-                Tables\Columns\TextColumn::make('customer.name')->label('Customer'), // Relación con Customer
-                Tables\Columns\TextColumn::make('seller.name')->label('Seller'), // Relación con User
-                Tables\Columns\TextColumn::make('reference_name')->label('Reference Name')->searchable(),
-                Tables\Columns\TextColumn::make('total')->label('Total')->money('USD')
+                Tables\Columns\TextColumn::make('customer.name')->label('Cliente'), // Relación con Customer
+                Tables\Columns\TextColumn::make('seller.name')->label('Vendedor'), // Relación con User
+                Tables\Columns\TextColumn::make('reference_name')->label('Referencia')->searchable(),
+                Tables\Columns\TextColumn::make('total')->label('Total')->money('Gs.')
                 ->summarize(Sum::make())
                 ->sortable(),
-                Tables\Columns\TextColumn::make('classification.name')->label('Classification'), // Relación con QuestionCategory
-                Tables\Columns\TextColumn::make('status')->label('Status')->sortable(),
-
+                Tables\Columns\TextColumn::make('classification.name')->label('Clasificacion'), // Relación con QuestionCategory
+                Tables\Columns\TextColumn::make('status')->label('Estado')->sortable(),
+                Tables\Columns\TextColumn::make('productions')
+                    ->label('Center')
+                    ->formatStateUsing(function ($state, $record) {
+                        $maxCenter = collect($record->productions)
+                            ->map(fn ($production) => $production->center)
+                            ->sortByDesc('level')
+                            ->first();
+                            
+                        return $maxCenter ? $maxCenter->name : '';
+                    }),
+                    
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -371,10 +392,11 @@ class OrderResource extends Resource
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('status')
+                //-label('Estado')
                 ->multiple()
                 ->options([
-            0 => 'Pending',
-            1 => 'Completed',
+            0 => 'Pendiente',
+            1 => 'Completo',
             2 => 'Enviado',
         ])
             ])
@@ -391,8 +413,8 @@ class OrderResource extends Resource
                     ->form([
                         Forms\Components\Select::make('status')
                             ->options([
-                                0 => 'Pending',
-                                1 => 'Completed',
+                                0 => 'Pendiente',
+                                1 => 'Completado',
                                 2 => 'Enviado',
                             ])
                             ->required(),

@@ -16,7 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class PriceResource extends Resource
 {
     protected static ?string $model = Price::class;
-    public static ?string $navigationGroup = 'Product';
+    public static ?string $navigationGroup = 'Productos';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -25,7 +25,7 @@ class PriceResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('product_id')
-                    ->label('Product')
+                    ->label('Producto')
                     ->relationship('product', 'code') // Relación con el modelo Category
                     ->required(),
                 

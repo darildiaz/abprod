@@ -30,7 +30,8 @@ class OrderReferenceSummaryPage extends Page implements Tables\Contracts\HasTabl
     {
         return $table
             ->defaultGroup('new_code')
-            ->groups([ Group::make('product.code')
+            ->groups([ Group::make('new_code')
+            ->label('Producto-talla')
             ->collapsible(),
             ])
             ->query($this->getQuery()) // Carga los datos de la base de datos

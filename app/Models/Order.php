@@ -34,6 +34,10 @@ class Order extends Model
     {
         return $this->hasMany(OrderMold::class);
     }
+    public function productions()
+    {
+        return $this->hasMany(production::class);
+    }
 
     public function orderReferences()
     {

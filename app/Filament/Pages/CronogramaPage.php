@@ -13,6 +13,9 @@ use Livewire\Component as LivewireComponent;
 use Filament\Facades\Filament;
 use Filament\Notifications\Notification;
 use Filament\Actions\RedirectAction;
+use Filament\Tables\Grouping\Group;
+use App\Models\Category;
+use App\Models\Order;
 class CronogramaPage extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
@@ -28,15 +31,36 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     public function table(Tables\Table $table): Tables\Table
 {
     // Obtener solo las categorías importantes
-    $categories = DB::table('categories')
-        ->where('is_important', 1)
-        ->pluck('name', 'id');
+    $categories = Category::where('is_important', 1)->pluck('name', 'id');
 
     $columns = [
         TextColumn::make('id')->label('ID Orden')->sortable()->searchable(),
         TextColumn::make('reference_name')->label('Referencia')->sortable(),
         textColumn::make('delivery_date')->label('Fecha de Entrega')->sortable(),
-        textColumn::make('status')->label('Estado')->sortable(),
+        TextColumn::make('status')
+            ->badge()
+            ->color(fn (string $state): string => match ($state) {
+            '0' => 'gray',
+            '1' => 'success',
+            '2' => 'warning',
+            default => 'secondary',
+            })
+            ->formatStateUsing(fn (string $state): string => match ($state) {
+            '0' => 'pendiente',
+            '1' => 'completado',
+            '2' => 'enviado',
+            default => $state,
+            }),
+        TextColumn::make('productions')
+                    ->label('Center')
+                    ->formatStateUsing(function ($state, $record) {
+                        $maxCenter = collect($record->productions)
+                            ->map(fn ($production) => $production->center)
+                            ->sortByDesc('level')
+                            ->first();
+                            
+                        return $maxCenter ? $maxCenter->name : '';
+                    }),
     ];
 
     // Agregar dinámicamente columnas de categorías importantes
@@ -49,7 +73,16 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     $columns[] = TextColumn::make('otros')->label('Otros')->sortable()->summarize(Sum::make());
 
     return $table
-        ->defaultGroup('delivery_date')
+    ->defaultGroup('delivery_date')
+    ->groups([ 
+        Group::make('classification.name')
+        ->label('Clasificacion')
+        ->collapsible(),
+        Group::make('delivery_date')
+        ->label('Fecha de entrega')
+        ->collapsible(),
+    ])
+->defaultSort('id', 'desc')
         ->query($this->getOrdersQuery())
         ->columns($columns)
         ->striped()
@@ -80,37 +113,31 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
      * Genera la consulta SQL y devuelve un Builder de Eloquent.
      */
     protected function getOrdersQuery(): Builder
-{
-    // Obtener solo las categorías importantes
-    $categories = DB::table('categories')
-        ->where('is_important', 1)
-        ->pluck('name', 'id');
+    {
+        // Obtener solo las categorías importantes usando el modelo Category
+        $categories = Category::where('is_important', 1)->pluck('name', 'id');
 
-    // Construir las columnas dinámicas solo para las categorías importantes
-    $categoryColumns = '';
-    foreach ($categories as $id => $name) {
-        $safeColumn = str_replace(' ', '_', strtolower($name)); // Evita espacios en nombres de columnas
-        $categoryColumns .= ", SUM(CASE WHEN c.id = $id THEN oref.quantity ELSE 0 END) AS `$safeColumn`";
+        // Construir la consulta usando el modelo Order (se asume que existe un modelo Order en App\Models\Order)
+        $query =Order::query()
+            ->select('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status')
+            ->join('order_references as oref', 'orders.id', '=', 'oref.order_id')
+            ->join('products as p', 'p.id', '=', 'oref.product_id')
+            ->join('categories as c', 'c.id', '=', 'p.category_id');
+
+        // Agregar dinámicamente columnas de categorías importantes
+        foreach ($categories as $id => $name) {
+            $safeColumn = str_replace(' ', '_', strtolower($name));
+            $query->selectRaw("SUM(CASE WHEN c.id = ? THEN oref.quantity ELSE 0 END) as `$safeColumn`", [$id]);
+        }
+
+        // Agregar la columna "otros"
+        $query->selectRaw("SUM(CASE WHEN c.is_important = 0 THEN oref.quantity ELSE 0 END) as otros");
+
+        // Agrupar los resultados
+        $query->groupBy('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status');
+
+        return $query;
     }
-
-    // Construir la consulta completa
-    $sql = "
-        SELECT 
-            o.id AS id,
-            o.reference_name,
-            o.delivery_date,
-            o.status
-            $categoryColumns, 
-            SUM(CASE WHEN c.is_important = 0 THEN oref.quantity ELSE 0 END) AS otros
-        FROM orders o
-        JOIN order_references oref ON o.id = oref.order_id
-        JOIN products p ON p.id = oref.product_id
-        JOIN categories c ON p.category_id = c.id
-        GROUP BY o.id, o.reference_name
-    ";
-
-    return OrderSummary::query()->fromSub(DB::table(DB::raw("($sql) as order_summaries")), 'order_summaries');
-}
 public function redirectToSummaryPage(Collection $records)
 {
     $orderIds = $records->pluck('id')->implode(','); // Convertimos los IDs en un string separado por comas

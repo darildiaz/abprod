@@ -17,7 +17,9 @@ class CustomerResource extends Resource
 {
     protected static ?string $model = Customer::class;
     protected static ?string $navigationIcon = 'heroicon-o-user-group'; // Icono del menú
-    public static ?string $navigationGroup = 'Orders';
+    protected static ?string $navigationLabel = 'Clientes';
+   
+    public static ?string $navigationGroup = 'Pedidos';
 
 
     public static function form(Form $form): Form
@@ -33,24 +35,24 @@ class CustomerResource extends Resource
                 ->placeholder('Ingrese el NIF del cliente'),
 
             Forms\Components\TextInput::make('name')
-                ->label('Name')
+                ->label('Nombre')
                 ->required()
                 ->maxLength(255)
                 ->placeholder('Ingrese el nombre del cliente'),
 
             Forms\Components\Textarea::make('address')
-                ->label('Address')
+                ->label('Dirección')
                 ->rows(3)
                 ->placeholder('Ingrese la dirección del cliente'),
 
             Forms\Components\TextInput::make('phone')
-                ->label('Phone')
+                ->label('Teléfono')
                 ->maxLength(15)
                 ->tel() // Input con validación para números de teléfono
                 ->placeholder('Ingrese el número de teléfono'),
 
             Forms\Components\BelongsToSelect::make('user_id')
-                ->label('Seller')
+                ->label('Vendedor')
                 ->relationship('user', 'name') // Relación con el modelo User
                 ->default(auth()->id()) // Predetermina el usuario logueado
                 ->required()
@@ -67,21 +69,27 @@ class CustomerResource extends Resource
             ->columns([
                 
                 Tables\Columns\TextColumn::make('nif')
+                    ->label('NIF')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('address')
+                    ->label('Dirección')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('phone')
+                    ->label('Teléfono')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('Seller') // Mostrar el nombre del vendedor
+                    ->label('Vendedor') // Mostrar el nombre del vendedor
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),

@@ -17,30 +17,34 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
     public static ?string $navigationIcon = 'heroicon-o-cube';
-    public static ?string $navigationGroup = 'Product';
+    public static ?string $navigationGroup = 'Productos';
+    public static ?string $navigationLabel = 'Productos';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('category_id')
-                    ->label('Category')
+                    ->label('Categoría')
                     ->relationship('category', 'name') // Relación con el modelo Category
                     ->required(),
-                    Forms\Components\Select::make('line_id')
-                    ->label('Line')
+                Forms\Components\Select::make('line_id')
+                    ->label('Línea')
                     ->relationship('line', 'name') // Relación con el modelo Category
                     ->required(),
                 Forms\Components\TextInput::make('code')
+                    ->label('Código')
                     ->required()
                     ->unique()
                     ->maxLength(255),
-                    Forms\Components\TextInput::make('name')
+                Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\RichEditor::make('description')
-                ->required()
-                ->maxLength(65535)
-                ->columnSpanFull(),
+                    ->label('Descripción')
+                    ->required()
+                    ->maxLength(65535)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -49,26 +53,37 @@ class ProductResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('code')
+                    ->label('Código')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
+                    ->label('Nombre')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
+                    ->label('Categoría')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('line.name')
+                    ->label('Línea')
                     ->numeric()
                     ->sortable(),
-                    Tables\Columns\TextColumn::make('created_at')
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado el')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('category_id')
+                    ->label('Categoría')
+                    ->relationship('category', 'name'),
+                Tables\Filters\SelectFilter::make('line_id')
+                    ->label('Línea')
+                    ->relationship('line', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

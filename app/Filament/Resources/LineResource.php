@@ -16,7 +16,8 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class LineResource extends Resource
 {
     protected static ?string $model = Line::class;
-    public static ?string $navigationGroup = 'Product';
+    public static ?string $navigationGroup = 'Productos';
+    protected static ?string $navigationLabel = 'Lineas';
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

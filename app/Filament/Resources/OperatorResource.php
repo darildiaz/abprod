@@ -16,25 +16,28 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class OperatorResource extends Resource
 {
     protected static ?string $model = Operator::class;
-    protected static ?string $navigationGroup = "Production";
+    protected static ?string $navigationGroup = "Produccion";
     public static ?string $navigationIcon = 'heroicon-o-identification';
+    protected static ?string $navigationLabel = 'Operadores';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\Select::make('user_id')
-                ->label('User')
+                ->label('Usuario')
                 ->relationship('user', 'name') // Relación con el modelo Category
                 ->required(),
                 Forms\Components\Select::make('center_id')
-                ->label('Center')
+                ->label('Centro')
                 ->relationship('center', 'name') // Relación con el modelo Category
                 ->required(),
                 Forms\Components\TextInput::make('name')
+                    ->label('Nombre')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\TextInput::make('position')
+                    ->label('Posición')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -45,14 +48,14 @@ class OperatorResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('user.name')
-                    ->label('User Name')
+                    ->label('Nombre de Usuario')
                     ->sortable(), // Relación con User
                 Tables\Columns\TextColumn::make('center.name')
-                    ->label('Center Name'), // Relación con Center
+                    ->label('Nombre de Centro'), // Relación con Center
                 Tables\Columns\TextColumn::make('name')
-                    ->label('Operator Name')->searchable(),
+                    ->label('Nombre de Operador')->searchable(),
                 Tables\Columns\TextColumn::make('position')
-                    ->label('Position'),
+                    ->label('Cargo'),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

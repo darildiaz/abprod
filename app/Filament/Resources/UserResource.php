@@ -24,44 +24,54 @@ class UserResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\TextInput::make('email')
-                    ->email()
-                    ->required()
-                    ->maxLength(255),
-                Forms\Components\DateTimePicker::make('email_verified_at'),
-                Forms\Components\TextInput::make('password')
-                    ->password()
-                    ->required()
-                    ->maxLength(255),
+            Forms\Components\TextInput::make('name')
+                ->label('Nombre')
+                ->required()
+                ->maxLength(255),
+            Forms\Components\TextInput::make('email')
+                ->label('Correo Electrónico')
+                ->email()
+                ->required()
+                ->maxLength(255),
+            Forms\Components\DateTimePicker::make('email_verified_at')
+                ->label('Verificación de correo'),
+            Forms\Components\TextInput::make('password')
+                ->label('Contraseña')
+                ->password()
+                ->required()
+                ->maxLength(255),
             ]);
-    }
+        }
 
-    public static function table(Table $table): Table
-    {
+        public static function table(Table $table): Table
+        {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->dateTime()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('created_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
-                    ->dateTime()
-                    ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('name')
+                ->label('Nombre')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('email')
+                ->label('Correo Electrónico')
+                ->searchable(),
+            Tables\Columns\TextColumn::make('email_verified_at')
+                ->label('Verificado en')
+                ->dateTime()
+                ->sortable(),
+            Tables\Columns\TextColumn::make('created_at')
+                ->label('Creado en')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
+            Tables\Columns\TextColumn::make('updated_at')
+                ->label('Actualizado en')
+                ->dateTime()
+                ->sortable()
+                ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+            //
             ])
+            
             ->actions([
                 Tables\Actions\EditAction::make(),
             ])

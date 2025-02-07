@@ -17,24 +17,25 @@ class ProductCenterResource extends Resource
 {
     protected static ?string $model = ProductCenter::class;
     public static ?string $navigationIcon = 'heroicon-o-link';
-    public static ?string $navigationGroup = 'Production';
+    public static ?string $navigationGroup = 'Produccion';
+    public static ?string $navigationLabel = 'ProduccionCentros';
 
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\BelongsToSelect::make('product_id')
-                    ->label('Product')
+                    ->label('Producto')
                     ->relationship('product', 'code') // Relación con el modelo Product
                     ->required(),
 
                 Forms\Components\BelongsToSelect::make('center_id')
-                    ->label('Center')
+                    ->label('Centro')
                     ->relationship('center', 'name') // Relación con el modelo Center
                     ->required(),
 
                 Forms\Components\TextInput::make('price')
-                    ->label('Price')
+                    ->label('Precio')
                     ->numeric() // Validar que sea un número
                     ->required()
                     ->minValue(0) // Asegurarse de que sea positivo

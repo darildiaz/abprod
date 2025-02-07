@@ -18,60 +18,64 @@ class ProductionResource extends Resource
     protected static ?string $model = Production::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    public static ?string $navigationGroup = 'Produccion';
+    public static ?string $navigationLabel = 'Produccion';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\hidden::make('date')
-                ->default(now()),
+                    ->default(now()),
 
                 Forms\Components\select::make('order_id')
-                    ->label('Order')
-                    ->relationship('order','id')
+                    ->label('Pedido')
+                    ->relationship('order', 'id')
                     ->searchable()
-->default(1)
+                    ->default(1)
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
-
                     ->required(),
+
                 Forms\Components\Select::make('center_id')
+                    ->label('Centro')
                     ->relationship('center', 'name')
-                   // ->searchable()
                     ->live()
-
-            //        ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOperator($set, $get))
-
                     ->required(),
+
                 Forms\Components\Select::make('operator_id')
-                    ->relationship('operator', 'name')
-                    //->options([ ])
-                    ->live()
-
+                    ->label('Operador')
+                    ->options(function (callable $get) {
+                        return \App\Models\Operator::query()
+                            ->where('center_id', $get('center_id'))
+                            ->pluck('name', 'id')
+                            ->toArray();
+                    })
+                    ->reactive()
                     ->required(),
-            Forms\Components\Repeater::make('details')
+
+                Forms\Components\Repeater::make('details')
                     ->relationship('details')
+                    ->label('detalles')
                     ->live()
-                  //  ->label('Productions')
                     ->schema([
-                            Forms\Components\Select::make('product_id')
+                        Forms\Components\Select::make('product_id')
+                            ->label('Producto')
                             ->relationship('product', 'code')
-                    ->label('Product')
-                            // ->options(fn (callable $get) => self::getOrderProductOptions($get('order_id')))
-                                ->required(),
+                            ->required(),
 
-                            Forms\Components\TextInput::make('quantity')
-                                ->label('Quantity')
-                                ->numeric()
-                                ->required(),
-                            Forms\Components\TextInput::make('price')
-                                ->label('Price')
-                                ->numeric()
-                                ->required(),
-                        ])->columns(3)
-                ->columnSpanFull()
+                        Forms\Components\TextInput::make('quantity')
+                            ->label('Cantidad')
+                            ->numeric()
+                            ->required(),
 
-                ->hidden(fn (callable $get) => !$get('order_id')&&!$get('operator_id')&&!$get('center_id'))
+                        Forms\Components\TextInput::make('price')
+                            ->label('Precio')
+                            ->numeric()
+                            ->required(),
+                    ])
+                    ->columns(3)
+                    ->columnSpanFull()
+                    ->hidden(fn (callable $get) => !$get('order_id') && !$get('operator_id') && !$get('center_id'))
             ]);
     }
 
@@ -80,32 +84,42 @@ class ProductionResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('date')
+                    ->label('Fecha')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_id')
+                    ->label('Pedido')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('center.name')
+                    ->label('Centro')
                     ->numeric()
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('operator.name')
+                    ->label('Operador')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Estado')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
+                    ->label('Creado en')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Actualizado en')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('center_id')
+                    ->label('Centro')
+                    ->relationship('center', 'name'),
+            
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
