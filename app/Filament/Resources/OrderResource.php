@@ -405,34 +405,44 @@ class OrderResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('changeStatus')
-                    ->label('Change Status')
-                    ->action(function ($record, $data) {
-                        $record->status = $data['status'];
-                        $record->save();
-                    })
-                    ->form([
-                        Forms\Components\Select::make('status')
-                            ->options([
-                                0 => 'Pendiente',
-                                1 => 'Completado',
-                                2 => 'Enviado',
-                            ])
-                            ->required(),
-                    ]),
-                Tables\Actions\Action::make('sendToProductionPackage')
-                    ->label(' Production ')
-                    ->action(function ($record, $data) {
-                        // Aquí puedes agregar la lógica para enviar a productionPackage
-                        // Por ejemplo:
-                        $productionPackage = new ProductionPackage();
-                        $productionPackage->order_id = $record->id;
-                        $productionPackage->save();
-                    })
-                    ->form([
-                        Forms\Components\TextInput::make('order_id')
-                            ->default(fn ($record) => $record->id)
-                            ->disabled(),
-                    ]),
+                ->label('Change Status')
+                ->action(function ($record, $data) {
+                    $record->status = $data['status'];
+            
+                    // Actualizar fechas según el estado seleccionado
+                    if ($data['status'] == 1) {
+                        $record->completion_date = now();
+                    } elseif ($data['status'] == 2) {
+                        $record->shipping_date = now();
+                    }
+            
+                    $record->save();
+                })
+                ->form([
+                    Forms\Components\Select::make('status')
+                        ->options([
+                            0 => 'Pendiente',
+                            1 => 'Completado',
+                            2 => 'Enviado',
+                        ])
+                        ->required(),
+                ])
+            ->requiresConfirmation(),
+                
+                // Tables\Actions\Action::make('sendToProductionPackage')
+                //     ->label(' Production ')
+                //     ->action(function ($record, $data) {
+                //         // Aquí puedes agregar la lógica para enviar a productionPackage
+                //         // Por ejemplo:
+                //         $productionPackage = new ProductionPackage();
+                //         $productionPackage->order_id = $record->id;
+                //         $productionPackage->save();
+                //     })
+                //     ->form([
+                //         Forms\Components\TextInput::make('order_id')
+                //             ->default(fn ($record) => $record->id)
+                //             ->disabled(),
+                //     ]),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

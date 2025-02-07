@@ -19,6 +19,8 @@ return new class extends Migration
             $table->string('reference_name'); // Nombre de referencia
             $table->date('issue_date'); // Fecha de emisión
             $table->date('delivery_date'); // Fecha de entrega
+            $table->date('shipping_date')->nullable(); // Fecha de entrega
+            $table->date('completion_date')->nullable(); // Fecha de entrega
             $table->integer('total'); // Total del pedido
             $table->foreignId('classification_id')->constrained('question_categories')->onDelete('cascade'); // Clasificación
             $table->integer('status')->default(0); // Estado del pedido

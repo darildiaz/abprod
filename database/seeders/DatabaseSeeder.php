@@ -152,7 +152,22 @@ class DatabaseSeeder extends Seeder
             JOIN products p ON p.id = oref.product_id
             JOIN sizes s ON s.id = oref.size_id
             GROUP BY oref.order_id, oref.product_id, oref.size_id;
-        ");
+        CREATE VIEW product_category_counts AS
+        SELECT 
+            ROW_NUMBER() OVER() AS id, -- ID autoincremental basado en el resultado
+            p.date AS production_date,
+            c.name AS center_name,
+            cat.name AS category_name,
+            COUNT(DISTINCT prod.id) AS total_products,
+            SUM(pd.quantity) AS total_quantity
+        FROM productions p
+        JOIN productiondets pd ON p.id = pd.production_id
+        JOIN products prod ON pd.product_id = prod.id
+        JOIN categories cat ON prod.category_id = cat.id
+        JOIN centers c ON p.center_id = c.id
+        GROUP BY p.date, c.name, cat.name;
+
+            ");
     }
     
 }
