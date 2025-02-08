@@ -29,9 +29,12 @@ class ProductionResource extends Resource
 
                 Forms\Components\select::make('order_id')
                     ->label('Pedido')
-                    ->relationship('order', 'id')
+                    ->relationship('order', 'id',
+                        modifyQueryUsing: function (Builder $query): Builder {
+                            return $query->where('status', 0);
+                        }
+                    )
                     ->searchable()
-                    ->default(1)
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
                     ->required(),
@@ -40,6 +43,8 @@ class ProductionResource extends Resource
                     ->label('Centro')
                     ->relationship('center', 'name')
                     ->live()
+                    ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
+
                     ->required(),
 
                 Forms\Components\Select::make('operator_id')
@@ -61,16 +66,18 @@ class ProductionResource extends Resource
                         Forms\Components\Select::make('product_id')
                             ->label('Producto')
                             ->relationship('product', 'code')
+                           // ->disabled()
                             ->required(),
+
 
                         Forms\Components\TextInput::make('quantity')
                             ->label('Cantidad')
                             ->numeric()
                             ->required(),
 
-                        Forms\Components\TextInput::make('price')
+                        Forms\Components\hidden::make('price')
                             ->label('Precio')
-                            ->numeric()
+                           // ->numeric()
                             ->required(),
                     ])
                     ->columns(3)
@@ -154,6 +161,10 @@ class ProductionResource extends Resource
 
 
         $order_id = $get('order_id');
+        $centerId = $get('center_id');
+        if (!$order_id || !$centerId) {
+            return;
+        }
         $products = OrderReference::where('order_id', $order_id)
         ->selectRaw('product_id, SUM(quantity) AS quantity_t')
         ->groupBy('product_id')
@@ -164,11 +175,17 @@ class ProductionResource extends Resource
             $prod[] = [
                 'product_id' => $product->product_id,
                 'quantity' => $product->quantity_t,
-             //   'price' => $product->price,
+                'price' => self::getProductPrice($product->product_id, $centerId),
             ];
         }
 
         $set('details', $prod);
   //  }
+    }
+    public static function getProductPrice(int $productId, int $centerId): ?int
+    {
+        return \App\Models\ProductCenter::where('product_id', $productId)
+            ->where('center_id', $centerId)
+            ->value('price'); // Retrieves the price directly
     }
 }

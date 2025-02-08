@@ -12,6 +12,9 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Filament\Tables\Grouping\Group;
+
+use Filament\Tables\Columns\Summarizers\Sum;
 
 class ProductiondetResource extends Resource
 {
@@ -43,7 +46,7 @@ class ProductiondetResource extends Resource
                 ->label('Precio')
                 ->required()
                 ->numeric()
-                ->prefix('$'),
+                ->prefix('Gs.'),
             Forms\Components\Toggle::make('pay')
                 ->label('Pago')
                 ->required(),
@@ -53,13 +56,30 @@ class ProductiondetResource extends Resource
         public static function table(Table $table): Table
         {
         return $table
+                ->defaultGroup('production.center.name')
+                ->groups([ 
+                    Group::make('production.center.name')
+                    ->label('centro de produccion')
+                    ->collapsible(),
+                    Group::make('production.operator.name')
+                    ->label('Operador')
+                    ->collapsible(),
+                ])
             ->columns([
             Tables\Columns\TextColumn::make('production.date')
                 ->label('Fecha de Producción')
                 ->date()
                 ->sortable(),
+            Tables\Columns\TextColumn::make('production.order_id')
+                ->label('Id pedido')
+                ->sortable(),
             Tables\Columns\TextColumn::make('production.center.name')
                 ->label('Centro de Producción')
+                ->numeric()
+                ->searchable()
+                ->sortable(),
+                Tables\Columns\TextColumn::make('production.operator.name')
+                ->label('Operador')
                 ->numeric()
                 ->searchable()
                 ->sortable(),
@@ -69,11 +89,22 @@ class ProductiondetResource extends Resource
                 ->sortable(),
             Tables\Columns\TextColumn::make('quantity')
                 ->label('Cantidad')
+                ->summarize(Sum::make())
+
                 ->numeric()
                 ->sortable(),
             Tables\Columns\TextColumn::make('price')
                 ->label('Precio')
-                ->money()
+                ->money('Gs.')
+                ->sortable(),
+            Tables\Columns\TextColumn::make('subtotal')
+                ->label('Subtotal')
+                //->summarize(Sum::make())
+
+                ->state(function (Productiondet $record): float {
+                    return $record->quantity * $record->price;
+                })
+                ->money('Gs.')
                 ->sortable(),
             Tables\Columns\IconColumn::make('pay')
                 ->label('Pago Realizado')

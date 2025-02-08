@@ -362,6 +362,14 @@ class OrderResource extends Resource
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
                 Tables\Columns\TextColumn::make('issue_date')->label('Fecha de emision')->date(),
                 Tables\Columns\TextColumn::make('delivery_date')->label('Fecha de entrega')->date(),
+                Tables\Columns\TextColumn::make('completion_date')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('shipping_date')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('customer.name')->label('Cliente'), // Relación con Customer
                 Tables\Columns\TextColumn::make('seller.name')->label('Vendedor'), // Relación con User
                 Tables\Columns\TextColumn::make('reference_name')->label('Referencia')->searchable(),
@@ -456,8 +464,8 @@ class OrderResource extends Resource
         return [
             OrderItemRelationManager::class,
             OrderReferenceRelationManager::class,
-            OrderModelRelationManager::class
-            ,OrderQuestionAnswerRelationManager::class
+            OrderModelRelationManager::class,
+            OrderQuestionAnswerRelationManager::class
         ];
     }
 
@@ -478,9 +486,7 @@ class OrderResource extends Resource
         
 
             // Obtener las preguntas relacionadas con esta clasificación
-            $questions = DB::table('questions')
-                ->where('category_id', $classificationId)
-                ->get(['id']);
+            $questions = Question::where('category_id', $classificationId)->get(['id']);
 
             // Inicializar un array para los campos dinámicos
             $fields = [];
