@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Filament\Resources;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
+use BezhanSalleh\FilamentShield\Traits\HasShieldFormComponents;
 
 use App\Filament\Resources\SizeResource\Pages;
 use App\Filament\Resources\SizeResource\RelationManagers;
@@ -13,13 +15,16 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class SizeResource extends Resource
+class SizeResource extends Resource 
 {
+    use HasShieldFormComponents;
+
     protected static ?string $model = Size::class;
     public static ?string $navigationIcon = 'heroicon-o-scale';
     protected static ?string $navigationGroup = "Productos";
     protected static ?string $navigationLabel = "Talles";
-
+   
+    
     public static function form(Form $form): Form
     {
         return $form

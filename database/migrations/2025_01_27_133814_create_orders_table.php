@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('bitrix_id')->nullable(); // Número de pedido
             $table->foreignId('customer_id')->constrained('customers')->onDelete('cascade'); // Relación con clientes
             $table->foreignId('seller_id')->constrained('users')->onDelete('cascade'); // Relación con vendedores
+            $table->foreignId('team_id')->constrained('teams')->cascadeOnDelete();
             $table->string('reference_name'); // Nombre de referencia
             $table->date('issue_date'); // Fecha de emisión
             $table->date('delivery_date'); // Fecha de entrega

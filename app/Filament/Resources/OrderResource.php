@@ -26,6 +26,7 @@ use App\Models\category;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Carbon;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -347,13 +348,18 @@ class OrderResource extends Resource
     {
         $categories = Category::all();
         return $table
-            ->defaultGroup('delivery_date')
+           // ->defaultGroup('issue_date')
                 ->groups([ 
                     Group::make('classification.name')
                     ->label('Clasificacion')
                     ->collapsible(),
                     Group::make('delivery_date')
                     ->label('Fecha de entrega')
+                    ->collapsible(),
+                    
+                    Group::make('issue_date') // Doit être une chaîne, pas une Closure
+                    ->label('Mes de Emisión')
+                    ->getTitleFromRecordUsing(fn ($record) => Carbon::parse($record->issue_date)->translatedFormat('F Y')) 
                     ->collapsible(),
                 ])
             ->defaultSort('id', 'desc')
@@ -403,10 +409,13 @@ class OrderResource extends Resource
                 //-label('Estado')
                 ->multiple()
                 ->options([
-            0 => 'Pendiente',
-            1 => 'Completo',
-            2 => 'Enviado',
-        ])
+                        0 => 'Pendiente',
+                        1 => 'Completo',
+                        2 => 'Enviado',
+                ]),
+                Tables\Filters\selectFilter::make('seller.name')
+                    ->relationship('seller', 'name')
+                     ->default(auth()->id())
             ])
             ->actions([
 

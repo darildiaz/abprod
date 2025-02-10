@@ -16,7 +16,7 @@ class Product extends Model
         return $this->belongsTo(Line::class);
     }
 
-    public function prices()
+    public function price()
     {
         return $this->hasMany(Price::class);
     }
