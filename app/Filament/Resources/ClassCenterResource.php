@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TeamMemberResource\Pages;
-use App\Filament\Resources\TeamMemberResource\RelationManagers;
-use App\Models\TeamMember;
+use App\Filament\Resources\ClassCenterResource\Pages;
+use App\Filament\Resources\ClassCenterResource\RelationManagers;
+use App\Models\ClassCenter;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,27 +13,29 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TeamMemberResource extends Resource
+class ClassCenterResource extends Resource
 {
-    protected static ?string $model = TeamMember::class;
+    protected static ?string $model = ClassCenter::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = "ventas";
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = "Planificacion";
+    protected static ?int $navigationSort = 6;
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('team_id')
-                ->relationship('team', 'name')
-                ->required()
-                //->searchable()
-                 ,
-                Forms\Components\Select::make('user_id')
-                ->relationship('user', 'name')
-                ->required()
-               // ->searchable()
-                ,
+                Forms\Components\Select::make('category_id')
+                    ->label('Clasificacion')
+                    ->relationship('classification', 'name')
+                    ->default(1) // Predetermina el usuario logueado
+                    ->live()
+                    ->required(),
+                Forms\Components\Select::make('center_id')
+                    ->label('Centro')
+                    ->relationship('center', 'name') // Relación con el modelo Center
+                    ->required(),
+                Forms\Components\TextInput::make('item')
+                    ->numeric(),
             ]);
     }
 
@@ -41,10 +43,10 @@ class TeamMemberResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('team_id')
+                Tables\Columns\TextColumn::make('classification.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('center.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -55,6 +57,9 @@ class TeamMemberResource extends Resource
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('item')
+                    ->numeric()
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -80,10 +85,10 @@ class TeamMemberResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTeamMembers::route('/'),
-            'create' => Pages\CreateTeamMember::route('/create'),
-            'view' => Pages\ViewTeamMember::route('/{record}'),
-            'edit' => Pages\EditTeamMember::route('/{record}/edit'),
+            'index' => Pages\ListClassCenters::route('/'),
+            'create' => Pages\CreateClassCenter::route('/create'),
+            'view' => Pages\ViewClassCenter::route('/{record}'),
+            'edit' => Pages\EditClassCenter::route('/{record}/edit'),
         ];
     }
 }

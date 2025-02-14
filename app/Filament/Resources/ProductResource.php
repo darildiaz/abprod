@@ -17,8 +17,14 @@ class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
     public static ?string $navigationIcon = 'heroicon-o-cube';
+    protected static ?string $recordTitleAttribute = 'code';
+
     public static ?string $navigationGroup = 'Productos';
     public static ?string $navigationLabel = 'Productos';
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -33,6 +39,7 @@ class ProductResource extends Resource
                     ->required(),
                 Forms\Components\TextInput::make('code')
                     ->label('Código')
+                ->hiddenOn('edit')
                     ->required()
                     ->unique()
                     ->maxLength(255),
@@ -40,11 +47,18 @@ class ProductResource extends Resource
                     ->label('Nombre')
                     ->required()
                     ->maxLength(255),
+                Forms\Components\FileUpload::make('imagen')->label('Image')
+                    ->directory('product'),
+                Forms\Components\Toggle::make('is_producible')
+                    ->label('es producible')
+                    ->default(true)
+                    ->required(),
                 Forms\Components\RichEditor::make('description')
                     ->label('Descripción')
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
+                
             ]);
     }
 

@@ -21,7 +21,10 @@ class CustomerResource extends Resource
    
     public static ?string $navigationGroup = 'Pedidos';
 
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -95,7 +98,11 @@ class CustomerResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\selectFilter::make('user.name')
+                ->label('Vendedor') // Mostrar el nombre del vendedor
+                
+                ->relationship('user', 'name')
+                 ->default(auth()->id())
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

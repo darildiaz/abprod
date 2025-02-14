@@ -17,6 +17,8 @@ class OrderReferenceSummaryPage extends Page implements Tables\Contracts\HasTabl
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static ?string $navigationLabel = 'Resumen de Referencias';
+    protected static ?string $navigationGroup = "Cronogramas";
+    protected static ?int $navigationSort = 2;
     protected static ?string $slug = 'order-reference-summaries';
     protected static string $view = 'filament.pages.order-reference-summary-page';
 

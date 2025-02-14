@@ -16,7 +16,9 @@ use Filament\Actions\RedirectAction;
 use Filament\Tables\Grouping\Group;
 use App\Models\Category;
 use App\Models\Order;
-class CronogramaPage extends Page implements Tables\Contracts\HasTable
+use App\Models\center;
+use Livewire\Attributes\Url;
+class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
 
@@ -24,13 +26,22 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     protected static string $view = 'filament.pages.cronograma-page';
     protected static ?string $navigationGroup = "Cronogramas";
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationLabel = 'Reporte de Órdenes';
-    protected static ?string $slug = 'reporte-ordenes';
-    protected static ?string $title = 'Cronograma General';
-
+    protected static ?string $navigationLabel = 'Cron centro';
+    protected static ?string $slug = 'reporte-ordenes-centro';
+    
+    #[Url] // Permite recibir parámetros en la URL
+    public string $centerId = '';
     /**
      * Define la tabla de datos en la página.
      */
+
+    protected static ?string $title = null;
+
+    public function mount(): void
+    {
+        static::$title = 'Cronograma de ' . optional(center::find($this->centerId))->name;
+    }
+    
     public function table(Tables\Table $table): Tables\Table
 {
     // Obtener solo las categorías importantes
@@ -39,6 +50,8 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     $columns = [
         TextColumn::make('id')->label('ID Orden')->sortable()->searchable(),
         TextColumn::make('reference_name')->label('Referencia')->sortable(),
+        Tables\Columns\TextColumn::make('date_center')->label('Fecha Planificada')->sortable(),
+        Tables\Columns\TextColumn::make('center_id')->label('Centro')->sortable(),
         textColumn::make('delivery_date')->label('Fecha de Entrega')->sortable(),
         TextColumn::make('status')
             ->badge()
@@ -76,13 +89,16 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     $columns[] = TextColumn::make('otros')->label('Otros')->sortable()->summarize(Sum::make());
 
     return $table
-    ->defaultGroup('delivery_date')
+    ->defaultGroup('date_center')
     ->groups([ 
         Group::make('classification.name')
         ->label('Clasificacion')
         ->collapsible(),
-        Group::make('delivery_date')
-        ->label('Fecha de entrega')
+        Group::make('date_center')
+        ->label('Fecha de   ')
+        ->collapsible(),
+        Group::make('center_id')
+        ->label('center')
         ->collapsible(),
     ])
 ->defaultSort('id', 'desc')
@@ -98,7 +114,8 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
                 1 => 'Completed',
                 2 => 'Enviado',
             ])
-            ->default(0)
+            ->default(0),
+           
         ])
         ->bulkActions([
             Tables\Actions\BulkAction::make('showOrderReferenceSummaries')
@@ -122,10 +139,12 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
 
         // Construir la consulta usando el modelo Order (se asume que existe un modelo Order en App\Models\Order)
         $query =Order::query()
-            ->select('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status')
+            ->select('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date as date_center','plannings.center_id as center_id')
             ->join('order_references as oref', 'orders.id', '=', 'oref.order_id')
             ->join('products as p', 'p.id', '=', 'oref.product_id')
-            ->join('categories as c', 'c.id', '=', 'p.category_id');
+            ->join('categories as c', 'c.id', '=', 'p.category_id')
+            ->join('plannings', 'orders.id', '=', 'plannings.order_id')
+            ->where('plannings.center_id',$this->centerId);
 
         // Agregar dinámicamente columnas de categorías importantes
         foreach ($categories as $id => $name) {
@@ -137,7 +156,7 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
         $query->selectRaw("SUM(CASE WHEN c.is_important = 0 THEN oref.quantity ELSE 0 END) as otros");
 
         // Agrupar los resultados
-        $query->groupBy('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status');
+        $query->groupBy('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date','plannings.center_id');
 
         return $query;
     }
@@ -154,8 +173,8 @@ public function redirectToSummaryPage(Collection $records)
 /**
  * Modelo temporal para la consulta dinámica.
  */
-class OrderSummary extends Model
-{
-    protected $table = 'order_summaries';
-    public $timestamps = false;
-}
+// class OrderSummary extends Model
+// {
+//     protected $table = 'order_summaries';
+//     public $timestamps = false;
+// }

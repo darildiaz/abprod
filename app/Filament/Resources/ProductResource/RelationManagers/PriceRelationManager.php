@@ -18,6 +18,10 @@ class PriceRelationManager extends RelationManager
     {
         return $form
             ->schema([
+                Forms\Components\Select::make('size_id')
+                ->label('Size')
+                ->relationship('size', 'name') // Relación con el modelo Category
+                ->required(),
                 Forms\Components\TextInput::make('price')
                     ->required()
                     ->maxLength(255),

@@ -16,4 +16,5 @@ class ListCategories extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+    
 }

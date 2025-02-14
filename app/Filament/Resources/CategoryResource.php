@@ -18,9 +18,17 @@ class CategoryResource extends Resource
     protected static ?string $model = Category::class;
 
         protected static ?string $navigationIcon = 'heroicon-o-tag';
+        protected static ?int $navigationSort = 2;
         protected static ?string $navigationGroup = "Productos";
         protected static ?string $navigationLabel = 'Categorias';
-
+        
+        protected static ?string $slug = 'Categorias';
+       //  protected static ?string $recordTitleAttribute = 'name';
+       // protected static ?string $title = 'Categorias';
+       public static function getNavigationBadge(): ?string
+       {
+           return static::getModel()::count();
+       }
     public static function form(Form $form): Form
     {
         return $form
@@ -57,6 +65,8 @@ class CategoryResource extends Resource
                     ->label('Orden')
                     ->numeric()
                     ->sortable(),
+                    Tables\Columns\TextColumn::make('products.count')
+                    ->label('productos'),
                 Tables\Columns\IconColumn::make('is_important')
                     ->label('Es importante')
                     ->boolean(),

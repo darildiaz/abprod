@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TeamMemberResource\Pages;
-use App\Filament\Resources\TeamMemberResource\RelationManagers;
-use App\Models\TeamMember;
+use App\Filament\Resources\PlanningResource\Pages;
+use App\Filament\Resources\PlanningResource\RelationManagers;
+use App\Models\Planning;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,27 +13,29 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class TeamMemberResource extends Resource
+class PlanningResource extends Resource
 {
-    protected static ?string $model = TeamMember::class;
+    protected static ?string $model = Planning::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = "ventas";
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = "Planificacion";
+    protected static ?string $navigationLabel  = "Planificacion";
+    protected static ?int $navigationSort = 6;
+    
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('team_id')
-                ->relationship('team', 'name')
-                ->required()
-                //->searchable()
-                 ,
-                Forms\Components\Select::make('user_id')
-                ->relationship('user', 'name')
-                ->required()
-               // ->searchable()
-                ,
+                Forms\Components\DatePicker::make('date')
+                    ->required(),
+                Forms\Components\BelongsToSelect::make('order_id')
+                    ->label('pedido id')
+                    ->relationship('order', 'id') // Relación con el modelo Center
+                    ->required(),
+                Forms\Components\Select::make('center_id')
+                    ->label('Centro')
+                    ->relationship('center', 'name') // Relación con el modelo Center
+                    ->required(),
             ]);
     }
 
@@ -41,10 +43,13 @@ class TeamMemberResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('team_id')
+                Tables\Columns\TextColumn::make('date')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('order_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('center_id')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -80,10 +85,10 @@ class TeamMemberResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListTeamMembers::route('/'),
-            'create' => Pages\CreateTeamMember::route('/create'),
-            'view' => Pages\ViewTeamMember::route('/{record}'),
-            'edit' => Pages\EditTeamMember::route('/{record}/edit'),
+            'index' => Pages\ListPlannings::route('/'),
+            'create' => Pages\CreatePlanning::route('/create'),
+            'view' => Pages\ViewPlanning::route('/{record}'),
+            'edit' => Pages\EditPlanning::route('/{record}/edit'),
         ];
     }
 }

@@ -66,6 +66,11 @@ class CenterResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('ver_ordenes')
+                    ->label('Ver Planificacion')
+                    ->icon('heroicon-o-eye')
+                    ->url(fn (Center $record) => url("/admin/reporte-ordenes-centro?centerId={$record->id}"))
+                    ->openUrlInNewTab(), // Opcional: abre en nueva pestaña
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

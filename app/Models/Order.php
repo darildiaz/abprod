@@ -19,7 +19,10 @@ class Order extends Model
     {
         return $this->belongsTo(User::class, 'seller_id');
     }
-
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
     public function classification()
     {
         return $this->belongsTo(QuestionCategory::class, 'classification_id');
@@ -51,7 +54,14 @@ class Order extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+    public function classCenter(): HasMany
+    {
+        return $this->hasMany(ClassCenter::class);
+    }
     
-    
+    public function planning(): HasMany
+    {
+        return $this->hasMany(Planning::class);
+    }
     
 }

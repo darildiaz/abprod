@@ -18,16 +18,20 @@ class SalesGoalResource extends Resource
     protected static ?string $model = SalesGoal::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = "ventas";
+    protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
                 Forms\Components\TextInput::make('team_id')
                     ->required()
-                    ->numeric(),
+                    ->relationship('team', 'name')
+                    ,
                 Forms\Components\TextInput::make('user_id')
                     ->required()
+                    ->relationship('user', 'name')
+
                     ->numeric(),
                 Forms\Components\TextInput::make('month')
                     ->required()
@@ -45,10 +49,10 @@ class SalesGoalResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('team_id')
+                Tables\Columns\TextColumn::make('team.name')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month')

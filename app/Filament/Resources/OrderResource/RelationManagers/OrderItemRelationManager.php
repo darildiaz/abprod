@@ -10,6 +10,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 class OrderItemRelationManager extends RelationManager
 {
     protected static string $relationship = 'OrderItems';
@@ -115,6 +116,7 @@ class OrderItemRelationManager extends RelationManager
                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),   
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),

@@ -18,7 +18,7 @@ class ErrorOrderResource extends Resource
     protected static ?string $model = ErrorOrder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = "Produccion";
     public static function form(Form $form): Form
     {
         return $form

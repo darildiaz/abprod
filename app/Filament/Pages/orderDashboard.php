@@ -8,6 +8,7 @@ use Filament\Pages\Page;
 class orderDashboard extends Page
 {
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-
+    protected static ?string $navigationGroup = "Dashboard";
+    protected static ?int $navigationSort = 3;
     protected static string $view = 'filament.pages.order-dashboard';
 }

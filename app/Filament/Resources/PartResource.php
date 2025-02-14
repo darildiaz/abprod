@@ -18,7 +18,8 @@ class PartResource extends Resource
     protected static ?string $model = Part::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = "Configuracion";
+    protected static ?int $navigationSort = 7;
     public static function form(Form $form): Form
     {
         return $form

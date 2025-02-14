@@ -71,6 +71,11 @@ class ProductionResource extends Resource
 
 
                         Forms\Components\TextInput::make('quantity')
+                            ->live() // Para actualizar en tiempo real    
+                            ->minValue(0) // Número mínimo permitido
+                           // ->maxvalue(21)
+                           // ->maxValue(fn ($get) => $get('maxQuantities')[$get('product_id')] ?? null) // Establece el máximo dinámico
+                           // ->rule(fn ($get) => 'max:' . ($get('maxQuantities')[$get('product_id')] ?? ''))
                             ->label('Cantidad')
                             ->numeric()
                             ->required(),
@@ -82,7 +87,7 @@ class ProductionResource extends Resource
                     ])
                     ->columns(3)
                     ->columnSpanFull()
-                    ->hidden(fn (callable $get) => !$get('order_id') && !$get('operator_id') && !$get('center_id'))
+                    ->hidden(fn (callable $get) => !$get('order_id') && !$get('operator_id') && !$get('center_id') )
             ]);
     }
 
@@ -169,18 +174,23 @@ class ProductionResource extends Resource
         ->selectRaw('product_id, SUM(quantity) AS quantity_t')
         ->groupBy('product_id')
         ->get();
-
+        $maxQuantities = [];
         $prod = [];
         foreach ($products as $product) {
-            $prod[] = [
-                'product_id' => $product->product_id,
-                'quantity' => $product->quantity_t,
-                'price' => self::getProductPrice($product->product_id, $centerId),
-            ];
+            
+                if ($product->product->is_producible) {
+                    $prod[] = [
+                    'product_id' => $product->product_id,
+                    'quantity' => $product->quantity_t,
+                    'price' => self::getProductPrice($product->product_id, $centerId),
+                ];
+                $maxQuantities[$product->product_id] = $product->quantity_t;
+                    }
+                
         }
 
         $set('details', $prod);
-  //  }
+        $set('maxQuantities', $maxQuantities); // Almacenar el máximo permitido
     }
     public static function getProductPrice(int $productId, int $centerId): ?int
     {

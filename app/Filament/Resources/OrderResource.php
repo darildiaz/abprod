@@ -27,6 +27,8 @@ use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
+use App\Models\TeamMember;
+use App\Models\ClassCenter;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -34,7 +36,10 @@ class OrderResource extends Resource
     public static ?string $navigationGroup = 'Pedidos';
     public static ?string $recordTitleAttribute='id';
     protected static ?string $navigationLabel = 'Pedidos';
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::where('status',0)->count();
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -44,6 +49,8 @@ class OrderResource extends Resource
                     Forms\Components\Wizard\Step::make('General')
                         ->schema([
                             // Tab 1: Datos generales del cliente y pedido
+                            Forms\Components\TextInput::make('bitrix_id'),
+
                             Forms\Components\TextInput::make('reference_name')
                                         ->label('Referencia')
                                        // ->default('ORD-'.date('Ymd').'-'.rand(1000,9999))
@@ -92,6 +99,10 @@ class OrderResource extends Resource
                                         ->label('Vendedor')
                                         ->relationship('seller', 'name')
                                         ->default(auth()->id()) // Predetermina el usuario logueado
+                                        ->live()
+                                        ->afterStateUpdated(fn (callable $set, $state) => 
+                                        $set('team_id', TeamMember::where('user_id', $state)->first()?->team_id)
+                                            ) // Busca el `team_id` del vendedor seleccionado
                                         ->required(),
 
                             Forms\Components\TextInput::make('issue_date')
@@ -114,7 +125,12 @@ class OrderResource extends Resource
                                          ->default(1) // Predetermina el usuario logueado
                                          ->live()
                                         ->required(),
-                            
+                            Forms\Components\Select::make('team_id')
+                                        ->required()
+                                        ->default(TeamMember::where('user_id', Auth()->id())->first()?->team_id
+                                            )
+                                        ->relationship('team', 'name')
+                                        ->live(),
 
                     ]) ->columns(3),
 
@@ -176,7 +192,7 @@ class OrderResource extends Resource
                                         ->required()
                                         ->default('MODELO 1')
                                         ->searchable(),
-                                        Forms\Components\TextInput::make('item')
+                                        Forms\Components\Hidden::make('item')
                                         //->numeric()
                                         ->afterStateHydrated(function ($state, callable $set, callable $get) {
                                             // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
@@ -247,10 +263,11 @@ class OrderResource extends Resource
 
 
                                     ->required(),
-                                    Forms\Components\TextInput::make('total')
+                                    Forms\Components\hidden::make('total'),
+                                    Forms\Components\TextInput::make('total_v')
                                         ->label('Total')
                                         ->live() // Habilita la reactividad
-                                        //->disabled() // Deshabilita el campo para que no se pueda editar
+                                        ->disabled() // Deshabilita el campo para que no se pueda editar
                                         ->default(0)
                                         ->numeric()
                                         ->required(),
@@ -266,7 +283,7 @@ class OrderResource extends Resource
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
-                                    Forms\Components\TextInput::make('item')
+                                    Forms\Components\Hidden::make('item')
                                     ->default(1),
 
                                     Forms\Components\Select::make('product_id')
@@ -364,8 +381,8 @@ class OrderResource extends Resource
                 ])
             ->defaultSort('id', 'desc')
             ->columns([
-
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
+                Tables\Columns\TextColumn::make('bitrix_id'),
                 Tables\Columns\TextColumn::make('issue_date')->label('Fecha de emision')->date(),
                 Tables\Columns\TextColumn::make('delivery_date')->label('Fecha de entrega')->date(),
                 Tables\Columns\TextColumn::make('completion_date')
@@ -422,17 +439,15 @@ class OrderResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\Action::make('changeStatus')
-                ->label('Change Status')
+                ->label('edt estado')
                 ->action(function ($record, $data) {
                     $record->status = $data['status'];
-            
                     // Actualizar fechas según el estado seleccionado
                     if ($data['status'] == 1) {
                         $record->completion_date = now();
                     } elseif ($data['status'] == 2) {
                         $record->shipping_date = now();
                     }
-            
                     $record->save();
                 })
                 ->form([
@@ -443,8 +458,65 @@ class OrderResource extends Resource
                             2 => 'Enviado',
                         ])
                         ->required(),
-                ])
-            ->requiresConfirmation(),
+                        ])->requiresConfirmation(),
+                Tables\Actions\Action::make('planning1')
+                ->label('Planificar')
+                ->form([
+                    Forms\Components\Section::make('Questions')
+                            ->label('Informacion adicional')
+                            ->afterStateHydrated(function ($record, callable $set) {
+                                if (!$record) return;
+                
+                                // Obtener fechas base
+                                $issueDate = Carbon::parse($record->issue_date)->addDay(); // issue_date + 1 día
+                                $deliveryDate = Carbon::parse($record->delivery_date)->subDay(); // delivery_date - 1 día
+                                
+                                // Obtener los centros ordenados por `item`
+                                $centers = ClassCenter::where('category_id', $record->classification_id)
+                                    ->orderBy('item') // Ordenar por `item` para respetar el flujo de trabajo
+                                    ->get()
+                                    ->groupBy('item'); // Agrupar por `item` para manejar centros en paralelo
+                                
+                                // Distribuir fechas entre los grupos de `item`
+                                $items = $centers->keys(); // Obtener los `items` únicos
+                                $totalSteps = $items->count();
+                                $planning = [];
+                
+                                if ($totalSteps > 0) {
+                                    $dateStep = $totalSteps > 1 ? $issueDate->diffInDays($deliveryDate) / ($totalSteps - 1) : 0;
+                
+                                    foreach ($items as $index => $item) {
+                                        $currentDate = $issueDate->copy()->addDays(round($index * $dateStep))->toDateString();
+                
+                                        // Asignar la misma fecha a todos los centros con el mismo `item`
+                                        foreach ($centers[$item] as $center) {
+                                            $planning[] = [
+                                                'date' => $currentDate,
+                                                'center_id' => $center->center_id,
+                                            ];
+                                        }
+                                    }
+                                }
+                
+                                // Establecer los datos en el formulario
+                                $set('planning', $planning);
+                            })
+                            ->schema([ 
+                                Forms\Components\Repeater::make('planning')
+                                    ->label('Planificación')
+                                    ->relationship('planning') // Relación con la tabla order_references
+                                    ->schema([
+                                        Forms\Components\DatePicker::make('date')->required(),
+                                        Forms\Components\Select::make('center_id')
+                                            ->label('Centro')
+                                            ->relationship('center', 'name') // Relación con el modelo Center
+                                            ->required(),
+                                    ])
+                                    ->columns(2)
+                            ])
+                        ])
+                
+                ->requiresConfirmation(),
                 
                 // Tables\Actions\Action::make('sendToProductionPackage')
                 //     ->label(' Production ')
@@ -536,6 +608,7 @@ protected static function getRefences(callable $set, callable $get)
 }
 protected static function parseOrderItemsText(string $text,$set): array
     {
+        $refences=[];
         $items = [];
         $price=0;
         $lines = explode("\n", trim($text)); // Divide el texto en líneas
@@ -555,6 +628,14 @@ protected static function parseOrderItemsText(string $text,$set): array
                 }
                 foreach ($productIds as $productId) {
                     $price=$price+  self::getPPrice($productId, self::getSizeIdByName($columns[5]));
+                    $refences[] = [
+                        'item' => $c,
+                        'product_id' => $productId,
+                        'size_id' => self::getSizeIdByName($columns[5]),
+                        'quantity' => (int) $columns[6],
+                        'price' => self::getPPrice($productId, self::getSizeIdByName($columns[5])),
+                        'subtotal' => ($columns[6] * self::getPPrice($productId, self::getSizeIdByName($columns[5]))),
+                    ];
                 }
                 $items[] = [
                     'item' =>$c,
@@ -565,15 +646,18 @@ protected static function parseOrderItemsText(string $text,$set): array
                     'size_id' => self::getSizeIdByName($columns[5]), // Obtener el ID del talle
                     'quantity' => (int) $columns[6],
                     'ProductsItem' =>$productIds, // Convertir productos en un array
-
                     'price' => (int) $price,
                     'subtotal' => (int) $price * (int) $columns[6],
                     $total=$total+(int) $price * (int) $columns[6],
                    // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
                 ];
+                
             }
-        }
+       }
+        
+        $set('references', $refences);
         $set('total', $total );
+        $set('total_v', $total );
 
         return $items;
     }
@@ -638,6 +722,7 @@ protected static function parseOrderItemsText(string $text,$set): array
             $total = $total + $item['subtotal'];
         }
         $set('total', $total );
+        $set('total_v', $total );
     }
 
 

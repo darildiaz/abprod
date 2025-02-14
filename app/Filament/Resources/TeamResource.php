@@ -18,7 +18,8 @@ class TeamResource extends Resource
     protected static ?string $model = Team::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = "ventas";
+    protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
     {
         return $form
@@ -26,9 +27,10 @@ class TeamResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('leader_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\select::make('leader_id')
+                    ->relationship('leader', 'name')
+                    ->searchable()
+                    ->required(),
             ]);
     }
 
@@ -38,7 +40,7 @@ class TeamResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('name')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('leader_id')
+                Tables\Columns\TextColumn::make('leader.name')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
