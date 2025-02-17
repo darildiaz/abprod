@@ -54,14 +54,15 @@ class CustomerResource extends Resource
                 ->tel() // Input con validación para números de teléfono
                 ->placeholder('Ingrese el número de teléfono'),
 
-            Forms\Components\BelongsToSelect::make('user_id')
+            Forms\Components\Select::make('user_id')
                 ->label('Vendedor')
                 ->relationship('user', 'name') // Relación con el modelo User
                 ->default(auth()->id()) // Predetermina el usuario logueado
                 ->required()
+                ->hiddenOn('edit')
                 
                 ->searchable()
-                ->disabled() // Hace que el campo no sea editable
+                //->disabled() // Hace que el campo no sea editable
                 ->placeholder('Usuario autenticado'),
             ]);
     }
@@ -86,6 +87,10 @@ class CustomerResource extends Resource
                 Tables\Columns\TextColumn::make('user.name')
                     ->label('Vendedor') // Mostrar el nombre del vendedor
                     ->sortable(),
+                Tables\Columns\TextColumn::make('orders_count')
+                    ->label('cant. pedidos')
+                    ->counts('orders') // Cuenta las órdenes del cliente
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado')
                     ->dateTime()
@@ -102,10 +107,19 @@ class CustomerResource extends Resource
                 ->label('Vendedor') // Mostrar el nombre del vendedor
                 
                 ->relationship('user', 'name')
-                 ->default(auth()->id())
+                 ->default(auth()->id()),
+               
+                  
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('ver_pedido')
+                ->label("ver pedido")
+                ->url(fn ($record) => route('filament.admin.resources.orders.index', [
+                    'tableFilters[customer][name][value]' => $record->id
+                ]))
+                ->openUrlInNewTab(), // Opcional: abrir en una nueva pestaña
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -113,7 +127,6 @@ class CustomerResource extends Resource
                 ]),
             ]);
     }
-
     public static function getRelations(): array
     {
         return [
@@ -126,6 +139,7 @@ class CustomerResource extends Resource
         return [
             'index' => Pages\ListCustomers::route('/'),
             'create' => Pages\CreateCustomer::route('/create'),
+            'view' => Pages\ViewCustomer::route('/{record}'),
             'edit' => Pages\EditCustomer::route('/{record}/edit'),
         ];
     }

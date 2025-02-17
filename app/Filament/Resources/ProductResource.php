@@ -49,6 +49,8 @@ class ProductResource extends Resource
                     ->maxLength(255),
                 Forms\Components\FileUpload::make('imagen')->label('Image')
                     ->directory('product'),
+                Forms\Components\FileUpload::make('imagmolde')->label('Image del molde')
+                    ->directory('productmolde'),
                 Forms\Components\Toggle::make('is_producible')
                     ->label('es producible')
                     ->default(true)
@@ -68,17 +70,21 @@ class ProductResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('code')
                     ->label('Código')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('name')
                     ->label('Nombre')
+                    ->sortable()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('category.name')
                     ->label('Categoría')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('line.name')
                     ->label('Línea')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')

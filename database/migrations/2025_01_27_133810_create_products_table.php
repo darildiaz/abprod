@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('code')->unique(); // Código único
             $table->string('name');
             $table->text('imagen')->nullable(); // Imagen del producto
+            $table->text('imagmolde')->nullable(); // Imagen del producto
             $table->string('description'); // Nombre del producto
             $table->boolean("is_producible")->default(true); // Imagen del producto
             $table->foreignId('line_id')->constrained()->onDelete('cascade');

@@ -29,6 +29,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use App\Models\TeamMember;
 use App\Models\ClassCenter;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Auth;
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
@@ -115,10 +118,14 @@ class OrderResource extends Resource
                                         ->label('Fecha de entrega')
                                         //->default(today()->toDateString())
                                       //  ->gt('issue_date')
-                                        ->default(today()->addDays(10)->toDateString())
-                                        ->type('date')
-                                        ->required(),
-
+                                   // ->readOnly(fn () =>  !Auth::user()->Hasroles('name', ['super_admin']))
+                                    ->default(today()->addDays(10)->toDateString())
+                                    ->type('date')
+                                    ->required(),
+                                    Forms\Components\TextInput::make('d')
+                                ->dehydrated(false) // No se guarda en la base de datos
+                                ->default(Auth::user()->roles->contains('name', ['super_admin']))    
+                                ,
                             Forms\Components\Select::make('classification_id')
                                         ->label('Clasificacion')
                                         ->relationship('classification', 'name')
@@ -230,7 +237,7 @@ class OrderResource extends Resource
                                             ,
                                             Forms\Components\TextInput::make('price')
                                             ->label('Precio')
-
+                                            ->readOnly()
                                             ->numeric()
                                            // ->disabled()
                                             ->default(0)
@@ -239,6 +246,8 @@ class OrderResource extends Resource
                                            // ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
+                                            ->readOnly()
+
                                             ->numeric()
                                             // ->disabled() // Deshabilita el campo para que no se pueda editar
                                             ->live()
@@ -289,6 +298,7 @@ class OrderResource extends Resource
                                     Forms\Components\Select::make('product_id')
                                         ->label('Producto')
                                         // ->disabled()
+                                        //->readOnly()
 
                                         ->relationship('product', 'code') // Relación con la tabla products
                                         ->default(1)
@@ -296,6 +306,7 @@ class OrderResource extends Resource
                                         Forms\Components\Select::make('size_id')
                                         ->label('Talle')
                                         ->default(1)
+                                        //->readOnly()
 
                                         // ->disabled()
                                         //->live()
@@ -312,6 +323,7 @@ class OrderResource extends Resource
                                         ->label('Precio')
                                         // ->disabled()
                                         ->default(1)
+                                        ->readOnly()
 
                                         ->numeric()
                                         ->required(),
@@ -422,6 +434,10 @@ class OrderResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                Tables\Filters\selectFilter::make('customer.name')
+                ->label('Cliente') // Mostrar el nombre del vendedor
+                
+                ->relationship('customer', 'name'),
                 Tables\Filters\SelectFilter::make('status')
                 //-label('Estado')
                 ->multiple()
@@ -432,12 +448,32 @@ class OrderResource extends Resource
                 ]),
                 Tables\Filters\selectFilter::make('seller.name')
                     ->relationship('seller', 'name')
-                     ->default(auth()->id())
+                     ->default(auth()->id()),
+
             ])
             ->actions([
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('pdf') 
+                    ->label('PDF')
+                    ->color('success')
+                    //->icon('heroicon-s-download')
+                    ->action(function (Model $record) {
+                        return response()->streamDownload(function () use ($record) {
+                            foreach ($record->orderItems as $item) {
+                                $item->type = DB::table('order_references')
+                                    ->join('products', 'order_references.product_id', '=', 'products.id')
+                                    ->where('order_references.order_id', $record->id)
+                                    ->where('order_references.item', $item->item)
+                                    ->pluck('products.code')
+                                    ->implode(', ');
+                            }
+                            echo Pdf::loadHtml(
+                                Blade::render('pdf.invoice', ['order' => $record])
+                            )->stream();
+                        }, $record->id . ' Pedido.pdf');
+                    }), 
                 Tables\Actions\Action::make('changeStatus')
                 ->label('edt estado')
                 ->action(function ($record, $data) {
@@ -532,8 +568,12 @@ class OrderResource extends Resource
                 //             ->default(fn ($record) => $record->id)
                 //             ->disabled(),
                 //     ]),
+               
+
+                
             ])
             ->bulkActions([
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
@@ -603,64 +643,95 @@ protected static function getRefences(callable $set, callable $get)
                 ];
 
         }
+        
     }
     $set('references', $refences);
 }
-protected static function parseOrderItemsText(string $text,$set): array
-    {
-        $refences=[];
-        $items = [];
-        $price=0;
-        $lines = explode("\n", trim($text)); // Divide el texto en líneas
-        $total=0;
-        $c=0;
-        foreach ($lines as $line) {
-            $c++;
-            $columns = explode("\t", trim($line)); // Divide cada línea en columnas
-            if (count($columns) === 8) { // Asegúrate de que haya 9 columnas
-                $price=0;
-                $productIds = [];
-                foreach (explode(',', $columns[7]) as $code) {
-                    $ids = self::getProductIdByName(trim($code)); // Obtener IDs de productos por código
-                    if (!empty($ids)) {
-                        $productIds[] = $ids; // Convertir en array y fusionar
-                    }
-                }
-                foreach ($productIds as $productId) {
-                    $price=$price+  self::getPPrice($productId, self::getSizeIdByName($columns[5]));
-                    $refences[] = [
-                        'item' => $c,
-                        'product_id' => $productId,
-                        'size_id' => self::getSizeIdByName($columns[5]),
-                        'quantity' => (int) $columns[6],
-                        'price' => self::getPPrice($productId, self::getSizeIdByName($columns[5])),
-                        'subtotal' => ($columns[6] * self::getPPrice($productId, self::getSizeIdByName($columns[5]))),
-                    ];
-                }
-                $items[] = [
-                    'item' =>$c,
-                    'model' => $columns[1], // Obtener el ID del modelo
-                    'name' => $columns[2],
-                    'number' => $columns[3],
-                    'other' => $columns[4],
-                    'size_id' => self::getSizeIdByName($columns[5]), // Obtener el ID del talle
-                    'quantity' => (int) $columns[6],
-                    'ProductsItem' =>$productIds, // Convertir productos en un array
-                    'price' => (int) $price,
-                    'subtotal' => (int) $price * (int) $columns[6],
-                    $total=$total+(int) $price * (int) $columns[6],
-                   // 'price' => self::getSUBTOTAL($columns[6],explode(',', $columns[7])),
-                ];
-                
-            }
-       }
-        
-        $set('references', $refences);
-        $set('total', $total );
-        $set('total_v', $total );
+protected static function parseOrderItemsText(string $text, $set): array
+{
+    $references = [];
+    $items = [];
+    $total = 0;
+    $c = 0;
+    $if_order = true;
 
-        return $items;
+    // Convertir las líneas en arrays asociativos
+    $lines = array_map(function ($line) {
+        $columns = explode("\t", trim($line));
+        return [
+            'id' => $columns[0] ?? '',
+            'model' => $columns[1] ?? '',
+            'name' => $columns[2] ?? '',
+            'number' => $columns[3] ?? '',
+            'other' => $columns[4] ?? '',
+            'size' => $columns[5] ?? '',
+            'quantity' => (int) ($columns[6] ?? 0),
+            'products' => explode(',', $columns[7] ?? ''), // Convertir productos en array
+        ];
+    }, explode("\n", trim($text)));
+
+    // Ordenar primero por 'size' y luego por 'products'
+    if ($if_order) {
+        usort($lines, function ($a, $b) {
+            return  strcmp(implode(',', $b['products']), implode(',', $a['products']))?: $a['size'] <=> $b['size'];
+        });
     }
+
+    // Procesar cada línea después de ordenar
+    foreach ($lines as $line) {
+        $c++;
+        $price = 0;
+        $productIds = [];
+
+        // Obtener IDs de productos
+        foreach ($line['products'] as $code) {
+            $ids = self::getProductIdByName(trim($code));
+            if (!empty($ids)) {
+                $productIds[] = $ids;
+            }
+        }
+
+        // Calcular precios
+        foreach ($productIds as $productId) {
+            $unitPrice = self::getPPrice($productId, self::getSizeIdByName($line['size']));
+            $price += $unitPrice;
+            $references[] = [
+                'item' => $c,
+                'product_id' => $productId,
+                'size_id' => self::getSizeIdByName($line['size']),
+                'quantity' => $line['quantity'],
+                'price' => $unitPrice,
+                'subtotal' => $line['quantity'] * $unitPrice,
+            ];
+        }
+
+        // Calcular subtotal y total
+        $subtotal = $price * $line['quantity'];
+        $total += $subtotal;
+
+        // Agregar datos al array de items
+        $items[] = [
+            'item' => $c,
+            'model' => $line['model'],
+            'name' => $line['name'],
+            'number' => $line['number'],
+            'other' => $line['other'],
+            'size_id' => self::getSizeIdByName($line['size']),
+            'quantity' => $line['quantity'],
+            'ProductsItem' => $productIds,
+            'price' => $price,
+            'subtotal' => $subtotal,
+        ];
+    }
+
+    // Asignar los valores finales
+    $set('references', $references);
+    $set('total', $total);
+    $set('total_v', $total);
+
+    return $items;
+}
+
     private static function getPrice(callable $set, callable $get)
     {
         $productIds = $get('ProductsItem'); // Es un array porque es múltiple

@@ -28,7 +28,7 @@ class PlanningResource extends Resource
             ->schema([
                 Forms\Components\DatePicker::make('date')
                     ->required(),
-                Forms\Components\BelongsToSelect::make('order_id')
+                Forms\Components\Select::make('order_id')
                     ->label('pedido id')
                     ->relationship('order', 'id') // Relación con el modelo Center
                     ->required(),
@@ -48,9 +48,15 @@ class PlanningResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_id')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('center_id')
+                Tables\Columns\TextColumn::make('center.name')
                     ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('order.status')
+                    ->numeric()
+                    ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -62,7 +68,11 @@ class PlanningResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\selectFilter::make('order_id')
+                    ->relationship('order', 'id'),
+               
+                Tables\Filters\selectFilter::make('center.name')
+                    ->relationship('center', 'name'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

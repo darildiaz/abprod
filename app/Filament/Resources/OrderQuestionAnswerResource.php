@@ -25,13 +25,13 @@ class OrderQuestionAnswerResource extends Resource
         return $form
             ->schema([
                 
-                Forms\Components\BelongsToSelect::make('order_id')
+                Forms\Components\Select::make('order_id')
                     ->label('Order')
                     ->relationship('order', 'reference_name') // Relación con pedidos
                     ->searchable()
                     ->required(),
 
-                Forms\Components\BelongsToSelect::make('question_id')
+                Forms\Components\Select::make('question_id')
                     ->label('Question')
                     ->relationship('question', 'text') // Relación con preguntas
                     ->searchable()
@@ -51,7 +51,10 @@ class OrderQuestionAnswerResource extends Resource
                 Tables\Columns\TextColumn::make('order_id')
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('question_id')
+                Tables\Columns\TextColumn::make('question.text')
+                    ->numeric()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('answer')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
