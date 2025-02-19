@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Filament\Resources;
-
+//namespace BezhanSalleh\FilamentShield\Resources;
 use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers;
 use App\Models\Order;
@@ -23,6 +23,7 @@ use App\Models\Price;
 use App\Models\Product;
 use App\Models\Size;
 use App\Models\category;
+use App\Models\user;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Database\Eloquent\Model;
@@ -30,9 +31,12 @@ use Illuminate\Support\Carbon;
 use App\Models\TeamMember;
 use App\Models\ClassCenter;
 use Barryvdh\DomPDF\Facade\Pdf;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
-class OrderResource extends Resource
+
+class OrderResource extends Resource 
+implements HasShieldPermissions
 {
     protected static ?string $model = Order::class;
     public static ?string $navigationIcon = 'heroicon-o-shopping-cart';
@@ -42,6 +46,20 @@ class OrderResource extends Resource
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('status',0)->count();
+    }
+    Public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'status_production',
+            'planning',
+            'ver_todos'
+        ];
     }
     public static function form(Form $form): Form
     {
@@ -116,16 +134,16 @@ class OrderResource extends Resource
 
                             Forms\Components\TextInput::make('delivery_date')
                                         ->label('Fecha de entrega')
-                                        //->default(today()->toDateString())
-                                      //  ->gt('issue_date')
-                                   // ->readOnly(fn () =>  !Auth::user()->Hasroles('name', ['super_admin']))
+                                ->afterStateHydrated(function ($state, callable $set) {
+                                    if (fn():bool=>auth()->user()?->hasAnyRole(['super_admin'])) {
+                                        $set('delivery_date', $state); // Bloquea cambios manteniendo el valor original
+                                    }
+                                })
+                                ->readOnly(fn():bool=>!auth()->user()?->hasAnyRole(['super_admin']))
                                     ->default(today()->addDays(10)->toDateString())
                                     ->type('date')
                                     ->required(),
-                                    Forms\Components\TextInput::make('d')
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->default(Auth::user()->roles->contains('name', ['super_admin']))    
-                                ,
+                            
                             Forms\Components\Select::make('classification_id')
                                         ->label('Clasificacion')
                                         ->relationship('classification', 'name')
@@ -378,7 +396,9 @@ class OrderResource extends Resource
         $categories = Category::all();
         return $table
            // ->defaultGroup('issue_date')
-                ->groups([ 
+           
+        //    ->query(fn (Builder $query) => $query->where('seller_id',auth()->id()))     
+           ->groups([ 
                     Group::make('classification.name')
                     ->label('Clasificacion')
                     ->collapsible(),
@@ -448,8 +468,10 @@ class OrderResource extends Resource
                 ]),
                 Tables\Filters\selectFilter::make('seller.name')
                     ->relationship('seller', 'name')
-                     ->default(auth()->id()),
-
+                    ->default(auth()->id())
+                    //->hidden() 
+                    ,
+                     
             ])
             ->actions([
 
@@ -475,7 +497,9 @@ class OrderResource extends Resource
                         }, $record->id . ' Pedido.pdf');
                     }), 
                 Tables\Actions\Action::make('changeStatus')
-                ->label('edt estado')
+                ->visible(fn ($record) => $record->status !== 2)
+                ->visible(fn () => auth()->user()->can('status_production_order'))
+                ->label('editar estado')
                 ->action(function ($record, $data) {
                     $record->status = $data['status'];
                     // Actualizar fechas según el estado seleccionado
@@ -496,6 +520,8 @@ class OrderResource extends Resource
                         ->required(),
                         ])->requiresConfirmation(),
                 Tables\Actions\Action::make('planning1')
+                ->visible(fn () => auth()->user()->can('planning_order'))
+
                 ->label('Planificar')
                 ->form([
                     Forms\Components\Section::make('Questions')

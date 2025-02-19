@@ -33,6 +33,10 @@ class CategoryResource extends Resource
     {
         return $form
             ->schema([
+                Forms\Components\TextInput::make('code')
+                    ->label('codigo')
+                    ->required()
+                    ->maxLength(255),
                 Forms\Components\TextInput::make('name')
                     ->label('nombre')
                     ->required()
