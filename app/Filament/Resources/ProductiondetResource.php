@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Tables\Grouping\Group;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 use Filament\Tables\Columns\Summarizers\Sum;
 
@@ -87,6 +88,11 @@ class ProductiondetResource extends Resource
                 ->label('Código del Producto')
                 ->numeric()
                 ->sortable(),
+            Tables\Columns\TextColumn::make('production.status')
+                ->label('Estado de Producción')
+                
+                ->numeric()
+                ->sortable(),
             Tables\Columns\TextColumn::make('quantity')
                 ->label('Cantidad')
                 ->summarize(Sum::make())
@@ -121,13 +127,43 @@ class ProductiondetResource extends Resource
                 ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // Tables\Filters\SelectFilter::make('productions.status')
+                //     ->label('Estado')
+                //     ->options([
+                //         '0' => 'Pendiente',
+                //         '1' => 'Completado',
+                //     ])
+                //     ->default('0'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('pay')
+                ->visible(fn ($record) => $record->pay !== 2)
+                ->visible(fn () => auth()->user()->can('status_production_order'))
+                ->label(' estado ')
+                ->action(function ($record, $data) {
+                    $record->pay = $data['pay'];
+                    // Actualizar fechas según el estado seleccionado
+                    // if ($data['status'] == 1) {
+                    //     $record->completion_date = now();
+                    // } elseif ($data['status'] == 2) {
+                    //     $record->shipping_date = now();
+                    // }
+                    $record->save();
+                })
+                ->form([
+                    Forms\Components\Select::make('pay')
+                        ->options([
+                            0 => 'pendiente',
+                            1 => 'pagado',
+                        ])
+                        ->required(),
+                        ])->requiresConfirmation(),
             ])
             ->bulkActions([
+                ExportBulkAction::make(),   
+
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),

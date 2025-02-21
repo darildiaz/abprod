@@ -37,20 +37,38 @@ class ErrorOrderResource extends Resource
                     ->live()
                     ->required(),
 
-                Forms\Components\Select::make('center_id')->relationship('center', 'name')
+                Forms\Components\Select::make('center_id')
+                ->label('Centro con error')
+                ->relationship('center', 'name')
                 ->required(),
-                Forms\Components\Select::make('product_id')->relationship('product', 'name')
+                Forms\Components\Select::make('product_id')
+                ->label('Producto')
+                ->relationship('product', 'name',
+                        modifyQueryUsing: function (Builder $query, $get) {
+                            $query->whereHas('orderReferences', function (Builder $query) use ($get) {
+                                $query->where('order_id', $get('order_id'));
+                            });
+                        }
+                    )
                 ->required(),
-                Forms\Components\Select::make('part_id')->relationship('part', 'name')
+                Forms\Components\Select::make('part_id')
+                ->relationship('part', 'name')
+                ->label('Parte')
                 ->required(),
                 Forms\Components\TextInput::make('quantity')
+                ->label('Cantidad')
                 ->required()
                 ->numeric(),   
                 Forms\Components\TextInput::make('item')
                     ->required()
                     ->numeric(),
-                Forms\Components\Textarea::make('obs_det'),
-                Forms\Components\Textarea::make('obs_error'),
+                Forms\Components\Textarea::make('obs_det')
+                ->label('Observaciones detalle')
+                    ->required(),
+
+                Forms\Components\Textarea::make('obs_error')
+                ->label('Observaciones error')
+                    ,
                     
                 Forms\Components\Toggle::make('tela')
                     ->required(),
@@ -64,36 +82,50 @@ class ErrorOrderResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('date')
+                ->label('Fecha')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_id')
+                    ->label('Pedido')    
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('center.name')
+                
                 ->label('centro con error')    
                 ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product.code')
-                    ->numeric()
+                ->label('Producto')
+                ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('part.name')
-                    ->numeric()
+                ->label('Parte')    
+                ->numeric()
+                    ->sortable(),
+                
+                Tables\Columns\TextColumn::make('obs_det')
+                ->label('Observaciones detalle')
+                ->searchable(),
+                Tables\Columns\TextColumn::make('obs_error')
+                ->label('Observaciones error')   
+                ->searchable(),
+                Tables\Columns\TextColumn::make('user.name')
+                ->label('Observaciones error')   
+                ->searchable(),
+                Tables\Columns\IconColumn::make('tela')
+                ->label('uso de Tela')    
+                ->boolean(),
+                Tables\Columns\TextColumn::make('quantity')
+                ->label('Cantidad')    
+                ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('part.loss_percentage')
+                    ->label('Porcentaje de perdida')
+                    ->sortable()
+
                     ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('item')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('obs_det')
-                    ->searchable(),
-                Tables\Columns\TextColumn::make('obs_error')
-                    ->searchable(),
-                Tables\Columns\IconColumn::make('tela')
-                    ->boolean(),
-                Tables\Columns\TextColumn::make('quantity')
-                    ->numeric()
-                    ->sortable(),
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -109,6 +141,7 @@ class ErrorOrderResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

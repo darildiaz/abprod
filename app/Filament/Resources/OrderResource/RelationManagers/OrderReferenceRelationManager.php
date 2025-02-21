@@ -51,12 +51,16 @@ class OrderReferenceRelationManager extends RelationManager
                     ->label('Product ID')
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('product.name')
+                    ->label('Productos')
+                    ->searchable()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('size.name')
                     ->label('Size ID')
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('total_quantity')
-              //  ->summarize(Sum::make())
+                ->summarize(Sum::make())
                 
                     ->label('Total Quantity'),
             ])

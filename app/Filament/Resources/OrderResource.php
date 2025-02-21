@@ -34,7 +34,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
-
+use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
 class OrderResource extends Resource 
 implements HasShieldPermissions
 {
@@ -43,6 +43,7 @@ implements HasShieldPermissions
     public static ?string $navigationGroup = 'Pedidos';
     public static ?string $recordTitleAttribute='id';
     protected static ?string $navigationLabel = 'Pedidos';
+//    protected static ?string $navigationParentItem = 'Notifications';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::where('status',0)->count();
@@ -58,6 +59,7 @@ implements HasShieldPermissions
             'delete_any',
             'status_production',
             'planning',
+            'seller',
             'ver_todos'
         ];
     }
@@ -88,11 +90,11 @@ implements HasShieldPermissions
                                         ->default(1) // Predetermina el usuario logueado
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('nif')
-                                            ->label('NIF')
+                                            ->label('C.I.')
                                             ->required()
                                             ->maxLength(20)
                                             ->unique() // El NIF debe ser único
-                                            ->placeholder('Ingrese el NIF del cliente'),
+                                            ->placeholder('Ingrese el CI del cliente'),
 
                                         Forms\Components\TextInput::make('name')
                                             ->label('nombre')
@@ -125,7 +127,12 @@ implements HasShieldPermissions
                                         $set('team_id', TeamMember::where('user_id', $state)->first()?->team_id)
                                             ) // Busca el `team_id` del vendedor seleccionado
                                         ->required(),
-
+                            Forms\Components\Select::make('manager_id')
+                                        ->label('Gestor')
+                                        ->required()
+                                        ->relationship('manager', 'name')
+                                        ->default(auth()->id()) // Predetermina el usuario logueado
+                                        ->live(),
                             Forms\Components\TextInput::make('issue_date')
                                         ->label('Fecha de emision')
                                         ->default(today()->toDateString())
@@ -192,6 +199,12 @@ implements HasShieldPermissions
                                 ->label('Importar items')
                                 ->schema([
                                     // Tab 4: Cargar lista de ítems de la orden
+                                    Forms\Components\Toggle::make('order_items_import')
+                                    ->default(true)
+                                ->dehydrated(false) // No se guarda en la base de datos
+
+                                    ->label('ordenar'),
+
                                     Forms\Components\TextArea::make('order_items_text')
                                 ->label('Pedido Items (Pegue Texto)')
                                 ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short")
@@ -199,15 +212,15 @@ implements HasShieldPermissions
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
                                 ->live(onBlur: true)
-                                ->afterStateUpdated(function ($state, $set) {
+                                ->afterStateUpdated(function ($state, $set, $get) {
                                     // Procesar el texto y actualizar el estado del Repeater
-                                    $items = self::parseOrderItemsText($state, $set);
+                                    $items = self::parseOrderItemsText($state, $set, $get);
                                     $set('orderItems', $items); // Actualiza el Repeater
                                 }),
                                         ]),
                             Forms\Components\Wizard\Step::make('Items')
                                             ->schema([
-                                Forms\Components\Repeater::make('orderItems')
+                                                TableRepeater::make('orderItems')
                                     ->label('Order Items')
                                     ->relationship('orderItems') // Relación con la tabla order_items
                                     ->schema([
@@ -290,11 +303,12 @@ implements HasShieldPermissions
 
 
                                     ->required(),
-                                    Forms\Components\hidden::make('total'),
-                                    Forms\Components\TextInput::make('total_v')
+                                    Forms\Components\TextInput::make('total')
                                         ->label('Total')
+                                        ->readOnly()
+                                        ->numeric()
                                         ->live() // Habilita la reactividad
-                                        ->disabled() // Deshabilita el campo para que no se pueda editar
+                                        //->disabled() // Deshabilita el campo para que no se pueda editar
                                         ->default(0)
                                         ->numeric()
                                         ->required(),
@@ -306,7 +320,10 @@ implements HasShieldPermissions
 
                         ->schema([
                             // Tab 3: Cargar lista de referencias
-                                Forms\Components\Repeater::make('references')
+                            TableRepeater::make('references')
+                            ->reorderable()
+                ->cloneable()
+                ->collapsible()
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
@@ -345,20 +362,12 @@ implements HasShieldPermissions
 
                                         ->numeric()
                                         ->required(),
-                                        /* Forms\Components\TextInput::make('discount')
-                                        ->label('discount')
-                                        ->numeric()
-                                        ->required(),
-                                        Forms\Components\TextInput::make('subtotal')
-                                        ->numeric()
-                                        ->disabled()
-                                        , // Deshabilita el campo para que no se pueda editar
-                                    */    
+                                       
                                 ])
-                                ->columns(6)
+                                
+                             //   ->columns(6)
                                 ->live() // Habilita la reactividad
 
-                                //->required()
                                 ,
                             ]),
                             Forms\Components\Wizard\Step::make('Questions')
@@ -395,9 +404,7 @@ implements HasShieldPermissions
     {
         $categories = Category::all();
         return $table
-           // ->defaultGroup('issue_date')
            
-        //    ->query(fn (Builder $query) => $query->where('seller_id',auth()->id()))     
            ->groups([ 
                     Group::make('classification.name')
                     ->label('Clasificacion')
@@ -427,6 +434,7 @@ implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('customer.name')->label('Cliente'), // Relación con Customer
                 Tables\Columns\TextColumn::make('seller.name')->label('Vendedor'), // Relación con User
+                Tables\Columns\TextColumn::make('manager.name')->label('Gestor'), // Relación con User
                 Tables\Columns\TextColumn::make('reference_name')->label('Referencia')->searchable(),
                 Tables\Columns\TextColumn::make('total')->label('Total')->money('Gs.')
                 ->summarize(Sum::make())
@@ -455,11 +463,11 @@ implements HasShieldPermissions
             ])
             ->filters([
                 Tables\Filters\selectFilter::make('customer.name')
-                ->label('Cliente') // Mostrar el nombre del vendedor
+                ->label('Cliente') 
+                // Mostrar el nombre del vendedor
                 
                 ->relationship('customer', 'name'),
                 Tables\Filters\SelectFilter::make('status')
-                //-label('Estado')
                 ->multiple()
                 ->options([
                         0 => 'Pendiente',
@@ -468,8 +476,10 @@ implements HasShieldPermissions
                 ]),
                 Tables\Filters\selectFilter::make('seller.name')
                     ->relationship('seller', 'name')
+                    ,
+                    Tables\Filters\selectFilter::make('manager.name')
+                    ->relationship('manager', 'name')
                     ->default(auth()->id())
-                    //->hidden() 
                     ,
                      
             ])
@@ -486,10 +496,11 @@ implements HasShieldPermissions
                             foreach ($record->orderItems as $item) {
                                 $item->type = DB::table('order_references')
                                     ->join('products', 'order_references.product_id', '=', 'products.id')
+                                    ->join('categories', 'products.category_id', '=', 'categories.id')
                                     ->where('order_references.order_id', $record->id)
                                     ->where('order_references.item', $item->item)
-                                    ->pluck('products.code')
-                                    ->implode(', ');
+                                    ->pluck('categories.name')
+                                    ->implode('+ ');
                             }
                             echo Pdf::loadHtml(
                                 Blade::render('pdf.invoice', ['order' => $record])
@@ -521,24 +532,20 @@ implements HasShieldPermissions
                         ])->requiresConfirmation(),
                 Tables\Actions\Action::make('planning1')
                 ->visible(fn () => auth()->user()->can('planning_order'))
-
                 ->label('Planificar')
                 ->form([
-                    Forms\Components\Section::make('Questions')
+                    Forms\Components\Section::make('plannings')
                             ->label('Informacion adicional')
                             ->afterStateHydrated(function ($record, callable $set) {
                                 if (!$record) return;
-                
                                 // Obtener fechas base
                                 $issueDate = Carbon::parse($record->issue_date)->addDay(); // issue_date + 1 día
                                 $deliveryDate = Carbon::parse($record->delivery_date)->subDay(); // delivery_date - 1 día
-                                
                                 // Obtener los centros ordenados por `item`
                                 $centers = ClassCenter::where('category_id', $record->classification_id)
                                     ->orderBy('item') // Ordenar por `item` para respetar el flujo de trabajo
                                     ->get()
                                     ->groupBy('item'); // Agrupar por `item` para manejar centros en paralelo
-                                
                                 // Distribuir fechas entre los grupos de `item`
                                 $items = $centers->keys(); // Obtener los `items` únicos
                                 $totalSteps = $items->count();
@@ -673,8 +680,9 @@ protected static function getRefences(callable $set, callable $get)
     }
     $set('references', $refences);
 }
-protected static function parseOrderItemsText(string $text, $set): array
+protected static function parseOrderItemsText(string $text, $set,$get): array
 {
+    $odr=$get('order_items_import');
     $references = [];
     $items = [];
     $total = 0;
@@ -697,7 +705,7 @@ protected static function parseOrderItemsText(string $text, $set): array
     }, explode("\n", trim($text)));
 
     // Ordenar primero por 'size' y luego por 'products'
-    if ($if_order) {
+    if ($odr) {
         usort($lines, function ($a, $b) {
             return  strcmp(implode(',', $b['products']), implode(',', $a['products']))?: $a['size'] <=> $b['size'];
         });

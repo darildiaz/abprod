@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('sizes', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique(); // Nombre del tamaño
+            $table->string('color'); // Nombre del tamaño
             $table->timestamps();
         });
     }

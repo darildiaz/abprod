@@ -63,7 +63,7 @@ class OrderPolicy
      */
     public function forceDelete(User $user, Order $order): bool
     {
-        return $user->can('force_delete_order');
+        return $user->can('{{ ForceDelete }}');
     }
 
     /**
@@ -71,7 +71,7 @@ class OrderPolicy
      */
     public function forceDeleteAny(User $user): bool
     {
-        return $user->can('force_delete_any_order');
+        return $user->can('{{ ForceDeleteAny }}');
     }
 
     /**
@@ -79,7 +79,7 @@ class OrderPolicy
      */
     public function restore(User $user, Order $order): bool
     {
-        return $user->can('restore_order');
+        return $user->can('{{ Restore }}');
     }
 
     /**
@@ -87,7 +87,7 @@ class OrderPolicy
      */
     public function restoreAny(User $user): bool
     {
-        return $user->can('restore_any_order');
+        return $user->can('{{ RestoreAny }}');
     }
 
     /**
@@ -95,7 +95,7 @@ class OrderPolicy
      */
     public function replicate(User $user, Order $order): bool
     {
-        return $user->can('replicate_order');
+        return $user->can('{{ Replicate }}');
     }
 
     /**
@@ -103,6 +103,6 @@ class OrderPolicy
      */
     public function reorder(User $user): bool
     {
-        return $user->can('reorder_order');
+        return $user->can('{{ Reorder }}');
     }
 }

@@ -19,24 +19,25 @@
             display: inline-block;
             
         }
-        .bg-lightpink {
-    background-color: #ffccd5 !important; /* Rosado claro */
-}
+        .bg-lightpink {background-color: #ffccd5 !important;}
+        .bg-lightblue {background-color: #b4d1eb !important;}
+        .bg-lightgreen {background-color: #b4ebcb !important;}
     </style>
 </head>
 <body>
 
     <table class="info">
         <tr>
-            <td colspan="2"><center><h1> {{ $order->reference_name }}</h1></center></td>
+            <td colspan="3"><center><h1> {{ $order->reference_name }}</h1></center></td>
         </tr>
         <tr>
             <td><h1><strong>O.T.:</strong> {{ $order->id }}</h1></td>
-            <td><strong>Fecha de Entrega:</strong> {{ $order->delivery_date }}</td>
+            <td colspan="2"><strong>Fecha de Entrega:</strong> {{ $order->delivery_date }}</td>
         </tr>
         <tr>
             <td><strong>Fecha Emisión:</strong> {{ $order->issue_date }}</td>
             <td><strong>Vendedor:</strong> {{ $order->seller->name ?? 'N/A' }}</td>
+            <td><strong>Gestor:</strong> {{ $order->manager->name ?? 'N/A' }}</td>
         </tr>
     </table>
 
@@ -48,9 +49,11 @@
                 <th>TIPO</th>
                 <th>NOMBRE</th>
                 <th>NRO</th>
+                <th>OTROS</th>
                 <th>TAM - MOLDE</th>
+                <th>TIPO DE INDUMENTARIA</th>   
                 <th>Cantidad</th>
-                <th>TIPO DE INDUMENTARIA</th>
+
             </tr>
         </thead>
         <tbody>
@@ -60,10 +63,10 @@
                     <td>{{ $item->model }}</td>
                     <td>{{ $item->name }}</td>
                     <td>{{ $item->number }}</td>
+                    <td>{{ $item->other }}</td>
                     <td>{{ $item->size->name ?? 'N/A' }}</td>
-                    <td>{{ $item->quantity }}</td>
                     <td>{{ $item->type }}</td>
-
+                    <td>{{ $item->quantity }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -73,15 +76,19 @@
     <table class="table">
         <thead>
             <tr>
+                <th>Categoria</th>
                 <th>Tipo</th>
+                <th>Producto</th>
                 <th>Tamaño</th>
                 <th>Cantidad</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($order->orderReferenceSummaries as $tipo)
+            @foreach($order->orderReferenceSummaries->sortBy('code_new') as $tipo)
                 <tr class="{{ $tipo->size->color ?? '' }}">
+                    <td>{{ $tipo->product->Category->name ?? 'N/A' }}</td>
                     <td>{{ $tipo->product->code ?? 'N/A' }}</td>
+                    <td>{{ $tipo->product->name ?? 'N/A' }}</td>
                     <td>{{ $tipo->size->name ?? 'N/A' }}</td>
                     <td>{{ $tipo->total_quantity }}</td>
                 </tr>

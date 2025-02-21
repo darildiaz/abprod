@@ -13,6 +13,7 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\OrderReference;
+use Illuminate\Support\Facades\Log;
 class ProductionResource extends Resource
 {
     protected static ?string $model = Production::class;
@@ -24,7 +25,7 @@ class ProductionResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\hidden::make('date')
+                Forms\Components\TextInput::make('date')
                     ->default(now()),
 
                 Forms\Components\select::make('order_id')
@@ -44,7 +45,6 @@ class ProductionResource extends Resource
                     ->relationship('center', 'name')
                     ->live()
                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getOrderProducts($set, $get))
-
                     ->required(),
 
                 Forms\Components\Select::make('operator_id')
@@ -57,7 +57,10 @@ class ProductionResource extends Resource
                     })
                     ->reactive()
                     ->required(),
+                    Forms\Components\Toggle::make('status')
+                    ->label('completado')
 
+                    ->required(),
                 Forms\Components\Repeater::make('details')
                     ->relationship('details')
                     ->label('detalles')
@@ -66,23 +69,30 @@ class ProductionResource extends Resource
                         Forms\Components\Select::make('product_id')
                             ->label('Producto')
                             ->relationship('product', 'code')
-                           // ->disabled()
+
                             ->required(),
+                        Forms\Components\TextInput::make('prodquantity')
+                            //->readOnly()
+                            ->label('Cantidad Producida')
 
-
-                        Forms\Components\TextInput::make('quantity')
                             ->live() // Para actualizar en tiempo real    
-                            ->minValue(0) // Número mínimo permitido
-                           // ->maxvalue(21)
-                           // ->maxValue(fn ($get) => $get('maxQuantities')[$get('product_id')] ?? null) // Establece el máximo dinámico
-                           // ->rule(fn ($get) => 'max:' . ($get('maxQuantities')[$get('product_id')] ?? ''))
+                            ->disabled(),
+                        Forms\Components\TextInput::make('orderquantity')
+                            //->readOnly()
+                            ->label('Cantidad Pedido')
+                            ->live() // Para actualizar en tiempo real    
+                            ->disabled(),
+                        Forms\Components\TextInput::make('quantity')
                             ->label('Cantidad')
                             ->numeric()
+                            ->minValue(0)
+                            ->maxValue(fn (callable $get) => $get('orderquantity') - $get('prodquantity'))
                             ->required(),
 
                         Forms\Components\hidden::make('price')
                             ->label('Precio')
                            // ->numeric()
+                           ->default(0)
                             ->required(),
                     ])
                     ->columns(3)
@@ -136,6 +146,29 @@ class ProductionResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('changeStatus')
+                ->visible(fn ($record) => $record->status !== 2)
+                ->visible(fn () => auth()->user()->can('status_production_order'))
+                ->label('editar estado')
+                ->action(function ($record, $data) {
+                    $record->status = $data['status'];
+                    // Actualizar fechas según el estado seleccionado
+                    // if ($data['status'] == 1) {
+                    //     $record->completion_date = now();
+                    // } elseif ($data['status'] == 2) {
+                    //     $record->shipping_date = now();
+                    // }
+                    $record->save();
+                })
+                ->form([
+                    Forms\Components\Select::make('status')
+                        ->options([
+                            0 => 'Pendiente',
+                            1 => 'Completado',
+                        ])
+                        ->required(),
+                        ])->requiresConfirmation(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -171,17 +204,31 @@ class ProductionResource extends Resource
             return;
         }
         $products = OrderReference::where('order_id', $order_id)
-        ->selectRaw('product_id, SUM(quantity) AS quantity_t')
-        ->groupBy('product_id')
-        ->get();
-        $maxQuantities = [];
+            ->selectRaw('product_id, SUM(quantity) AS quantity_t')
+            ->groupBy('product_id')
+            ->get();
+
+            $producedQuantities = Production::join('productiondets as pd', 'pd.production_id', '=', 'productions.id')
+            ->where('productions.order_id', $order_id)
+            ->where('productions.center_id', $centerId)
+            ->selectRaw('pd.product_id, SUM(pd.quantity) AS sumprod')
+            ->groupBy('pd.product_id')
+            ->get()
+            ->keyBy('product_id');
+        Log::info('Produced Quantities:', $producedQuantities->toArray());
+
         $prod = [];
         foreach ($products as $product) {
-            
                 if ($product->product->is_producible) {
+                    $prodquantity = isset($producedQuantities[$product->product_id]) 
+                    ? $producedQuantities[$product->product_id]->sumprod 
+                    : 0;
+
                     $prod[] = [
                     'product_id' => $product->product_id,
-                    'quantity' => $product->quantity_t,
+                    'prodquantity' => $prodquantity,
+                    'orderquantity' => $product->quantity_t,
+                    'quantity' => $product->quantity_t-$prodquantity,
                     'price' => self::getProductPrice($product->product_id, $centerId),
                 ];
                 $maxQuantities[$product->product_id] = $product->quantity_t;
@@ -190,12 +237,11 @@ class ProductionResource extends Resource
         }
 
         $set('details', $prod);
-        $set('maxQuantities', $maxQuantities); // Almacenar el máximo permitido
     }
     public static function getProductPrice(int $productId, int $centerId): ?int
     {
         return \App\Models\ProductCenter::where('product_id', $productId)
             ->where('center_id', $centerId)
-            ->value('price'); // Retrieves the price directly
+            ->value('price') ?? 0; // Retrieves the price directly, returns 0 if null
     }
 }

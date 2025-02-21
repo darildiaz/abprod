@@ -83,10 +83,14 @@ class DatabaseSeeder extends Seeder
             Line::create($line);
         }
         $centers = [
-            ['name' => 'Diagramacion', 'level' => 1],
-            ['name' => 'Impresion', 'level' => 2],
-            ['name' => 'Sublimacion', 'level' => 3],
-            ['name' => 'Corte', 'level' => 4],
+            ['name' => 'Disenho', 'level' => 1],
+            ['name' => 'Compras', 'level' => 1],
+            ['name' => 'Ponchado', 'level' => 1],
+            ['name' => 'Vinilo', 'level' => 1],
+            ['name' => 'Diagramacion', 'level' => 2],
+            ['name' => 'Impresion', 'level' => 3],
+            ['name' => 'Sublimacion', 'level' => 4],
+            ['name' => 'Corte', 'level' => 2],
             ['name' => 'Taller', 'level' => 5],
             ['name' => 'Plancha', 'level' => 6],
             ['name' => 'Vinilo y terminado', 'level' => 7],
@@ -131,25 +135,26 @@ class DatabaseSeeder extends Seeder
             Question::create($question);
         }
         $sizes = [
-            ['name' => 'NORMAL'],
-            ['name' => '1A-CAB'], ['name' => '1A-DAM'],
-            ['name' => '2A-CAB'], ['name' => '2A-DAM'],
-            ['name' => '4A-CAB'], ['name' => '4A-DAM'],
-            ['name' => '6A-CAB'], ['name' => '6A-DAM'],
-            ['name' => '8A-CAB'], ['name' => '8A-DAM'],
-            ['name' => '10A-CAB'], ['name' => '10A-DAM'],
-            ['name' => '14A-CAB'], ['name' => '14A-DAM'],
-            ['name' => '16A-CAB'], ['name' => '16A-DAM'],
-            ['name' => 'XP-CAB'], ['name' => 'XP-DAM'],
-            ['name' => 'P-CAB'], ['name' => 'P-DAM'],
-            ['name' => 'M-CAB'], ['name' => 'M-DAM'],
-            ['name' => 'G-CAB'], ['name' => 'G-DAM'],
-            ['name' => 'XG-CAB'], ['name' => 'XG-DAM'],
-            ['name' => '2XG-CAB'], ['name' => '2XG-DAM'],
-            ['name' => '3XG-CAB'], ['name' => '3XG-DAM'],
-            ['name' => '4XG-CAB'], ['name' => '4XG-DAM'],
-            ['name' => '5XG-CAB'], ['name' => '5XG-DAM'],
-            ['name' => '6XG-CAB'], ['name' => '6XG-DAM'],
+			 
+            ['name' => 'NORMAL','color'=>''],
+            ['name' => '1A-CAB','color'=>'bg-lightblue'], ['name' => '1A-DAM','color'=>'bg-lightpink'],
+            ['name' => '2A-CAB','color'=>'bg-lightblue'], ['name' => '2A-DAM','color'=>'bg-lightpink'],
+            ['name' => '4A-CAB','color'=>'bg-lightblue'], ['name' => '4A-DAM','color'=>'bg-lightpink'],
+            ['name' => '6A-CAB','color'=>'bg-lightblue'], ['name' => '6A-DAM','color'=>'bg-lightpink'],
+            ['name' => '8A-CAB','color'=>'bg-lightblue'], ['name' => '8A-DAM','color'=>'bg-lightpink'],
+            ['name' => '10A-CAB','color'=>'bg-lightblue'], ['name' => '10A-DAM','color'=>'bg-lightpink'],
+            ['name' => '14A-CAB','color'=>'bg-lightblue'], ['name' => '14A-DAM','color'=>'bg-lightpink'],
+            ['name' => '16A-CAB','color'=>'bg-lightblue'], ['name' => '16A-DAM','color'=>'bg-lightpink'],
+            ['name' => 'XP-CAB','color'=>''], ['name' => 'XP-DAM','color'=>'bg-lightpink'],
+            ['name' => 'P-CAB','color'=>''], ['name' => 'P-DAM','color'=>'bg-lightpink'],
+            ['name' => 'M-CAB','color'=>''], ['name' => 'M-DAM','color'=>'bg-lightpink'],
+            ['name' => 'G-CAB','color'=>''], ['name' => 'G-DAM','color'=>'bg-lightpink'],
+            ['name' => 'XG-CAB','color'=>''], ['name' => 'XG-DAM','color'=>'bg-lightpink'],
+            ['name' => '2XG-CAB','color'=>''], ['name' => '2XG-DAM','color'=>'bg-lightpink'],
+            ['name' => '3XG-CAB','color'=>''], ['name' => '3XG-DAM','color'=>'bg-lightpink'],
+            ['name' => '4XG-CAB','color'=>''], ['name' => '4XG-DAM','color'=>'bg-lightpink'],
+            ['name' => '5XG-CAB','color'=>''], ['name' => '5XG-DAM','color'=>'bg-lightpink'],
+            ['name' => '6XG-CAB','color'=>''], ['name' => '6XG-DAM','color'=>'bg-lightpink'],
             
         ];
 
@@ -252,7 +257,8 @@ class DatabaseSeeder extends Seeder
             FROM order_references oref
             JOIN products p ON p.id = oref.product_id
             JOIN sizes s ON s.id = oref.size_id
-            GROUP BY oref.order_id, oref.product_id, oref.size_id;
+            GROUP BY oref.order_id, oref.product_id, oref.size_id
+			ORDER BY new_code ;
        ");
        DB::statement("
         CREATE VIEW product_category_counts AS
@@ -984,8 +990,8 @@ class DatabaseSeeder extends Seeder
         ");
         DB::statement("
         INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
-	(2, 'App\\Models\\User', 1),
-	(3, 'App\\Models\\User', 3);
+	(2, 'App\Models\User', 1),
+	(3, 'App\Models\User', 3);
    ");
     }
     

@@ -53,6 +53,8 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
         Tables\Columns\TextColumn::make('date_center')->label('Fecha Planificada')->sortable(),
         Tables\Columns\TextColumn::make('center_id')->label('Centro')->sortable(),
         textColumn::make('delivery_date')->label('Fecha de Entrega')->sortable(),
+        textColumn::make('reported')->label('reportado')->sortable(),
+        
         TextColumn::make('status')
             ->badge()
             ->color(fn (string $state): string => match ($state) {
@@ -113,8 +115,15 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
                 0 => 'Pending',
                 1 => 'Completed',
                 2 => 'Enviado',
-            ])
-            ->default(0),
+                ])
+                ->default(0),
+            //     Tables\Filters\SelectFilter::make('reported')
+            //     //  ->multiple()
+            //       ->options([
+            //   'Si' => 'Si',
+            //   'No' => 'No',
+            //])
+            
            
         ])
         ->bulkActions([
@@ -138,14 +147,32 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
         $categories = Category::where('is_important', 1)->pluck('name', 'id');
 
         // Construir la consulta usando el modelo Order (se asume que existe un modelo Order en App\Models\Order)
-        $query =Order::query()
-            ->select('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date as date_center','plannings.center_id as center_id')
-            ->join('order_references as oref', 'orders.id', '=', 'oref.order_id')
-            ->join('products as p', 'p.id', '=', 'oref.product_id')
-            ->join('categories as c', 'c.id', '=', 'p.category_id')
-            ->join('plannings', 'orders.id', '=', 'plannings.order_id')
-            ->where('plannings.center_id',$this->centerId);
-
+        // $query =Order::query()
+        //     ->select('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date as date_center','plannings.center_id as center_id')
+        //     ->join('order_references as oref', 'orders.id', '=', 'oref.order_id')
+        //     ->join('products as p', 'p.id', '=', 'oref.product_id')
+        //     ->join('categories as c', 'c.id', '=', 'p.category_id')
+        //     ->join('plannings', 'orders.id', '=', 'plannings.order_id')
+        //     ->where('plannings.center_id',$this->centerId);
+        
+        $query = Order::query()
+        ->select([
+            'orders.id', 
+            'orders.reference_name', 
+            'orders.delivery_date', 
+            'orders.status',
+            'plannings.date as date_center', 
+            'plannings.center_id as center_id',
+            DB::raw("CASE WHEN EXISTS (
+                SELECT 1 FROM productions WHERE productions.order_id = orders.id
+            ) THEN 'Si' ELSE 'No' END AS reported")
+        ])
+        ->join('order_references as oref', 'orders.id', '=', 'oref.order_id')
+        ->join('products as p', 'p.id', '=', 'oref.product_id')
+        ->join('categories as c', 'c.id', '=', 'p.category_id')
+        ->join('plannings', 'orders.id', '=', 'plannings.order_id')
+        ->where('plannings.center_id', $this->centerId);
+    
         // Agregar dinámicamente columnas de categorías importantes
         foreach ($categories as $id => $name) {
             $safeColumn = str_replace(' ', '_', strtolower($name));
@@ -156,7 +183,7 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
         $query->selectRaw("SUM(CASE WHEN c.is_important = 0 THEN oref.quantity ELSE 0 END) as otros");
 
         // Agrupar los resultados
-        $query->groupBy('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date','plannings.center_id');
+        $query->groupBy('orders.id', 'orders.reference_name', 'orders.delivery_date', 'orders.status','plannings.date','plannings.center_id','reported');
 
         return $query;
     }

@@ -19,6 +19,7 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use BezhanSalleh\FilamentShield\FilamentShieldPlugin;
 use App\Filament\Pages\Auth\EditProfile;
+
 //use app\Filament\Widgets\ProductionCount;
 class AdminPanelProvider extends PanelProvider
 {
@@ -48,6 +49,7 @@ class AdminPanelProvider extends PanelProvider
                 Widgets\AccountWidget::class,
                 //Widgets\FilamentInfoWidget::class,
                 //ProductionCount::class,
+                //MonthlyUsersChart::class,
 
             ])
             ->middleware([
