@@ -18,6 +18,8 @@ class TeamMemberResource extends Resource
     protected static ?string $model = TeamMember::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Miembros de Equipo';
+    
     protected static ?string $navigationGroup = "ventas";
     protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
@@ -25,11 +27,13 @@ class TeamMemberResource extends Resource
         return $form
             ->schema([
                 Forms\Components\Select::make('team_id')
+                ->label('Equipo')
                 ->relationship('team', 'name')
                 ->required()
                 //->searchable()
                  ,
                 Forms\Components\Select::make('user_id')
+                ->label('Vendedor')
                 ->relationship('user', 'name')
                 ->required()
                // ->searchable()
@@ -41,10 +45,13 @@ class TeamMemberResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('team_id')
+                Tables\Columns\TextColumn::make('team.name')
+                    ->label('Equipo')
+                    ->searchable()
                     ->numeric()
                     ->sortable(),
-                Tables\Columns\TextColumn::make('user_id')
+                Tables\Columns\TextColumn::make('user.name')
+                    ->label('Vendedor')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

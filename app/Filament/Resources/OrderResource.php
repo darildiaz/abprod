@@ -43,6 +43,8 @@ implements HasShieldPermissions
     public static ?string $navigationGroup = 'Pedidos';
     public static ?string $recordTitleAttribute='id';
     protected static ?string $navigationLabel = 'Pedidos';
+    protected static ?string $pluralLabel = 'Pedidos'; 
+
 //    protected static ?string $navigationParentItem = 'Notifications';
     public static function getNavigationBadge(): ?string
     {
@@ -440,7 +442,18 @@ implements HasShieldPermissions
                 ->summarize(Sum::make())
                 ->sortable(),
                 Tables\Columns\TextColumn::make('classification.name')->label('Clasificacion'), // Relación con QuestionCategory
-                Tables\Columns\TextColumn::make('status')->label('Estado')->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->label('Estado')
+                    ->sortable()
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            0 => 'Pendiente',
+                            1 => 'Planificado',
+                            2 => 'Completado',
+                            3 => 'Enviado',
+                            default => 'Desconocido',
+                        };
+                    }),
                 Tables\Columns\TextColumn::make('productions')
                     ->label('Center')
                     ->formatStateUsing(function ($state, $record) {
@@ -471,8 +484,9 @@ implements HasShieldPermissions
                 ->multiple()
                 ->options([
                         0 => 'Pendiente',
-                        1 => 'Completo',
-                        2 => 'Enviado',
+                        1 => 'Planificado',
+                        2 => 'Completo',
+                        3 => 'Enviado',
                 ]),
                 Tables\Filters\selectFilter::make('seller.name')
                     ->relationship('seller', 'name')
@@ -508,15 +522,15 @@ implements HasShieldPermissions
                         }, $record->id . ' Pedido.pdf');
                     }), 
                 Tables\Actions\Action::make('changeStatus')
-                ->visible(fn ($record) => $record->status !== 2)
+                ->visible(fn ($record) => $record->status < 2)
                 ->visible(fn () => auth()->user()->can('status_production_order'))
                 ->label('editar estado')
                 ->action(function ($record, $data) {
                     $record->status = $data['status'];
                     // Actualizar fechas según el estado seleccionado
-                    if ($data['status'] == 1) {
+                    if ($data['status'] == 2) {
                         $record->completion_date = now();
-                    } elseif ($data['status'] == 2) {
+                    } elseif ($data['status'] == 3) {
                         $record->shipping_date = now();
                     }
                     $record->save();
@@ -525,8 +539,9 @@ implements HasShieldPermissions
                     Forms\Components\Select::make('status')
                         ->options([
                             0 => 'Pendiente',
-                            1 => 'Completado',
-                            2 => 'Enviado',
+                            1 => 'Planificado',
+                            2 => 'Completado',
+                            3 => 'Enviado',
                         ])
                         ->required(),
                         ])->requiresConfirmation(),

@@ -18,6 +18,7 @@ class LineResource extends Resource
     protected static ?string $model = Line::class;
     public static ?string $navigationGroup = 'Productos';
     protected static ?string $navigationLabel = 'Lineas';
+    protected static ?string $pluralLabel = 'Lineas'; 
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 

@@ -21,6 +21,7 @@ class ProductResource extends Resource
 
     public static ?string $navigationGroup = 'Productos';
     public static ?string $navigationLabel = 'Productos';
+    public static ?string $pluralLabel = 'Productos';
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();

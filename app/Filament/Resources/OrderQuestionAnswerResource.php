@@ -19,6 +19,7 @@ class OrderQuestionAnswerResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Orders details';
+    protected static ?string $pluralLabel = 'Respuesta de Preguntas de Pedido'; 
 
     public static function form(Form $form): Form
     {

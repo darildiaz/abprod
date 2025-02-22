@@ -19,7 +19,7 @@ class QuestionCategoryResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = "Mantenimiento";
-
+    protected static ?string $pluralLabel = 'Categorias de Preguntas';
     public static function form(Form $form): Form
     {
         return $form

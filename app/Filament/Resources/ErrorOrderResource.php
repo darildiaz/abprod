@@ -19,6 +19,10 @@ class ErrorOrderResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = "Produccion";
+    protected static ?string $navigationLabel = 'Errores en pedidos';
+    
+    protected static ?string $pluralLabel = 'Errores en pedidos'; 
+    
     public static function form(Form $form): Form
     {
         return $form

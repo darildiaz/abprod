@@ -4,11 +4,13 @@ namespace App\Filament\Widgets;
 
 use App\Models\Order;
 use App\Models\SalesGoal;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Filament\Widgets\ChartWidget;
 use Illuminate\Support\Facades\DB;
 
 class SalesGoals extends ChartWidget
 {
+    use HasWidgetShield;
     protected static ?string $heading = 'Proceso de complimiento de metas por equipo';
     protected static ?string $pollingInterval = '10s'; // Refresh every 10s
 

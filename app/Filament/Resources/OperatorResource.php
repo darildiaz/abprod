@@ -19,6 +19,7 @@ class OperatorResource extends Resource
     protected static ?string $navigationGroup = "Produccion";
     public static ?string $navigationIcon = 'heroicon-o-identification';
     protected static ?string $navigationLabel = 'Operadores';
+    protected static ?string $pluralLabel = 'Operadores'; 
 
     public static function form(Form $form): Form
     {

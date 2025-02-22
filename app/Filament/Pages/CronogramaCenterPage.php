@@ -65,8 +65,9 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
             })
             ->formatStateUsing(fn (string $state): string => match ($state) {
             '0' => 'pendiente',
-            '1' => 'completado',
-            '2' => 'enviado',
+            '1' => 'planificado',
+            '2' => 'completado',
+            '3' => 'enviado',
             default => $state,
             }),
         TextColumn::make('productions')
@@ -112,11 +113,12 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
             Tables\Filters\SelectFilter::make('status')
                   //  ->multiple()
                     ->options([
-                0 => 'Pending',
-                1 => 'Completed',
-                2 => 'Enviado',
+                0 => 'Pendiente',
+                1 => 'Planificado',
+                2 => 'Completado',
+                3 => 'Enviado',
                 ])
-                ->default(0),
+                ->default(1),
             //     Tables\Filters\SelectFilter::make('reported')
             //     //  ->multiple()
             //       ->options([

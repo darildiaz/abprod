@@ -19,6 +19,7 @@ class OrderItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Orders details';
+    protected static ?string $pluralLabel = 'Detelles de pedidos'; 
 
     public static function form(Form $form): Form
     {

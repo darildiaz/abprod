@@ -20,6 +20,8 @@ class OrderReferenceSummaryPage extends Page implements Tables\Contracts\HasTabl
     protected static ?string $navigationGroup = "Cronogramas";
     protected static ?int $navigationSort = 2;
     protected static ?string $slug = 'order-reference-summaries';
+    protected static ?string $title = 'Resumen de Productos por pedido';
+
     protected static string $view = 'filament.pages.order-reference-summary-page';
 
     #[Url] // Permite recibir parámetros en la URL

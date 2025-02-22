@@ -18,6 +18,8 @@ class SalesGoalResource extends Resource
     protected static ?string $model = SalesGoal::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Metas de Ventas';
+
     protected static ?string $navigationGroup = "ventas";
     protected static ?int $navigationSort = 5;
     public static function form(Form $form): Form
@@ -25,22 +27,27 @@ class SalesGoalResource extends Resource
         return $form
             ->schema([
                 Forms\Components\TextInput::make('team_id')
+                ->label('Equipo')
                     ->required()
                     ->relationship('team', 'name')
                     ,
                 Forms\Components\TextInput::make('user_id')
-                    ->required()
+                ->label('Vendedor')    
+                ->required()
                     ->relationship('user', 'name')
 
                     ->numeric(),
                 Forms\Components\TextInput::make('month')
-                    ->required()
+                ->label('Mes')    
+                ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('year')
-                    ->required()
+                ->label('Año')    
+                ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('amount')
-                    ->required()
+                ->label('Monto')    
+                ->required()
                     ->numeric(),
             ]);
     }
@@ -50,18 +57,23 @@ class SalesGoalResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('team.name')
+                ->label('Equipo')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('user.name')
+                ->label('Vendedor')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month')
+                ->label('Mes')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
+                ->label('Año')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
+                ->label('Monto')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')

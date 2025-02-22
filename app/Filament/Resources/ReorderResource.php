@@ -18,7 +18,10 @@ class ReorderResource extends Resource
     protected static ?string $model = Reorder::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationLabel = 'Re trabajo';
     protected static ?string $navigationGroup = "Produccion";
+    protected static ?string $pluralLabel = 'Re trabajo';
+    
     public static function form(Form $form): Form
     {
         return $form

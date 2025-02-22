@@ -18,7 +18,11 @@ class ClassCenterResource extends Resource
     protected static ?string $model = ClassCenter::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = "Planificacion";
+    protected static ?string $navigationGroup = "Produccion";
+    protected static ?string $navigationLabel = 'Cat.Planificacion';
+    
+    protected static ?string $pluralLabel = 'Categoria de Planificacion'; 
+    
     protected static ?int $navigationSort = 6;
     public static function form(Form $form): Form
     {

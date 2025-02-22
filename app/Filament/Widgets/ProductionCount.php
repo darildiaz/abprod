@@ -10,11 +10,11 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Widgets\TableWidget as BaseWidget;
 use App\Models\ProductCategoryCounts;
 use Illuminate\Database\Eloquent\Builder; // ✅ Importar correctamente
-
-use Illuminate\Support\Facades\DB;
+use BezhanSalleh\FilamentShield\Traits\HasWidgetShield;
 use Carbon\Carbon;
 class ProductionCount extends BaseWidget
 {
+    use HasWidgetShield;
     public function table(Table $table): Table
     {
         return $table

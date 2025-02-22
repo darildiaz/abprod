@@ -18,8 +18,10 @@ class PlanningResource extends Resource
     protected static ?string $model = Planning::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    protected static ?string $navigationGroup = "Planificacion";
+    protected static ?string $navigationGroup = "Produccion";
     protected static ?string $navigationLabel  = "Planificacion";
+    protected static ?string $pluralLabel = 'planificaciones'; 
+
     protected static ?int $navigationSort = 6;
     
     public static function form(Form $form): Form

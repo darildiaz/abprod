@@ -28,7 +28,7 @@ class QuestionResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     protected static ?string $navigationGroup = "Mantenimiento";
-
+    protected static ?string $pluralLabel = 'Cuentionarios';
     public static function form(Form $form): Form
     {
         return $form

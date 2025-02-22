@@ -18,6 +18,9 @@ class PriceResource extends Resource
     protected static ?string $model = Price::class;
     public static ?string $navigationGroup = 'Productos';
 
+
+    protected static ?string $navigationLabel = 'Precios';
+    protected static ?string $pluralLabel = 'Precios';  
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
     public static function form(Form $form): Form

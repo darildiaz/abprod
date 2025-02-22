@@ -21,6 +21,7 @@ class ProductionResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Produccion';
     public static ?string $navigationLabel = 'Produccion';
+    protected static ?string $pluralLabel = 'Producciones';
     public static function form(Form $form): Form
     {
         return $form

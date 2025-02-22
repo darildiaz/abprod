@@ -18,6 +18,8 @@ class CenterResource extends Resource
     protected static ?string $model = Center::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $pluralLabel = 'Centros'; 
+   
     protected static ?string $navigationGroup = "Produccion";
     protected static ?string $navigationLabel = 'Centros';
 

@@ -23,7 +23,7 @@ class SizeResource extends Resource
     public static ?string $navigationIcon = 'heroicon-o-scale';
     protected static ?string $navigationGroup = "Productos";
     protected static ?string $navigationLabel = "Talles";
-   
+    protected static ?string $pluralLabel = 'Talles';
     
     public static function form(Form $form): Form
     {

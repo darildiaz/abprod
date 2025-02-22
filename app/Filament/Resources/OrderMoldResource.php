@@ -19,6 +19,7 @@ class OrderMoldResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Orders details';
+    protected static ?string $pluralLabel = 'Modelos por pedido'; 
 
     public static function form(Form $form): Form
     {

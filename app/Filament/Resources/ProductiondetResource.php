@@ -23,6 +23,7 @@ class ProductiondetResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Produccion';
+    protected static ?string $pluralLabel = 'Detalles de Produccion';
     public static ?string $navigationLabel = 'Produccion Detalles';
 
     public static function form(Form $form): Form

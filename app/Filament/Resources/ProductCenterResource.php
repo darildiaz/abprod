@@ -19,17 +19,17 @@ class ProductCenterResource extends Resource
     public static ?string $navigationIcon = 'heroicon-o-link';
     public static ?string $navigationGroup = 'Produccion';
     public static ?string $navigationLabel = 'ProduccionCentros';
-
+    public static ?string $pluralLabel = 'Produccion por Centros precios';
     public static function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\BelongsToSelect::make('product_id')
+                Forms\Components\Select::make('product_id')
                     ->label('Producto')
                     ->relationship('product', 'code') // Relación con el modelo Product
                     ->required(),
 
-                Forms\Components\BelongsToSelect::make('center_id')
+                Forms\Components\Select::make('center_id')
                     ->label('Centro')
                     ->relationship('center', 'name') // Relación con el modelo Center
                     ->required(),
