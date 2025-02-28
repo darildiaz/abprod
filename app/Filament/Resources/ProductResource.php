@@ -61,6 +61,10 @@ class ProductResource extends Resource
                     ->required()
                     ->maxLength(65535)
                     ->columnSpanFull(),
+                Forms\Components\TagsInput::make('tags')
+                    ->label('Etiquetas')
+                    ->reorderable()
+                    ->columnSpanFull(),
                 
             ]);
     }
@@ -87,6 +91,12 @@ class ProductResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('tags')
+                    ->label('Etiquetas')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado el')
                     ->dateTime()

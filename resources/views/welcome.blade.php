@@ -43,12 +43,12 @@
 
         <div class="w-full flex-grow sm:flex sm:items-center sm:w-auto">
             <div class="w-full container mx-auto flex flex-col sm:flex-row items-center justify-center text-sm font-bold uppercase mt-0 px-6 py-2">
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Technology</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Automotive</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Finance</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Politics</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Culture</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Sports</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Fútbol</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Basket</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Voley</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Futboley</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Pesca</a>
+                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Natación</a>
             </div>
         </div>
     </nav>
@@ -73,7 +73,7 @@
             <div class="w-full bg-white shadow flex flex-col my-4 p-6">
                 <p class="text-xl font-semibold pb-5">Nosotros</p>
                 <p class="pb-2">es un proyecto para la gestion de produccion de abdiez</p>
-                <a href="localadmin/login" class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-4">
+                <a href="admin/login" class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-4">
                     Login
                 </a>
             </div>

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean("is_producible")->default(true); // Imagen del producto
             $table->foreignId('line_id')->constrained()->onDelete('cascade');
             $table->foreignId('category_id')->constrained('categories')->onDelete('cascade'); // Relación con categorías
+            $table->json('tags')->nullable(); // Etiquetas
             $table->timestamps();
         });
     }

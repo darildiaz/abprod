@@ -126,7 +126,7 @@
                         <td><h1 class="text-rotate">{{ $item->title }}</h1></td>
                         <td>
                             
-                                <img src="{{ public_path('storage/' . $item->imagen) }}" alt="Imagen del modelo" style="max-width: 500px; max-height: 500px;">
+                                <img src="{{ public_path('storage/' . $item->imagen ?? 'N/A' ) }}" alt="Imagen del modelo" style="max-width: 500px; max-height: 500px;">
                             
                         </td>
                     </tr>

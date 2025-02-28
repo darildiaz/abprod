@@ -16,7 +16,7 @@ class OrderReferenceSummaryPage extends Page implements Tables\Contracts\HasTabl
     use Tables\Concerns\InteractsWithTable;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static ?string $navigationLabel = 'Resumen de Referencias';
+    protected static ?string $navigationLabel = 'Resumen de productos por pedido';
     protected static ?string $navigationGroup = "Cronogramas";
     protected static ?int $navigationSort = 2;
     protected static ?string $slug = 'order-reference-summaries';

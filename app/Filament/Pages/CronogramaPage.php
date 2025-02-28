@@ -24,7 +24,7 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     protected static string $view = 'filament.pages.cronograma-page';
     protected static ?string $navigationGroup = "Cronogramas";
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationLabel = 'Reporte de Órdenes';
+    protected static ?string $navigationLabel = 'Cronograma General';
     protected static ?string $slug = 'reporte-ordenes';
     protected static ?string $title = 'Cronograma General';
 

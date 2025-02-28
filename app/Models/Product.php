@@ -45,4 +45,7 @@ class Product extends Model
                 ->withPivot('quantity')
                 ->withTimestamps();
         }
+    protected $casts = [
+            'tags' => 'array',
+        ];
 }

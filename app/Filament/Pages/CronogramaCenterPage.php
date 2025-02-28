@@ -26,7 +26,7 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
     protected static string $view = 'filament.pages.cronograma-page';
     protected static ?string $navigationGroup = "Cronogramas";
     protected static ?int $navigationSort = 2;
-    protected static ?string $navigationLabel = 'Cron centro';
+    protected static ?string $navigationLabel = 'Cronograma x centro';
     protected static ?string $slug = 'reporte-ordenes-centro';
     
     #[Url] // Permite recibir parámetros en la URL

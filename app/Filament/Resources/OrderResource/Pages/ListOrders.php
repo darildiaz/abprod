@@ -22,9 +22,11 @@ class ListOrders extends ListRecords
     {
         return [
             null => Tab::make('All'),
-            'Process' => Tab::make()->query(fn ($query) => $query->where('status', '0')),
-            'Complet' => Tab::make()->query(fn ($query) => $query->where('status', '1')),
+            'Espera' => Tab::make()->query(fn ($query) => $query->where('status', '0')),
+            'Planificado' => Tab::make()->query(fn ($query) => $query->where('status', '1')),
+            'Completado' => Tab::make()->query(fn ($query) => $query->where('status', '2')),
             'envio' => Tab::make()->query(fn ($query) => $query->where('status', '2')),
+            'ventas' => Tab::make()->query(fn ($query) => $query->where('status', '!=', '4')),
         ];
     }
 }

@@ -34,6 +34,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
 class OrderResource extends Resource 
 implements HasShieldPermissions
@@ -89,7 +90,7 @@ implements HasShieldPermissions
                                         
                                         ->getOptionLabelFromRecordUsing(fn (Model $record) => "({$record->nif}) {$record->name} - {$record->phone}")
                                         ->searchable(['name', 'nif','phone'])
-                                        ->default(1) // Predetermina el usuario logueado
+                                      //  ->default(1) // Predetermina el usuario logueado
                                         ->createOptionForm([
                                             Forms\Components\TextInput::make('nif')
                                             ->label('C.I.')
@@ -137,6 +138,7 @@ implements HasShieldPermissions
                                         ->live(),
                             Forms\Components\TextInput::make('issue_date')
                                         ->label('Fecha de emision')
+                                        ->readOnly()
                                         ->default(today()->toDateString())
                                         ->type('date')
                                         ->required(),
@@ -191,6 +193,8 @@ implements HasShieldPermissions
                             }),
 
                         Forms\Components\FileUpload::make('imagen')->label('Imagen')
+                        //->required()
+                        ->image()
                         ->directory('orders')
                         ,
                     ])
@@ -232,8 +236,8 @@ implements HasShieldPermissions
                                         ->required()
                                         ->default('MODELO 1')
                                         ->searchable(),
-                                        Forms\Components\Hidden::make('item')
-                                        //->numeric()
+                                        Forms\Components\TextInput::make('item')
+                                        ->readOnly()
                                         ->afterStateHydrated(function ($state, callable $set, callable $get) {
                                             // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
                                             if (!$state) {
@@ -265,9 +269,9 @@ implements HasShieldPermissions
                                             ->required()
                                             ->live(onBlur: true)
                                             // ->live()
-                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get))
-                                                                                  // ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
-                                            ,
+                                        ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
+
+                                          ,
                                             Forms\Components\TextInput::make('price')
                                             ->label('Precio')
                                             ->readOnly()
@@ -275,12 +279,11 @@ implements HasShieldPermissions
                                            // ->disabled()
                                             ->default(0)
                                             ->live()
-                                            ->required(),
-                                           // ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
+                                            ->required()
+                                            ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
                                             ->readOnly()
-
                                             ->numeric()
                                             // ->disabled() // Deshabilita el campo para que no se pueda editar
                                             ->live()
@@ -300,6 +303,7 @@ implements HasShieldPermissions
 
                                     ])
                                     ->columns(9)
+                                    ->live()
                                     ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getTotal($set, $get))
                                      ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
 
@@ -329,7 +333,9 @@ implements HasShieldPermissions
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
-                                    Forms\Components\Hidden::make('item')
+                                    Forms\Components\TextInput::make('item')
+                                        ->readOnly()
+                                   
                                     ->default(1),
 
                                     Forms\Components\Select::make('product_id')
@@ -352,6 +358,7 @@ implements HasShieldPermissions
                                     Forms\Components\TextInput::make('quantity')
                                         ->label('Cantidad')
                                         // ->disabled()
+                                        ->readOnly()
 
                                         ->numeric()
                                         ->required(),
@@ -360,23 +367,34 @@ implements HasShieldPermissions
                                         ->label('Precio')
                                         // ->disabled()
                                         ->default(1)
-                                        ->readOnly()
+                                        ->live(onBlur: true)
 
                                         ->numeric()
                                         ->required(),
                                        
                                 ])
+                                ->live(onBlur: true)
+
+                                ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getitems($set, $get))
                                 
                              //   ->columns(6)
                                 ->live() // Habilita la reactividad
-
-                                ,
+,
+                                Forms\Components\TextInput::make('total')
+                                        ->label('Total')
+                                        ->readOnly()
+                                        ->numeric()
+                                        ->live() // Habilita la reactividad
+                                        //->disabled() // Deshabilita el campo para que no se pueda editar
+                                        ->default(0)
+                                        ->numeric()
+                                        ->required(),
                             ]),
                             Forms\Components\Wizard\Step::make('Questions')
                             ->label('Informacion adicional')
 
                             ->schema([   
-                               Forms\Components\Repeater::make('questionAnswers')
+                                TableRepeater::make('questionAnswers')
                                ->label('Questions')
                                ->relationship('questionAnswers')
                                ->schema([
@@ -542,15 +560,22 @@ implements HasShieldPermissions
                             1 => 'Planificado',
                             2 => 'Completado',
                             3 => 'Enviado',
+                            4 => 'Cancelado',
                         ])
                         ->required(),
                         ])->requiresConfirmation(),
                 Tables\Actions\Action::make('planning1')
                 ->visible(fn () => auth()->user()->can('planning_order'))
+                ->action(function ($record) {
+                    $record->status = 1;
+                   
+                    $record->save();
+                })
                 ->label('Planificar')
                 ->form([
                     Forms\Components\Section::make('plannings')
                             ->label('Informacion adicional')
+                            
                             ->afterStateHydrated(function ($record, callable $set) {
                                 if (!$record) return;
                                 // Obtener fechas base
@@ -668,8 +693,39 @@ implements HasShieldPermissions
             $set('questionAnswers',$fields);
      }
 }
+protected static function getitems(callable $set, callable $get)
+{
+$references=$get('references');
+$itemsorg = $get('orderItems') ;
+//Log::info('Order Items:', $references->toarray());
+$items = [];
+foreach ($itemsorg as $item) {
+    $price = 0;
+    $total = 0;
+    foreach ($references as $ref) {
+        if ($ref['item'] == $item['item']) {
+            $price = $price + $ref['price'];
+        }    
+    }
+        $items[] = [
+            'item' => $item['item'],
+            'model' => $item['model'],
+            'name' => $item['name'],
+            'number' => $item['number'],
+            'other' => $item['other'],
+            'size_id' => $item['size_id'],
+            'quantity' => $item['quantity'],
+            'ProductsItem' => $item['ProductsItem'],
+            'price' => $price,
+            'subtotal' => $price * $item['quantity'],
+        ];
+    $total = $total + $price * $item['quantity'];
+}
 
-    
+$set('orderItems', $items);
+$set('total', $total);
+
+}
     
     
 protected static function getRefences(callable $set, callable $get)
@@ -677,6 +733,7 @@ protected static function getRefences(callable $set, callable $get)
     $item = $get('orderItems') ;
     $refences = [];
     $c=0;
+    $total=0;
     foreach ($item as $item) {
         $c++;
         foreach ($item['ProductsItem'] as $product) {
@@ -691,8 +748,9 @@ protected static function getRefences(callable $set, callable $get)
                 ];
 
         }
-        
+        $total=$total+($item['quantity'] * self::getPPrice($product, $item['size_id']));
     }
+    $set('total', $total);
     $set('references', $refences);
 }
 protected static function parseOrderItemsText(string $text, $set,$get): array
@@ -776,7 +834,6 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
     // Asignar los valores finales
     $set('references', $references);
     $set('total', $total);
-    $set('total_v', $total);
 
     return $items;
 }
@@ -822,7 +879,6 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
         $price = $get('price') ?? 1;
         $subtotal = 0;
         $total = 0;
-        $total = $get('total');
 
         if ($quantity && $price) {
             $subtotal = $price * $quantity;
@@ -830,9 +886,6 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
             $total = $total + $subtotal;
             $set('total', $total );
         }
-
-
-        //self::getTotal($set, $get);
     }
     protected static function getTotal($set, $get): void
     {
@@ -842,7 +895,6 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
             $total = $total + $item['subtotal'];
         }
         $set('total', $total );
-        $set('total_v', $total );
     }
 
 
