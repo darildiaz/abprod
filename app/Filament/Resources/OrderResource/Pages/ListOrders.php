@@ -26,6 +26,7 @@ class ListOrders extends ListRecords
             'Planificado' => Tab::make()->query(fn ($query) => $query->where('status', '1')),
             'Completado' => Tab::make()->query(fn ($query) => $query->where('status', '2')),
             'envio' => Tab::make()->query(fn ($query) => $query->where('status', '2')),
+            'Cancelado' => Tab::make()->query(fn ($query) => $query->where('status', '=', '4')),
             'ventas' => Tab::make()->query(fn ($query) => $query->where('status', '!=', '4')),
         ];
     }

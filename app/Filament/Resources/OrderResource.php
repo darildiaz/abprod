@@ -193,7 +193,7 @@ implements HasShieldPermissions
                             }),
 
                         Forms\Components\FileUpload::make('imagen')->label('Imagen')
-                        //->required()
+                        ->required()
                         ->image()
                         ->directory('orders')
                         ,
@@ -227,6 +227,7 @@ implements HasShieldPermissions
                             Forms\Components\Wizard\Step::make('Items')
                                             ->schema([
                                                 TableRepeater::make('orderItems')
+                                          //      ->cloneable()
                                     ->label('Order Items')
                                     ->relationship('orderItems') // Relación con la tabla order_items
                                     ->schema([
@@ -328,7 +329,7 @@ implements HasShieldPermissions
                             // Tab 3: Cargar lista de referencias
                             TableRepeater::make('references')
                             ->reorderable()
-                ->cloneable()
+                
                 ->collapsible()
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
@@ -401,10 +402,18 @@ implements HasShieldPermissions
                                     Forms\Components\Select::make('question_id')
                                     ->relationship('question','text')    
                                     ->label('Cuestionario')
+                                    ->live()
                                     ->required(),
-                                    
                                     Forms\Components\TextInput::make('answer')
                                     ->label('Respuesta')
+                                    ->live()
+                                    ->datalist(fn (callable $get) => 
+                                        Question::where('id', $get('question_id'))
+                                            ->pluck('options') // Récupère la colonne JSON
+                                            ->flatMap(fn ($options) => json_decode($options, true)) // Décode et aplatit le tableau
+                                            ->mapWithKeys(fn ($option) => [$option => $option]) // Formate les clés/valeurs
+                                    )
+
                                     ->required(),
                                     ])
                                 
@@ -424,7 +433,6 @@ implements HasShieldPermissions
     {
         $categories = Category::all();
         return $table
-           
            ->groups([ 
                     Group::make('classification.name')
                     ->label('Clasificacion')
@@ -469,6 +477,7 @@ implements HasShieldPermissions
                             1 => 'Planificado',
                             2 => 'Completado',
                             3 => 'Enviado',
+                            4 => 'Cancelado',
                             default => 'Desconocido',
                         };
                     }),
@@ -556,7 +565,6 @@ implements HasShieldPermissions
                 ->form([
                     Forms\Components\Select::make('status')
                         ->options([
-                            0 => 'Pendiente',
                             1 => 'Planificado',
                             2 => 'Completado',
                             3 => 'Enviado',
@@ -626,21 +634,6 @@ implements HasShieldPermissions
                         ])
                 
                 ->requiresConfirmation(),
-                
-                // Tables\Actions\Action::make('sendToProductionPackage')
-                //     ->label(' Production ')
-                //     ->action(function ($record, $data) {
-                //         // Aquí puedes agregar la lógica para enviar a productionPackage
-                //         // Por ejemplo:
-                //         $productionPackage = new ProductionPackage();
-                //         $productionPackage->order_id = $record->id;
-                //         $productionPackage->save();
-                //     })
-                //     ->form([
-                //         Forms\Components\TextInput::make('order_id')
-                //             ->default(fn ($record) => $record->id)
-                //             ->disabled(),
-                //     ]),
                
 
                 
@@ -699,9 +692,10 @@ $references=$get('references');
 $itemsorg = $get('orderItems') ;
 //Log::info('Order Items:', $references->toarray());
 $items = [];
+$total = 0;
 foreach ($itemsorg as $item) {
     $price = 0;
-    $total = 0;
+    
     foreach ($references as $ref) {
         if ($ref['item'] == $item['item']) {
             $price = $price + $ref['price'];
@@ -746,9 +740,9 @@ protected static function getRefences(callable $set, callable $get)
                     'price' => self::getPPrice($product, $item['size_id']),
                     'subtotal' => ($item['quantity'] * self::getPPrice($product, $item['size_id'])),
                 ];
+                $total=$total+($item['quantity'] * self::getPPrice($product, $item['size_id']));
 
         }
-        $total=$total+($item['quantity'] * self::getPPrice($product, $item['size_id']));
     }
     $set('total', $total);
     $set('references', $refences);

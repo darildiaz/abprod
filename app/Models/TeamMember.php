@@ -17,4 +17,8 @@ class TeamMember extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function salesGoals()
+    {
+        return $this->hasMany(SalesGoal::class);
+    }
 }

@@ -6,6 +6,7 @@ use App\Filament\Resources\SalesGoalResource\Pages;
 use App\Filament\Resources\SalesGoalResource\RelationManagers;
 use App\Models\SalesGoal;
 use Filament\Forms;
+use Filament\Forms\Components\Tabs\Tab;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
@@ -26,27 +27,53 @@ class SalesGoalResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('team_id')
+                Forms\Components\Select::make('team_id')
                 ->label('Equipo')
                     ->required()
                     ->relationship('team', 'name')
+                    ->live()
                     ,
-                Forms\Components\TextInput::make('user_id')
-                ->label('Vendedor')    
-                ->required()
-                    ->relationship('user', 'name')
+                Forms\Components\Select::make('user_id')
+                ->label('Vendedor')   
+                ->reactive()
 
-                    ->numeric(),
-                Forms\Components\TextInput::make('month')
-                ->label('Mes')    
                 ->required()
-                    ->numeric(),
+                    ->options(function (callable $get) {
+                        return \App\Models\TeamMember::query()
+                            ->where('team_id', $get('team_id'))
+                            ->with('user')
+                            ->get()
+                            ->pluck('user.name', 'user.id')
+                            ->toArray();
+                    }),
+                Forms\Components\Select::make('month')
+                ->label('Mes')    
+                ->options([
+                    '1' => 'Enero',
+                    '2' => 'Febrero',
+                    '3' => 'Marzo',
+                    '4' => 'Abril',
+                    '5' => 'Mayo',
+                    '6' => 'Junio',
+                    '7' => 'Julio',
+                    '8' => 'Agosto',
+                    '9' => 'Septiembre',
+                    '10' => 'Octubre',
+                    '11' => 'Noviembre',
+                    '12' => 'Diciembre',
+                ])
+                ->default(now()->format('m'))
+
+                ->required(),
                 Forms\Components\TextInput::make('year')
                 ->label('Año')    
+                ->default(now()->format('Y'))
+
                 ->required()
                     ->numeric(),
                 Forms\Components\TextInput::make('amount')
                 ->label('Monto')    
+->suffix('Gs.')
                 ->required()
                     ->numeric(),
             ]);
@@ -66,7 +93,21 @@ class SalesGoalResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('month')
                 ->label('Mes')
-                    ->numeric()
+                ->formatStateUsing(fn (string $state): string => match ($state) {
+                    '1' => 'Enero',
+                        '2' => 'Febrero',
+                        '3' => 'Marzo',
+                        '4' => 'Abril',
+                        '5' => 'Mayo',
+                        '6' => 'Junio',
+                        '7' => 'Julio',
+                        '8' => 'Agosto',
+                        '9' => 'Septiembre',
+                        '10' => 'Octubre',
+                        '11' => 'Noviembre',
+                        '12' => 'Diciembre',
+                    default => $state,
+                    })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('year')
                 ->label('Año')
@@ -74,6 +115,7 @@ class SalesGoalResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('amount')
                 ->label('Monto')
+                    ->suffix('Gs.')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
@@ -86,7 +128,29 @@ class SalesGoalResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                // 
+                Tables\Filters\SelectFilter::make('team_id')
+                ->label('Equipo')
+                ->relationship('team', 'name'),
+                Tables\Filters\SelectFilter::make('user_id')
+                ->label('Vendedor')
+                ->relationship('user', 'name'),
+                Tables\Filters\SelectFilter::make('month')
+                ->label('Mes')
+                ->options([
+                    '1' => 'Enero',
+                    '2' => 'Febrero',
+                    '3' => 'Marzo',
+                    '4' => 'Abril',
+                    '5' => 'Mayo',
+                    '6' => 'Junio',
+                    '7' => 'Julio',
+                    '8' => 'Agosto',
+                    '9' => 'Septiembre',
+                    '10' => 'Octubre',
+                    '11' => 'Noviembre',
+                    '12' => 'Diciembre',
+                ]),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

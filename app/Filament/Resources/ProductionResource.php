@@ -13,6 +13,8 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\OrderReference;
+use Filament\Tables\Grouping\Group;
+use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Support\Facades\Log;
 class ProductionResource extends Resource
 {
@@ -33,7 +35,7 @@ class ProductionResource extends Resource
                     ->label('Pedido')
                     ->relationship('order', 'id',
                         modifyQueryUsing: function (Builder $query): Builder {
-                            return $query->where('status', 0);
+                            return $query->where('status', 1);
                         }
                     )
                     ->searchable()
@@ -105,6 +107,15 @@ class ProductionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->defaultGroup('status')
+
+        ->groups([ 
+            Group::make('status')
+            ->label('estado')
+            
+            ->collapsible(),
+                    ])
+    ->defaultSort('id', 'desc')
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->label('Fecha')
@@ -123,9 +134,24 @@ class ProductionResource extends Resource
                     ->label('Operador')
                     ->numeric()
                     ->sortable(),
+                Tables\Columns\TextColumn::make('details.product.name')
+                    ->label('productos')
+                    ->numeric()
+                    ->sortable(),
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
-                    ->numeric()
+                    ->formatStateUsing(function ($state) {
+                        return match ($state) {
+                            0 => 'Pendiente',
+                            1 => 'Completado',
+                            default => 'Desconocido',
+                        };
+                    })->color(fn (string $state): string => match ($state) {
+                        '0' => 'gray',
+                        '1' => 'success',
+                        '2' => 'warning',
+                        default => 'secondary',
+                        })
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Creado en')

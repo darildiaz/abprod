@@ -37,7 +37,7 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     $categories = Category::where('is_important', 1)->pluck('name', 'id');
 
     $columns = [
-        TextColumn::make('id')->label('ID Orden')->sortable()->searchable(),
+        TextColumn::make('id')->label('ID Orden')->sortable(),
         TextColumn::make('reference_name')->label('Referencia')->sortable(),
         textColumn::make('delivery_date')->label('Fecha de Entrega')->sortable(),
         TextColumn::make('status')
@@ -80,9 +80,7 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
     return $table
     ->defaultGroup('delivery_date')
     ->groups([ 
-        Group::make('classification.name')
-        ->label('Clasificacion')
-        ->collapsible(),
+        
         Group::make('delivery_date')
         ->label('Fecha de entrega')
         ->collapsible(),

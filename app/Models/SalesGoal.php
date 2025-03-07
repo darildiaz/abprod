@@ -12,7 +12,10 @@ class SalesGoal extends Model
     {
         return $this->belongsTo(Team::class);
     }
-
+    public function Member()
+    {
+        return $this->belongsTo(teamMember::class);
+    }
     public function user()
     {
         return $this->belongsTo(User::class);

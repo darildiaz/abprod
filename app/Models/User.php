@@ -68,6 +68,18 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Order::class, 'manager_id');
     }
+    public function salesGoals()
+    {
+        return $this->hasMany(SalesGoal::class);
+    }
+    public function team()
+    {
+        return $this->belongsTo(Team::class);
+    }
+    public function member()
+    {
+        return $this->belongsTo(TeamMember::class);
+    }
     public function discounts()
     {
         return $this->hasMany(discount::class);
