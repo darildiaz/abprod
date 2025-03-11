@@ -44,6 +44,7 @@ class ProductiondetResource extends Resource
                 ->label('Cantidad')
                 ->required()
                 ->numeric(),
+            
             Forms\Components\TextInput::make('price')
                 ->label('Precio')
                 ->required()
@@ -100,6 +101,12 @@ class ProductiondetResource extends Resource
 
                 ->numeric()
                 ->sortable(),
+            Tables\Columns\TextColumn::make('valid_amount')
+                ->label('Cantidad valida')
+                ->summarize(Sum::make())
+                ->numeric()
+                ->sortable(),
+                
             Tables\Columns\TextColumn::make('price')
                 ->label('Precio')
                 ->money('Gs.')
@@ -109,7 +116,7 @@ class ProductiondetResource extends Resource
                 //->summarize(Sum::make())
 
                 ->state(function (Productiondet $record): float {
-                    return $record->quantity * $record->price;
+                    return $record->valid_amount * $record->price;
                 })
                 ->money('Gs.')
                 ->sortable(),

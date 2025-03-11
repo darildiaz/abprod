@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('production_id')->constrained('productions')->onDelete('cascade');
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Relación con productos
             $table->integer('quantity'); // Cantidad producida
+            $table->integer('valid_amount'); // Cantidad producida
             $table->integer('price');
             $table->boolean('pay')->default(false);
             $table->timestamps();

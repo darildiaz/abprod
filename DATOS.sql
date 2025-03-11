@@ -14,71 +14,230 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- Volcando datos para la tabla abprod.categories: ~24 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.categories
+CREATE TABLE IF NOT EXISTS `categories` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `order` int NOT NULL DEFAULT '0',
+  `is_important` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `categories_name_unique` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.categories: ~29 rows (aproximadamente)
 INSERT INTO `categories` (`id`, `name`, `code`, `description`, `order`, `is_important`, `created_at`, `updated_at`) VALUES
-	(1, 'Camiseta', 'CAM', NULL, 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'Camisilla', 'CMLL', NULL, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'Short', 'SHT', NULL, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, 'Media', 'MED', NULL, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(5, 'Camiseta Manga largas', 'CAMLL', NULL, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(6, 'Botinera', 'BTN', NULL, 6, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(7, 'Blusa', 'BLU', NULL, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(8, 'Camisa', 'CMS', NULL, 8, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(9, 'Remera de algodon ', 'REM', NULL, 9, 1, '2025-02-19 17:30:11', '2025-02-19 17:38:10'),
-	(10, 'Remera Polo', 'RP', NULL, 10, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(11, 'Cuellera', 'CUE', NULL, 11, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(12, 'Bandera', 'BDR', NULL, 12, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(13, 'Brazalete', 'BRZ', NULL, 13, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(14, 'Bata Médica', 'BMD', NULL, 14, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(15, 'Bincha', 'BIN', NULL, 15, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(16, 'Crop Top de Algodón', 'CTA', NULL, 16, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(17, 'Body', 'BDY', NULL, 17, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(18, 'Accesorio', 'ACC', NULL, 18, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(19, 'Campera', 'CMP', NULL, 19, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(20, 'Canguro', 'CNG', NULL, 20, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(21, 'Chaleco', 'CHL', NULL, 21, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(22, 'Chaqueta', 'CHQ', NULL, 22, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(23, 'Chomba', 'CHM', NULL, 23, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(24, 'Ciclista', 'CIC', NULL, 24, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(25, 'Pantalon', 'PTN', NULL, 0, 0, '2025-02-19 17:37:49', '2025-02-19 17:37:49'),
-	(26, 'Saco', 'SC', NULL, 8, 1, '2025-02-19 17:39:00', '2025-02-19 17:39:00');
+	(1, 'Camiseta', 'CAM', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Camisilla', 'CMLL', NULL, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Short', 'SHT', NULL, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'Media', 'MED', NULL, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'Camiseta Manga largas', 'CAMLG', NULL, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'Botinera', 'BTN', NULL, 6, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'Blusa', 'BLU', NULL, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Camisa', 'CMS', NULL, 8, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Remera', 'REM', NULL, 9, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'Remera Polo', 'RP', NULL, 10, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 'Cuellera', 'CUE', NULL, 11, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 'Bandera', 'BDR', NULL, 12, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 'Brazalete', 'BRZ', NULL, 13, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 'Bata Médica', 'BMD', NULL, 14, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 'Bincha', 'BIN', NULL, 15, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 'Crop Top de Algodón', 'CTA', NULL, 16, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, 'Body', 'BDY', NULL, 17, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 'Accesorio', 'ACC', NULL, 18, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 'Campera', 'CMP', NULL, 19, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 'Canguro', 'CNG', NULL, 20, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 'Chaleco', 'CHL', NULL, 21, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 'Chaqueta', 'CHQ', NULL, 22, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 'Chomba', 'CHM', NULL, 23, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 'Ciclista', 'CIC', NULL, 24, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 'Termica', 'TM', NULL, 25, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 'Saco', 'SC', NULL, 26, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 'Pantalon', 'PTN', NULL, 27, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, 'crop top', 'CT', NULL, 28, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, 'Servicios', 'SEV', NULL, 0, 0, '2025-03-05 13:30:09', '2025-03-05 13:30:09');
 
--- Volcando datos para la tabla abprod.centers: ~9 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.centers
+CREATE TABLE IF NOT EXISTS `centers` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `level` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.centers: ~16 rows (aproximadamente)
 INSERT INTO `centers` (`id`, `name`, `level`, `created_at`, `updated_at`) VALUES
-	(1, 'Diagramacion', 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'Impresion', 2, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'Sublimacion', 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, 'Corte', 4, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(5, 'Taller', 5, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(6, 'Plancha', 6, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(7, 'Vinilo y terminado', 7, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(8, 'Bordado', 8, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(9, 'Empaque', 9, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'Diseño', 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Compras', 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Color', 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'Diagramacion ', 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'Ponchado', 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'Vinilo corte', 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'Impresion', 4, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Sublimacion', 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Corte', 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'Confeccion', 6, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 'Terminacion vinilo talle', 7, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 'Bordado', 8, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 'Plancha', 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 'Empaque', 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 'Ventas', 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 'Administracion', 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22');
 
--- Volcando datos para la tabla abprod.class_centers: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.class_centers
+CREATE TABLE IF NOT EXISTS `class_centers` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `category_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `item` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `class_centers_category_id_foreign` (`category_id`),
+  KEY `class_centers_center_id_foreign` (`center_id`),
+  CONSTRAINT `class_centers_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `question_categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `class_centers_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.customers: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.class_centers: ~14 rows (aproximadamente)
+INSERT INTO `class_centers` (`id`, `category_id`, `center_id`, `item`, `created_at`, `updated_at`) VALUES
+	(1, 1, 2, 1, '2025-02-27 14:21:13', '2025-02-27 14:21:13'),
+	(2, 1, 1, 1, '2025-02-27 14:21:56', '2025-02-27 14:21:56'),
+	(3, 1, 3, 2, '2025-02-27 14:22:22', '2025-02-27 14:22:22'),
+	(4, 1, 4, 3, '2025-02-27 14:22:54', '2025-02-27 14:22:54'),
+	(5, 1, 6, 3, '2025-02-27 14:23:03', '2025-02-27 14:23:03'),
+	(6, 1, 5, 3, '2025-02-27 14:23:18', '2025-02-27 14:23:18'),
+	(7, 1, 7, 4, '2025-02-27 14:23:33', '2025-02-27 14:23:33'),
+	(8, 1, 9, 3, '2025-02-27 14:23:52', '2025-02-27 14:23:52'),
+	(9, 1, 8, 5, '2025-02-27 14:24:08', '2025-02-27 14:24:08'),
+	(10, 1, 10, 6, '2025-02-27 14:24:39', '2025-02-27 14:24:39'),
+	(11, 1, 11, 7, '2025-02-27 14:24:54', '2025-02-27 14:24:54'),
+	(12, 1, 12, 8, '2025-02-27 14:25:10', '2025-02-27 14:25:10'),
+	(13, 1, 13, 9, '2025-02-27 14:25:36', '2025-02-27 14:25:36'),
+	(14, 1, 14, 10, '2025-02-27 14:25:47', '2025-02-27 14:25:47');
+
+-- Volcando estructura para tabla abprod1.customers
+CREATE TABLE IF NOT EXISTS `customers` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `nif` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `address` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `phone` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `customers_nif_unique` (`nif`),
+  KEY `customers_user_id_foreign` (`user_id`),
+  CONSTRAINT `customers_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.customers: ~4 rows (aproximadamente)
 INSERT INTO `customers` (`id`, `nif`, `name`, `address`, `phone`, `user_id`, `created_at`, `updated_at`) VALUES
-	(1, '5192306', 'Daril Diaz', 'Horqueta', '0972813605', 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, '5192306', 'Daril Diaz', 'Horqueta', '0972813605', 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, '4095330', 'MYRIAN MAIDANA', 'PILAR ÑEEMBUCU\nTensshy89@outlook.com', '+595 982 264076', 7, '2025-02-27 16:00:35', '2025-02-27 16:00:35'),
+	(3, '4782119', 'Nicolas Noguera', 'Lambare', '0981 623715', 16, '2025-03-03 17:08:27', '2025-03-03 17:08:27'),
+	(4, '1245465', 'NERY IRALA', 'HORQUETA', '+595 975 298264', 12, '2025-03-03 17:19:20', '2025-03-03 17:19:20');
 
--- Volcando datos para la tabla abprod.discounts: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.discounts
+CREATE TABLE IF NOT EXISTS `discounts` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `date` date NOT NULL,
+  `max_amount` int NOT NULL,
+  `available` tinyint(1) NOT NULL DEFAULT '1',
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `discounts_code_unique` (`code`),
+  KEY `discounts_user_id_foreign` (`user_id`),
+  CONSTRAINT `discounts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.error_orders: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.discounts: ~0 rows (aproximadamente)
 
--- Volcando datos para la tabla abprod.failed_jobs: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.error_orders
+CREATE TABLE IF NOT EXISTS `error_orders` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `order_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `product_id` bigint unsigned NOT NULL,
+  `part_id` bigint unsigned NOT NULL,
+  `item` int NOT NULL,
+  `obs_det` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `obs_error` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tela` tinyint(1) NOT NULL DEFAULT '0',
+  `quantity` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `error_orders_order_id_foreign` (`order_id`),
+  KEY `error_orders_center_id_foreign` (`center_id`),
+  KEY `error_orders_product_id_foreign` (`product_id`),
+  KEY `error_orders_part_id_foreign` (`part_id`),
+  CONSTRAINT `error_orders_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `error_orders_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `error_orders_part_id_foreign` FOREIGN KEY (`part_id`) REFERENCES `parts` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `error_orders_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.lines: ~8 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.error_orders: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.failed_jobs
+CREATE TABLE IF NOT EXISTS `failed_jobs` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.failed_jobs: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.lines
+CREATE TABLE IF NOT EXISTS `lines` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `lines_code_unique` (`code`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.lines: ~10 rows (aproximadamente)
 INSERT INTO `lines` (`id`, `code`, `name`, `created_at`, `updated_at`) VALUES
-	(1, 'C', 'Eco', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'B', 'Basic', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'S', 'Estandar', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, 'F', 'Oficial', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(5, 'A', 'Profesional', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(6, 'R', 'Semi Profesional', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(7, 'PR', 'Premium', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(8, 'E', 'Elite', '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'C', 'Eco', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'B', 'Basic', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'S', 'Estandar', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'F', 'Oficial', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'A', 'Profesional', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'R', 'Semi Profesional', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'PR', 'Premium', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'E', 'Elite', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'G', 'Campeones', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'EMP', 'Empresarial', '2025-02-26 15:17:22', '2025-02-26 15:17:22');
 
--- Volcando datos para la tabla abprod.migrations: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.migrations
+CREATE TABLE IF NOT EXISTS `migrations` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.migrations: ~33 rows (aproximadamente)
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(1, '2014_10_12_000000_create_users_table', 1),
 	(2, '2014_10_12_100000_create_password_reset_tokens_table', 1),
@@ -114,80 +273,539 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 	(32, '2025_02_12_201940_create_class_centers_table', 1),
 	(33, '2025_02_12_202013_create_plannings_table', 1);
 
--- Volcando datos para la tabla abprod.model_has_permissions: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.model_has_permissions
+CREATE TABLE IF NOT EXISTS `model_has_permissions` (
+  `permission_id` bigint unsigned NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`permission_id`,`model_id`,`model_type`),
+  KEY `model_has_permissions_model_id_model_type_index` (`model_id`,`model_type`),
+  CONSTRAINT `model_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.model_has_roles: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.model_has_permissions: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.model_has_roles
+CREATE TABLE IF NOT EXISTS `model_has_roles` (
+  `role_id` bigint unsigned NOT NULL,
+  `model_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `model_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`role_id`,`model_id`,`model_type`),
+  KEY `model_has_roles_model_id_model_type_index` (`model_id`,`model_type`),
+  CONSTRAINT `model_has_roles_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.model_has_roles: ~18 rows (aproximadamente)
 INSERT INTO `model_has_roles` (`role_id`, `model_type`, `model_id`) VALUES
 	(2, 'App\\Models\\User', 1),
-	(3, 'App\\Models\\User', 3);
+	(3, 'App\\Models\\User', 3),
+	(3, 'App\\Models\\User', 4),
+	(4, 'App\\Models\\User', 4),
+	(3, 'App\\Models\\User', 7),
+	(3, 'App\\Models\\User', 12),
+	(3, 'App\\Models\\User', 16),
+	(3, 'App\\Models\\User', 23),
+	(3, 'App\\Models\\User', 29),
+	(2, 'App\\Models\\User', 31),
+	(3, 'App\\Models\\User', 36),
+	(3, 'App\\Models\\User', 50),
+	(3, 'App\\Models\\User', 51),
+	(3, 'App\\Models\\User', 52),
+	(3, 'App\\Models\\User', 53),
+	(3, 'App\\Models\\User', 54),
+	(3, 'App\\Models\\User', 55),
+	(3, 'App\\Models\\User', 56);
 
--- Volcando datos para la tabla abprod.operators: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.operators
+CREATE TABLE IF NOT EXISTS `operators` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `position` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `operators_user_id_foreign` (`user_id`),
+  KEY `operators_center_id_foreign` (`center_id`),
+  CONSTRAINT `operators_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `operators_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=47 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.operators: ~46 rows (aproximadamente)
 INSERT INTO `operators` (`id`, `name`, `position`, `user_id`, `center_id`, `created_at`, `updated_at`) VALUES
-	(1, 'Tobias', 'Diagramador', 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'Aquino Rojas, Rodrigo Fabian', 'Fun. abdiez', 4, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Areco Gòmez, Ilcia Mariela', '', 5, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Arevalos Alvarenga, Ada Ramona', '', 6, 14, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'Beraud Fernandez, Isis Maria Jesus', '', 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'Bogarín Ríos, Adrian Pastor', '', 8, 7, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'Cabrera Barua, Laura Patricia', '', 9, 12, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'Carballo,Antonio', '', 10, 8, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Castillo Ortiz, Jesús Alberto', '', 11, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Colmán, Liz Sandra', '', 12, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'Dìaz, Daril Andres', '', 13, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 'Duarte Medina, Ana Liz', '', 14, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 'Espinola Martinez, Mario', '', 15, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 'Espinola Ramírez, Liz Romina', '', 16, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 'Irala Cassera, Nadia Monserrath', '', 17, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 'López, Anibal', '', 18, 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 'López, Norma', '', 19, 13, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, 'López Osmar', '', 20, 8, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 'Mancuello, Miryam', '', 21, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 'Martiinez , Leticia', '', 22, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 'Martinez Rojas, Fatima', '', 23, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 'Meza Bogarin, Marcial Tobías Isaac', '', 24, 4, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 'Mora Palacios, Cesar Benito', '', 25, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 'Ozorio Huchense, Ynocencia', '', 26, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 'Peña Javier.', '', 27, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 'Ramirez, Julio', '', 28, 4, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 'Ramirez Alegre, Laura Carolina', '', 29, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 'Ramos, Nelly', '', 30, 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, 'Rojas Barua, Olga María Liz', '', 31, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, 'Rojas Insaurralde,Carlos Enrique', '', 32, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(30, 'Ruíz Britez, Areli', '', 33, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(31, 'Ruiz Britez, David Abdias', '', 34, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(32, 'Ruíz Martinez, Angela del Rosario', '', 35, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(33, 'Sorensen, Pedro', '', 36, 15, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(34, 'Vera Garcìa , Ronaldo Ruben', '', 37, 16, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(35, 'Villalba, Alder', '', 38, 12, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(36, 'Caballero López, Enry David', '', 39, 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(37, 'Meza Gayozo, Cesar Ramón', '', 40, 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(38, 'Vera Acosta, Feliciano', '', 41, 9, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(39, 'Viky', '', 42, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(40, 'Perla', '', 43, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(41, 'Mauro', '', 44, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(42, 'Marciano', '', 45, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(43, 'Diosnel', '', 46, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(44, 'Angela Jara', '', 47, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(45, 'Anicia', '', 48, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(46, 'Yolanda', '', 49, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22');
 
--- Volcando datos para la tabla abprod.orders: ~0 rows (aproximadamente)
-INSERT INTO `orders` (`id`, `bitrix_id`, `customer_id`, `seller_id`, `team_id`, `reference_name`, `issue_date`, `delivery_date`, `shipping_date`, `completion_date`, `total`, `classification_id`, `status`, `created_at`, `updated_at`) VALUES
-	(1, NULL, 1, 3, 1, 'jhjhj', '2025-02-19', '2025-03-01', NULL, NULL, 2360000, 1, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27');
+-- Volcando estructura para tabla abprod1.orders
+CREATE TABLE IF NOT EXISTS `orders` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `bitrix_id` int DEFAULT NULL,
+  `customer_id` bigint unsigned NOT NULL,
+  `seller_id` bigint unsigned NOT NULL,
+  `manager_id` bigint unsigned NOT NULL,
+  `team_id` bigint unsigned NOT NULL,
+  `reference_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `issue_date` date NOT NULL,
+  `delivery_date` date NOT NULL,
+  `shipping_date` date DEFAULT NULL,
+  `completion_date` date DEFAULT NULL,
+  `total` int NOT NULL,
+  `classification_id` bigint unsigned NOT NULL,
+  `status` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `orders_customer_id_foreign` (`customer_id`),
+  KEY `orders_seller_id_foreign` (`seller_id`),
+  KEY `orders_manager_id_foreign` (`manager_id`),
+  KEY `orders_team_id_foreign` (`team_id`),
+  KEY `orders_classification_id_foreign` (`classification_id`),
+  CONSTRAINT `orders_classification_id_foreign` FOREIGN KEY (`classification_id`) REFERENCES `question_categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `orders_customer_id_foreign` FOREIGN KEY (`customer_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `orders_manager_id_foreign` FOREIGN KEY (`manager_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `orders_seller_id_foreign` FOREIGN KEY (`seller_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `orders_team_id_foreign` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.order_items: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.orders: ~7 rows (aproximadamente)
+INSERT INTO `orders` (`id`, `bitrix_id`, `customer_id`, `seller_id`, `manager_id`, `team_id`, `reference_name`, `issue_date`, `delivery_date`, `shipping_date`, `completion_date`, `total`, `classification_id`, `status`, `created_at`, `updated_at`) VALUES
+	(1, 1, 1, 1, 1, 2, 'sport juvenil', '2025-02-26', '2025-03-08', NULL, NULL, 210000, 1, 1, '2025-02-26 17:28:52', '2025-02-27 14:26:48'),
+	(2, 6588, 1, 12, 36, 3, 'GRUPO MACHADO', '2025-02-26', '2025-03-08', NULL, NULL, 240000, 1, 1, '2025-02-26 19:54:46', '2025-02-27 15:21:50'),
+	(3, NULL, 1, 29, 29, 1, 'CLUB MARISCAL LOPEZ', '2025-02-26', '2025-03-08', NULL, NULL, 210000, 1, 1, '2025-02-26 20:13:53', '2025-02-27 15:19:32'),
+	(4, NULL, 1, 1, 1, 4, 'sport prueba 2', '2025-02-27', '2025-03-09', NULL, NULL, 4005000, 1, 4, '2025-02-27 13:42:17', '2025-02-28 18:05:10'),
+	(5, NULL, 2, 7, 7, 1, 'CLUB DEPORTIVO ESTRELLA DEL SUR', '2025-02-27', '2025-03-09', NULL, NULL, 510000, 1, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(6, 4358, 3, 16, 16, 1, 'TEAM SAVAGE', '2025-03-03', '2025-03-13', NULL, NULL, 680000, 1, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(7, 6592, 4, 12, 12, 3, 'SAGRADO CORAZON DE  JESUS', '2025-03-03', '2025-03-13', NULL, NULL, 3230001, 3, 0, '2025-03-03 18:05:04', '2025-03-03 18:11:55');
+
+-- Volcando estructura para tabla abprod1.order_items
+CREATE TABLE IF NOT EXISTS `order_items` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `item` int NOT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `number` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `other` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `size_id` bigint unsigned NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
+  `price` int NOT NULL,
+  `subtotal` int NOT NULL,
+  `discount` int NOT NULL DEFAULT '0',
+  `product_id` json DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_items_order_id_foreign` (`order_id`),
+  KEY `order_items_size_id_foreign` (`size_id`),
+  CONSTRAINT `order_items_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_items_size_id_foreign` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=122 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.order_items: ~83 rows (aproximadamente)
 INSERT INTO `order_items` (`id`, `order_id`, `item`, `model`, `name`, `number`, `other`, `size_id`, `quantity`, `price`, `subtotal`, `discount`, `product_id`, `created_at`, `updated_at`) VALUES
-	(1, 1, 1, 'Modelo 1', 'jugador 2', '1', '0rh+', 24, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(2, 1, 2, 'Modelo 1', 'jugador 2', '1', '0rh+', 24, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(3, 1, 3, 'Modelo 1', 'jugador 2', '1', '0rh+', 24, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(4, 1, 4, 'Modelo 1', 'jugador 2', '1', '0rh+', 25, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(5, 1, 5, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(6, 1, 6, 'Modelo 1', 'jugador 1', '10', '0rh+', 23, 1, 130000, 130000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(7, 1, 7, 'Modelo 1', 'jugador 3', NULL, '0rh+', 20, 2, 130000, 260000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(8, 1, 8, 'Modelo 1', 'jugador 3', NULL, '0rh+', 20, 2, 130000, 260000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(9, 1, 9, 'Modelo 1', 'jugador 3', NULL, '0rh+', 20, 2, 130000, 260000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(10, 1, 10, 'Modelo 1', 'jugador 3', NULL, '0rh+', 20, 2, 130000, 260000, 0, '[23, 33]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(11, 1, 11, 'Modelo 1', 'jugador 2', '1', '0rh+', 24, 1, 90000, 90000, 0, '[23]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(12, 1, 12, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 90000, 90000, 0, '[23]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(13, 1, 13, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 90000, 90000, 0, '[23]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(14, 1, 14, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 90000, 90000, 0, '[23]', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(15, 1, 15, 'Modelo 1', 'jugador 3', NULL, '0rh+', 20, 2, 90000, 180000, 0, '[23]', '2025-02-19 22:34:27', '2025-02-19 22:34:27');
+	(1, 1, 1, 'Modelo 2', 'jugador 2', '10', '0rh+', 23, 1, 125000, 125000, 0, '[16, 47]', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(2, 1, 2, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 85000, 85000, 0, '[16]', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(3, 2, 1, 'modelo 2', 'daril', '6', NULL, 23, 1, 45000, 45000, 0, '[44]', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(4, 2, 2, 'Modelo 1', 'pedro', '4', NULL, 24, 1, 85000, 85000, 0, '[18]', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(5, 2, 3, 'Modelo 1', 'david', '5', NULL, 21, 1, 110000, 110000, 0, '[1]', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(6, 3, 1, 'Modelo 2', 'jugador 2', '10', '0rh+', 23, 1, 125000, 125000, 0, '[16, 47]', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(7, 3, 2, 'Modelo 1', 'jugador 1', '10', '0rh+', 22, 1, 85000, 85000, 0, '[16]', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(8, 4, 1, 'Modelo 1', NULL, NULL, NULL, 12, 1, 140000, 140000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(9, 4, 2, 'Modelo 1', NULL, NULL, NULL, 13, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(10, 4, 3, 'Modelo 1', NULL, NULL, NULL, 10, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(11, 4, 4, 'Modelo 1', NULL, NULL, NULL, 9, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(12, 4, 5, 'Modelo 1', NULL, NULL, NULL, 14, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(13, 4, 6, 'Modelo 1', NULL, NULL, NULL, 15, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(14, 4, 7, 'Modelo 1', NULL, NULL, NULL, 16, 1, 145000, 145000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(15, 4, 8, 'Modelo 1', NULL, NULL, NULL, 17, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(16, 4, 9, 'Modelo 1', NULL, NULL, NULL, 28, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(17, 4, 10, 'Modelo 1', NULL, NULL, NULL, 29, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(18, 4, 11, 'Modelo 1', NULL, NULL, NULL, 30, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(19, 4, 12, 'Modelo 1', NULL, NULL, NULL, 31, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(20, 4, 13, 'Modelo 1', NULL, NULL, NULL, 8, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(21, 4, 14, 'Modelo 1', NULL, NULL, NULL, 9, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(22, 4, 15, 'Modelo 1', NULL, NULL, NULL, 10, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(23, 4, 16, 'Modelo 1', NULL, NULL, NULL, 11, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(24, 4, 17, 'Modelo 1', NULL, NULL, NULL, 24, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(25, 4, 18, 'Modelo 1', NULL, NULL, NULL, 25, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(26, 4, 19, 'Modelo 1', NULL, NULL, NULL, 22, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(27, 4, 20, 'Modelo 1', NULL, NULL, NULL, 23, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(28, 4, 21, 'Modelo 1', NULL, NULL, NULL, 20, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(29, 4, 22, 'Modelo 1', NULL, NULL, NULL, 21, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(30, 4, 23, 'Modelo 1', NULL, NULL, NULL, 26, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(31, 4, 24, 'Modelo 1', NULL, NULL, NULL, 27, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(32, 4, 25, 'Modelo 1', NULL, NULL, NULL, 18, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(33, 4, 26, 'Modelo 1', NULL, NULL, NULL, 19, 1, 155000, 155000, 0, '[16, 72]', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(34, 5, 1, 'Modelo 1', 'TENSHY', '8', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(35, 5, 2, 'Modelo 1', 'MAIDANA', '5', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(36, 5, 3, 'Modelo 1', 'IRIS BÁEZ', '11', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(37, 5, 4, 'Modelo 1', 'FILIANA', '9', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(38, 5, 5, 'Modelo 1', 'HAEDO', '7', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(39, 5, 6, 'Modelo 1', 'XXX', '21', NULL, 22, 1, 85000, 85000, 0, '[18]', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(40, 6, 1, 'Modelo 2', 'EL DOC', NULL, NULL, 26, 1, 90000, 90000, 0, '[159]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(41, 6, 2, 'Modelo 1', 'ALE COLMÁN', NULL, NULL, 20, 1, 150000, 150000, 0, '[1, 44]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(42, 6, 3, 'Modelo 1', 'KILIAN', NULL, NULL, 6, 1, 110000, 110000, 0, '[1]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(43, 6, 4, 'Modelo 1', 'MABEL', NULL, NULL, 24, 1, 110000, 110000, 0, '[1]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(44, 6, 5, 'Modelo 1', 'MATÍAS', NULL, NULL, 20, 1, 110000, 110000, 0, '[1]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(45, 6, 6, 'Modelo 1', 'EL DOC', NULL, NULL, 26, 1, 110000, 110000, 0, '[1]', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(84, 7, 1, 'Modelo 1', 'ISIDRO P.', 'SN', NULL, 28, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(85, 7, 2, 'Modelo 1', 'EMMANUEL', 'SN', NULL, 6, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(86, 7, 3, 'Modelo 1', 'SIN NOMBRE', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(87, 7, 4, 'Modelo 1', 'HÉCTOR', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(88, 7, 5, 'Modelo 1', 'ROBERT C.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(89, 7, 6, 'Modelo 1', 'JUDITH R.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(90, 7, 7, 'Modelo 1', 'SERGIO P.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(91, 7, 8, 'Modelo 1', 'M. ANTONIO.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(92, 7, 9, 'Modelo 1', 'LUCÍA M.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(93, 7, 10, 'Modelo 1', 'DALVA ROMERO F.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(94, 7, 11, 'Modelo 1', 'MENCHY', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(95, 7, 12, 'Modelo 1', 'NERY', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(96, 7, 13, 'Modelo 1', 'TEOFILO B.', 'SN', NULL, 24, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(97, 7, 14, 'Modelo 1', 'LIDIA ', 'SN', NULL, 22, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(98, 7, 15, 'Modelo 1', 'DEYDAMIA M.', 'SN', NULL, 22, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(99, 7, 16, 'Modelo 1', 'ROSALINA', 'SN', NULL, 22, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(100, 7, 17, 'Modelo 1', 'MIRIAN B.', 'SN', NULL, 22, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(101, 7, 18, 'Modelo 1', 'B. ROSA.', 'SN', NULL, 22, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(102, 7, 19, 'Modelo 1', 'FANY I.', 'SN', NULL, 20, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(103, 7, 20, 'Modelo 1', 'VERÓNICA C.', 'SN', NULL, 20, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(104, 7, 21, 'Modelo 1', 'NAIDA E.', 'SN', NULL, 20, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(105, 7, 22, 'Modelo 1', 'ROSA', 'SN', NULL, 20, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(106, 7, 23, 'Modelo 1', 'YANINA ', 'SN', NULL, 20, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(107, 7, 24, 'Modelo 1', 'MARIA C.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(108, 7, 25, 'Modelo 1', 'JUAN CANCIO', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(109, 7, 26, 'Modelo 2', 'FAVIO M.', 'SN', 'Escrito atrás', 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(110, 7, 27, 'Modelo 1', 'MARÍA A.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(111, 7, 28, 'Modelo 1', 'IGNACIO', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(112, 7, 29, 'Modelo 1', 'MARTINA', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(113, 7, 30, 'Modelo 1', 'MILCIADES V.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(114, 7, 31, 'Modelo 1', 'ROSALINO Z.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(115, 7, 32, 'Modelo 1', 'CECILIO M.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(116, 7, 33, 'Modelo 1', 'J. DANIEL', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(117, 7, 34, 'Modelo 1', 'NÉSTOR C', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(118, 7, 35, 'Modelo 1', 'LINA ', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(119, 7, 36, 'Modelo 1', 'CELSO V.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(120, 7, 37, 'Modelo 1', 'LUIS A.', 'SN', NULL, 26, 1, 85000, 85000, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54'),
+	(121, 7, 38, 'Modelo 1', 'ANDRES P.', 'SN', NULL, 26, 1, 85001, 85001, 0, '[]', '2025-03-03 18:11:54', '2025-03-03 18:11:54');
 
--- Volcando datos para la tabla abprod.order_item_products: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.order_item_products
+CREATE TABLE IF NOT EXISTS `order_item_products` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_item_id` bigint unsigned NOT NULL,
+  `reference_id` bigint unsigned NOT NULL,
+  `size_id` bigint unsigned NOT NULL,
+  `price` int NOT NULL,
+  `quantity` int NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_item_products_order_item_id_foreign` (`order_item_id`),
+  KEY `order_item_products_reference_id_foreign` (`reference_id`),
+  KEY `order_item_products_size_id_foreign` (`size_id`),
+  CONSTRAINT `order_item_products_order_item_id_foreign` FOREIGN KEY (`order_item_id`) REFERENCES `order_items` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_item_products_reference_id_foreign` FOREIGN KEY (`reference_id`) REFERENCES `order_references` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_item_products_size_id_foreign` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.order_molds: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.order_item_products: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.order_molds
+CREATE TABLE IF NOT EXISTS `order_molds` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imagen` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_molds_order_id_foreign` (`order_id`),
+  CONSTRAINT `order_molds_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.order_molds: ~9 rows (aproximadamente)
 INSERT INTO `order_molds` (`id`, `order_id`, `title`, `imagen`, `created_at`, `updated_at`) VALUES
-	(1, 1, 'MODELO 1', 'orders/01JMFV8NGTKB2YXZ9GCA3470RV.HEIC', '2025-02-19 22:34:27', '2025-02-19 22:34:27');
+	(1, 1, 'MODELO 1', 'orders/01JN1AJ5V7SQ4QHQFA5JW5WWDX.png', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(2, 2, 'MODELO 1', 'orders/01JN1JXA6TBTAY91FPKYDRYKV5.jpeg', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(3, 3, 'MODELO 1', 'orders/01JN1M0AF8RA4BA0V2EWCPQ374.png', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(4, 3, 'MODELO 2', 'orders/01JN1M0AF8RA4BA0V2EWCPQ374.png', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(5, 4, 'MODELO 1', 'orders/01JN3G00DGG2ZEDMQXTH08XHC7.png', '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(6, 5, 'MODELO 1', 'orders/01JN3R4EMKGWSDWX1YCV51KK4H.jpeg', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(7, 6, 'MODELO 1', 'orders/01JNE6PVR6YPMTK9X71NSCE4X1.jpg', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(8, 6, 'MODELO 2', 'orders/01JNE6PVR7A6JHEQ9YW2Z19MBX.jpg', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(9, 7, 'MODELO 1', 'orders/01JNE8M243RTDR7MRV02M3M2MT.png', '2025-03-03 18:05:04', '2025-03-03 18:05:04');
 
--- Volcando datos para la tabla abprod.order_question_answers: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.order_question_answers
+CREATE TABLE IF NOT EXISTS `order_question_answers` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `question_id` bigint unsigned NOT NULL,
+  `answer` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_question_answers_order_id_foreign` (`order_id`),
+  KEY `order_question_answers_question_id_foreign` (`question_id`),
+  CONSTRAINT `order_question_answers_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_question_answers_question_id_foreign` FOREIGN KEY (`question_id`) REFERENCES `questions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=54 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.order_question_answers: ~51 rows (aproximadamente)
 INSERT INTO `order_question_answers` (`id`, `order_id`, `question_id`, `answer`, `created_at`, `updated_at`) VALUES
-	(1, 1, 1, '704', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(2, 1, 2, 'si', '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(3, 1, 3, '5', '2025-02-19 22:34:27', '2025-02-19 22:34:27');
+	(1, 1, 1, 'rojo', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(2, 1, 2, 'si', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(3, 1, 3, 'si', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(4, 1, 4, '5', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(5, 1, 5, '2', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(6, 1, 6, '0', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(7, 1, 9, '0', '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(8, 2, 1, 'ROJO CON DETALLES BLANCOS', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(9, 2, 2, 'SI', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(10, 2, 3, 'SI', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(11, 2, 4, '5', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(12, 2, 5, '0', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(13, 2, 6, '1', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(14, 2, 9, '5', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(15, 2, 13, 'BLANCO CON ROJO', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(16, 2, 14, 'ROJO', '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(17, 3, 1, 'rojo ', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(18, 3, 2, 'si', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(19, 3, 3, 'si', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(20, 3, 4, 'si 4', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(21, 3, 5, '0', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(22, 3, 6, '1', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(23, 3, 9, '5', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(24, 3, 13, 'azul', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(25, 3, 14, 'azul', '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(26, 4, 1, 'rojo', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(27, 4, 2, 'si', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(28, 4, 3, 'si', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(29, 4, 4, '5', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(30, 4, 5, '2', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(31, 4, 6, '0', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(32, 4, 9, '0', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(33, 4, 13, 'rojo', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(34, 4, 14, 'azul', '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(35, 5, 1, 'BLANCO, VERDE Y NARANJA', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(36, 5, 2, 'SI', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(37, 5, 3, 'SI', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(38, 5, 4, '0', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(39, 5, 5, '0', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(40, 5, 6, '0', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(41, 5, 9, '0', '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(42, 6, 1, 'VERDE LIMON, SEGUIDO DEL ANTERIOR', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(43, 6, 2, 'SI', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(44, 6, 3, 'NO', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(45, 6, 4, 'NO', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(46, 6, 5, '1', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(47, 6, 6, '1', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(48, 6, 9, 'NO', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(49, 6, 13, 'NEGRO', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(50, 6, 15, 'NO ', '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(53, 7, 12, '5', '2025-03-03 18:11:55', '2025-03-03 18:11:55');
 
--- Volcando datos para la tabla abprod.order_references: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.order_references
+CREATE TABLE IF NOT EXISTS `order_references` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` bigint unsigned NOT NULL,
+  `item` int NOT NULL,
+  `product_id` bigint unsigned NOT NULL,
+  `size_id` bigint unsigned NOT NULL,
+  `quantity` int NOT NULL,
+  `price` int NOT NULL,
+  `discount` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_references_order_id_foreign` (`order_id`),
+  KEY `order_references_product_id_foreign` (`product_id`),
+  KEY `order_references_size_id_foreign` (`size_id`),
+  CONSTRAINT `order_references_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_references_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `order_references_size_id_foreign` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=113 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.order_references: ~112 rows (aproximadamente)
 INSERT INTO `order_references` (`id`, `order_id`, `item`, `product_id`, `size_id`, `quantity`, `price`, `discount`, `created_at`, `updated_at`) VALUES
-	(1, 1, 1, 23, 24, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(2, 1, 1, 33, 24, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(3, 1, 2, 23, 24, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(4, 1, 2, 33, 24, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(5, 1, 3, 23, 24, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(6, 1, 3, 33, 24, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(7, 1, 4, 23, 25, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(8, 1, 4, 33, 25, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(9, 1, 5, 23, 22, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(10, 1, 5, 33, 22, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(11, 1, 6, 23, 23, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(12, 1, 6, 33, 23, 1, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(13, 1, 7, 23, 20, 2, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(14, 1, 7, 33, 20, 2, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(15, 1, 8, 23, 20, 2, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(16, 1, 8, 33, 20, 2, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(17, 1, 9, 23, 20, 2, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(18, 1, 9, 33, 20, 2, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(19, 1, 10, 23, 20, 2, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(20, 1, 10, 33, 20, 2, 40000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(21, 1, 11, 23, 24, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(22, 1, 12, 23, 22, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(23, 1, 13, 23, 22, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(24, 1, 14, 23, 22, 1, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27'),
-	(25, 1, 15, 23, 20, 2, 90000, 0, '2025-02-19 22:34:27', '2025-02-19 22:34:27');
+	(1, 1, 1, 16, 23, 1, 85000, 0, '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(2, 1, 1, 47, 23, 1, 40000, 0, '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(3, 1, 2, 16, 22, 1, 85000, 0, '2025-02-26 17:28:52', '2025-02-26 17:28:52'),
+	(4, 2, 1, 44, 23, 10, 45000, 0, '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(5, 2, 2, 18, 24, 12, 85000, 0, '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(6, 2, 3, 1, 21, 8, 110000, 0, '2025-02-26 19:54:46', '2025-02-26 19:54:46'),
+	(7, 3, 1, 16, 23, 1, 85000, 0, '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(8, 3, 1, 47, 23, 1, 40000, 0, '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(9, 3, 2, 16, 22, 1, 85000, 0, '2025-02-26 20:13:53', '2025-02-26 20:13:53'),
+	(10, 4, 1, 16, 12, 1, 85000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(11, 4, 1, 72, 12, 1, 55000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(12, 4, 2, 16, 13, 1, 85000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(13, 4, 2, 72, 13, 1, 70000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(14, 4, 3, 16, 10, 1, 85000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(15, 4, 3, 72, 10, 1, 70000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(16, 4, 4, 16, 9, 1, 85000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(17, 4, 4, 72, 9, 1, 70000, 0, '2025-02-27 13:42:17', '2025-02-27 13:42:17'),
+	(18, 4, 5, 16, 14, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(19, 4, 5, 72, 14, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(20, 4, 6, 16, 15, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(21, 4, 6, 72, 15, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(22, 4, 7, 16, 16, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(23, 4, 7, 72, 16, 1, 60000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(24, 4, 8, 16, 17, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(25, 4, 8, 72, 17, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(26, 4, 9, 16, 28, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(27, 4, 9, 72, 28, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(28, 4, 10, 16, 29, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(29, 4, 10, 72, 29, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(30, 4, 11, 16, 30, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(31, 4, 11, 72, 30, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(32, 4, 12, 16, 31, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(33, 4, 12, 72, 31, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(34, 4, 13, 16, 8, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(35, 4, 13, 72, 8, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(36, 4, 14, 16, 9, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(37, 4, 14, 72, 9, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(38, 4, 15, 16, 10, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(39, 4, 15, 72, 10, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(40, 4, 16, 16, 11, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(41, 4, 16, 72, 11, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(42, 4, 17, 16, 24, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(43, 4, 17, 72, 24, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(44, 4, 18, 16, 25, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(45, 4, 18, 72, 25, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(46, 4, 19, 16, 22, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(47, 4, 19, 72, 22, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(48, 4, 20, 16, 23, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(49, 4, 20, 72, 23, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(50, 4, 21, 16, 20, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(51, 4, 21, 72, 20, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(52, 4, 22, 16, 21, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(53, 4, 22, 72, 21, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(54, 4, 23, 16, 26, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(55, 4, 23, 72, 26, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(56, 4, 24, 16, 27, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(57, 4, 24, 72, 27, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(58, 4, 25, 16, 18, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(59, 4, 25, 72, 18, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(60, 4, 26, 16, 19, 1, 85000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(61, 4, 26, 72, 19, 1, 70000, 0, '2025-02-27 13:42:18', '2025-02-27 13:42:18'),
+	(62, 5, 1, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(63, 5, 2, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(64, 5, 3, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(65, 5, 4, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(66, 5, 5, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(67, 5, 6, 18, 22, 1, 85000, 0, '2025-02-27 16:04:31', '2025-02-27 16:04:31'),
+	(68, 6, 1, 159, 26, 1, 90000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(69, 6, 2, 1, 20, 1, 110000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(70, 6, 2, 44, 20, 1, 40000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(71, 6, 3, 1, 6, 1, 110000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(72, 6, 4, 1, 24, 1, 110000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(73, 6, 5, 1, 20, 1, 110000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(74, 6, 6, 1, 26, 1, 110000, 0, '2025-03-03 17:31:39', '2025-03-03 17:31:39'),
+	(75, 7, 1, 72, 28, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(76, 7, 2, 72, 6, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(77, 7, 3, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(78, 7, 4, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(79, 7, 5, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(80, 7, 6, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(81, 7, 7, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(82, 7, 8, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(83, 7, 9, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(84, 7, 10, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(85, 7, 11, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(86, 7, 12, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(87, 7, 13, 72, 24, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(88, 7, 14, 72, 22, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(89, 7, 15, 72, 22, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(90, 7, 16, 72, 22, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(91, 7, 17, 72, 22, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(92, 7, 18, 72, 22, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(93, 7, 19, 72, 20, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(94, 7, 20, 72, 20, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(95, 7, 21, 72, 20, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(96, 7, 22, 72, 20, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(97, 7, 23, 72, 20, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(98, 7, 24, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(99, 7, 25, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(100, 7, 26, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(101, 7, 27, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(102, 7, 28, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(103, 7, 29, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(104, 7, 30, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(105, 7, 31, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(106, 7, 32, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(107, 7, 33, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(108, 7, 34, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(109, 7, 35, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(110, 7, 36, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(111, 7, 37, 72, 26, 1, 85000, 0, '2025-03-03 18:05:05', '2025-03-03 18:05:05'),
+	(112, 7, 38, 72, 26, 1, 85001, 0, '2025-03-03 18:05:05', '2025-03-03 18:11:55');
 
--- Volcando datos para la tabla abprod.parts: ~5 rows (aproximadamente)
+-- Volcando estructura para vista abprod1.order_reference_summaries
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `order_reference_summaries` (
+	`id` VARCHAR(62) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`order_id` BIGINT(20) UNSIGNED NOT NULL,
+	`product_id` BIGINT(20) UNSIGNED NOT NULL,
+	`size_id` BIGINT(20) UNSIGNED NOT NULL,
+	`new_code` VARCHAR(510) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`total_quantity` DECIMAL(32,0) NULL,
+	`total_price` DECIMAL(32,0) NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para tabla abprod1.parts
+CREATE TABLE IF NOT EXISTS `parts` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `loss_percentage` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.parts: ~5 rows (aproximadamente)
 INSERT INTO `parts` (`id`, `name`, `loss_percentage`, `created_at`, `updated_at`) VALUES
 	(1, 'Manga', 20, '2025-02-08 18:59:02', '2025-02-08 18:59:02'),
 	(2, 'delantero', 30, '2025-02-08 18:59:18', '2025-02-08 18:59:18'),
@@ -195,9 +813,28 @@ INSERT INTO `parts` (`id`, `name`, `loss_percentage`, `created_at`, `updated_at`
 	(4, 'manga larga', 25, '2025-02-08 19:00:02', '2025-02-08 19:00:02'),
 	(5, 'detalles', 15, '2025-02-08 19:00:17', '2025-02-08 19:00:17');
 
--- Volcando datos para la tabla abprod.password_reset_tokens: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.password_reset_tokens
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.permissions: ~337 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.password_reset_tokens: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.permissions
+CREATE TABLE IF NOT EXISTS `permissions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `permissions_name_guard_name_unique` (`name`,`guard_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=342 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.permissions: ~341 rows (aproximadamente)
 INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
 	(1, 'view_role', 'web', '2025-02-10 20:33:29', '2025-02-10 20:33:29'),
 	(2, 'view_any_role', 'web', '2025-02-10 20:33:29', '2025-02-10 20:33:29'),
@@ -535,124 +1172,600 @@ INSERT INTO `permissions` (`id`, `name`, `guard_name`, `created_at`, `updated_at
 	(334, 'delete_any_planning', 'web', '2025-02-13 23:03:52', '2025-02-13 23:03:52'),
 	(335, 'force_delete_planning', 'web', '2025-02-13 23:03:52', '2025-02-13 23:03:52'),
 	(336, 'force_delete_any_planning', 'web', '2025-02-13 23:03:52', '2025-02-13 23:03:52'),
-	(337, 'page_CronogramaCenterPage', 'web', '2025-02-13 23:03:53', '2025-02-13 23:03:53');
+	(337, 'page_CronogramaCenterPage', 'web', '2025-02-13 23:03:53', '2025-02-13 23:03:53'),
+	(338, 'status_production_order', 'web', '2025-02-27 13:48:45', '2025-02-27 13:48:45'),
+	(339, 'planning_order', 'web', '2025-02-27 13:48:45', '2025-02-27 13:48:45'),
+	(340, 'seller_order', 'web', '2025-02-27 13:48:45', '2025-02-27 13:48:45'),
+	(341, 'ver_todos_order', 'web', '2025-02-27 13:48:45', '2025-02-27 13:48:45');
 
--- Volcando datos para la tabla abprod.personal_access_tokens: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.personal_access_tokens
+CREATE TABLE IF NOT EXISTS `personal_access_tokens` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `tokenable_type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tokenable_id` bigint unsigned NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `abilities` text COLLATE utf8mb4_unicode_ci,
+  `last_used_at` timestamp NULL DEFAULT NULL,
+  `expires_at` timestamp NULL DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `personal_access_tokens_token_unique` (`token`),
+  KEY `personal_access_tokens_tokenable_type_tokenable_id_index` (`tokenable_type`,`tokenable_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.plannings: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.personal_access_tokens: ~0 rows (aproximadamente)
 
--- Volcando datos para la tabla abprod.prices: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.plannings
+CREATE TABLE IF NOT EXISTS `plannings` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `order_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `plannings_order_id_foreign` (`order_id`),
+  KEY `plannings_center_id_foreign` (`center_id`),
+  CONSTRAINT `plannings_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `plannings_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.plannings: ~56 rows (aproximadamente)
+INSERT INTO `plannings` (`id`, `date`, `order_id`, `center_id`, `created_at`, `updated_at`) VALUES
+	(1, '2025-02-27', 1, 2, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(2, '2025-02-27', 1, 1, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(3, '2025-02-28', 1, 3, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(4, '2025-03-01', 1, 4, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(5, '2025-03-01', 1, 6, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(6, '2025-03-01', 1, 5, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(7, '2025-03-01', 1, 9, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(8, '2025-03-02', 1, 7, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(9, '2025-03-03', 1, 8, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(10, '2025-03-03', 1, 10, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(11, '2025-03-04', 1, 11, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(12, '2025-03-05', 1, 12, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(13, '2025-03-06', 1, 13, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(14, '2025-03-07', 1, 14, '2025-02-27 14:26:33', '2025-02-27 14:26:33'),
+	(15, '2025-02-28', 4, 2, '2025-02-27 15:17:28', '2025-02-27 15:17:28'),
+	(16, '2025-02-28', 4, 1, '2025-02-27 15:17:28', '2025-02-27 15:17:28'),
+	(17, '2025-03-01', 4, 3, '2025-02-27 15:17:28', '2025-02-27 15:17:28'),
+	(18, '2025-03-02', 4, 4, '2025-02-27 15:17:28', '2025-02-27 15:17:28'),
+	(19, '2025-03-02', 4, 6, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(20, '2025-03-02', 4, 5, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(21, '2025-03-02', 4, 9, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(22, '2025-03-03', 4, 7, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(23, '2025-03-04', 4, 8, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(24, '2025-03-04', 4, 10, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(25, '2025-03-05', 4, 11, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(26, '2025-03-06', 4, 12, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(27, '2025-03-07', 4, 13, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(28, '2025-03-08', 4, 14, '2025-02-27 15:17:29', '2025-02-27 15:17:29'),
+	(29, '2025-02-27', 3, 2, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(30, '2025-02-27', 3, 1, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(31, '2025-02-28', 3, 3, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(32, '2025-03-01', 3, 4, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(33, '2025-03-01', 3, 6, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(34, '2025-03-01', 3, 5, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(35, '2025-03-01', 3, 9, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(36, '2025-03-02', 3, 7, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(37, '2025-03-03', 3, 8, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(38, '2025-03-03', 3, 10, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(39, '2025-03-04', 3, 11, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(40, '2025-03-05', 3, 12, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(41, '2025-03-06', 3, 13, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(42, '2025-03-07', 3, 14, '2025-02-27 15:19:32', '2025-02-27 15:19:32'),
+	(43, '2025-02-27', 2, 2, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(44, '2025-02-27', 2, 1, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(45, '2025-02-28', 2, 3, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(46, '2025-03-01', 2, 4, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(47, '2025-03-01', 2, 6, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(48, '2025-03-01', 2, 5, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(49, '2025-03-01', 2, 9, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(50, '2025-03-02', 2, 7, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(51, '2025-03-03', 2, 8, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(52, '2025-03-03', 2, 10, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(53, '2025-03-04', 2, 11, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(54, '2025-03-05', 2, 12, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(55, '2025-03-06', 2, 13, '2025-02-27 15:21:50', '2025-02-27 15:21:50'),
+	(56, '2025-03-07', 2, 14, '2025-02-27 15:21:50', '2025-02-27 15:21:50');
+
+-- Volcando estructura para tabla abprod1.prices
+CREATE TABLE IF NOT EXISTS `prices` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` bigint unsigned NOT NULL,
+  `size_id` bigint unsigned NOT NULL,
+  `price` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `prices_product_id_foreign` (`product_id`),
+  KEY `prices_size_id_foreign` (`size_id`),
+  CONSTRAINT `prices_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `prices_size_id_foreign` FOREIGN KEY (`size_id`) REFERENCES `sizes` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=139 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.prices: ~138 rows (aproximadamente)
 INSERT INTO `prices` (`id`, `product_id`, `size_id`, `price`, `created_at`, `updated_at`) VALUES
-	(1, 23, 1, 90000, '2025-02-19 22:23:23', '2025-02-19 22:23:23'),
-	(2, 33, 1, 40000, '2025-02-19 22:23:55', '2025-02-19 22:23:55');
+	(1, 1, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 2, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 3, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 4, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 5, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 6, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 7, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 8, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 9, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 10, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 11, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 12, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 13, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 14, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 15, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 16, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, 17, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 18, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 19, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 20, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 21, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 22, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 23, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 24, 1, 85000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 25, 1, 90000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 26, 1, 75000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 27, 1, 75000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, 28, 1, 75000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, 29, 1, 75000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(30, 30, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(31, 31, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(32, 32, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(33, 33, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(34, 34, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(35, 35, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(36, 36, 1, 100000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(37, 37, 1, 75000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(38, 38, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(39, 39, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(40, 40, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(41, 41, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(42, 42, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(43, 43, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(44, 44, 1, 45000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(45, 45, 1, 45000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(46, 46, 1, 45000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(47, 47, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(48, 48, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(49, 49, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(50, 50, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(51, 51, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(52, 52, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(53, 53, 1, 35000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(54, 54, 1, 20000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(55, 55, 1, 30000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(56, 56, 1, 25000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(57, 57, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(58, 58, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(59, 59, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(60, 60, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(61, 61, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(62, 62, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(63, 63, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(64, 64, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(65, 65, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(66, 66, 1, 20000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(67, 67, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(68, 68, 1, 60000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(69, 69, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(70, 70, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(71, 71, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(72, 72, 1, 70000, '2025-02-26 15:17:22', '2025-02-26 21:34:07'),
+	(73, 73, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(74, 74, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(75, 75, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(76, 76, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(77, 77, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(78, 78, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(79, 79, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(80, 80, 1, 60000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(81, 81, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(82, 82, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(83, 83, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(84, 84, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(85, 85, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(86, 86, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(87, 87, 1, 40000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(88, 88, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(89, 89, 1, 25000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(90, 90, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(91, 91, 1, 15000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(92, 92, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(93, 93, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(94, 94, 1, 30000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(95, 95, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(96, 96, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(97, 97, 1, 0, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(98, 98, 1, 165000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(99, 99, 1, 160000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(100, 100, 1, 140000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(101, 101, 1, 130000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(102, 102, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(103, 103, 1, 130000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(104, 104, 1, 90000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(105, 105, 1, 110000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(106, 106, 1, 100000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(107, 107, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(108, 108, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(109, 109, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(110, 110, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(111, 111, 1, 120000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(112, 112, 1, 120000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(113, 113, 1, 120000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(114, 114, 1, 120000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(115, 115, 1, 120000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(116, 116, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(117, 117, 1, 95000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(118, 118, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(119, 119, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(120, 120, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(121, 121, 1, 50000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(122, 122, 1, 140000, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(123, 72, 12, 55000, '2025-02-26 21:35:37', '2025-02-26 21:36:06'),
+	(124, 72, 16, 60000, '2025-02-26 21:35:55', '2025-02-26 21:35:55'),
+	(125, 124, 1, 80000, '2025-02-26 21:40:29', '2025-02-26 21:40:29'),
+	(126, 124, 12, 65000, '2025-02-26 21:40:44', '2025-02-26 21:40:44'),
+	(127, 124, 16, 70000, '2025-02-26 21:41:00', '2025-02-26 21:41:00'),
+	(128, 125, 1, 82000, '2025-02-26 21:44:42', '2025-02-26 21:45:27'),
+	(129, 125, 12, 67000, '2025-02-26 21:45:06', '2025-02-26 21:45:06'),
+	(130, 125, 16, 72000, '2025-02-26 21:45:20', '2025-02-26 21:45:20'),
+	(131, 159, 1, 90000, '2025-03-03 17:19:28', '2025-03-03 17:19:28'),
+	(132, 165, 1, 10000, '2025-03-05 13:41:26', '2025-03-05 13:41:26'),
+	(133, 164, 1, 5000, '2025-03-05 13:42:23', '2025-03-05 13:42:23'),
+	(134, 163, 1, 12000, '2025-03-05 13:43:12', '2025-03-05 13:43:12'),
+	(135, 162, 1, 10000, '2025-03-05 13:43:58', '2025-03-05 13:43:58'),
+	(136, 161, 1, 7000, '2025-03-05 13:46:32', '2025-03-05 13:46:32'),
+	(137, 160, 1, 5000, '2025-03-05 13:52:00', '2025-03-05 13:52:00'),
+	(138, 166, 1, 30000, '2025-03-05 13:54:50', '2025-03-05 13:54:50');
 
--- Volcando datos para la tabla abprod.productiondets: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.productiondets
+CREATE TABLE IF NOT EXISTS `productiondets` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `production_id` bigint unsigned NOT NULL,
+  `product_id` bigint unsigned NOT NULL,
+  `quantity` int NOT NULL,
+  `price` int NOT NULL,
+  `pay` tinyint(1) NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productiondets_production_id_foreign` (`production_id`),
+  KEY `productiondets_product_id_foreign` (`product_id`),
+  CONSTRAINT `productiondets_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `productiondets_production_id_foreign` FOREIGN KEY (`production_id`) REFERENCES `productions` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.productions: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.productiondets: ~7 rows (aproximadamente)
+INSERT INTO `productiondets` (`id`, `production_id`, `product_id`, `quantity`, `price`, `pay`, `created_at`, `updated_at`) VALUES
+	(1, 2, 16, 2, 0, 0, '2025-02-28 23:03:03', '2025-02-28 23:03:03'),
+	(2, 2, 47, 1, 0, 0, '2025-02-28 23:03:03', '2025-02-28 23:03:03'),
+	(3, 3, 44, 10, 0, 0, '2025-02-28 23:07:35', '2025-02-28 23:07:35'),
+	(4, 4, 18, 12, 0, 0, '2025-02-28 23:12:21', '2025-02-28 23:12:21'),
+	(5, 4, 1, 8, 0, 0, '2025-02-28 23:12:21', '2025-02-28 23:12:21'),
+	(6, 5, 16, 2, 0, 0, '2025-02-28 23:21:10', '2025-02-28 23:21:10'),
+	(7, 5, 47, 1, 0, 0, '2025-02-28 23:21:10', '2025-02-28 23:21:10');
 
--- Volcando datos para la tabla abprod.products: ~76 rows (aproximadamente)
-INSERT INTO `products` (`id`, `code`, `name`, `imagen`, `imagmolde`, `description`, `is_producible`, `line_id`, `category_id`, `created_at`, `updated_at`) VALUES
-	(1, 'CAM-E10', 'Camiseta Premium E10', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'CAM-P10', 'Camiseta Premium P10', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'CAM-PR02', 'Camiseta Premium Pr02', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, 'CAM-PR05', 'Camiseta Premium Pr05', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(5, 'CAM-PR03', 'Camiseta Premium Pr03', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(6, 'CAM-PR04', 'Camiseta Premium Pr04', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(7, 'CAM-PR06', 'Camiseta Premium Pr06', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(8, 'CAM-PR07', 'Camiseta Premium Pr07', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(9, 'CML-PR01', 'Camisilla Premium Pr01', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(10, 'SHT-PR01', 'Short Premium Pr01', NULL, NULL, 'Tela: molde:', 1, 7, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(11, 'MD-PR01', 'Media Premium', NULL, NULL, 'Tela: molde:', 0, 7, 4, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(12, 'SHT-P10', 'Short Premium P10', NULL, NULL, 'Tela: molde:', 1, 7, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(13, 'SHT-E10', 'Short Premium E10', NULL, NULL, 'Tela: molde:', 1, 7, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(14, 'SHT-PR02', 'Short Premium Pr02', NULL, NULL, 'Tela: molde:', 1, 7, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(15, 'SHT-PR03', 'Short Premium Pr03', NULL, NULL, 'Tela: molde:', 1, 7, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(16, 'CAM-A01', 'Camiseta Profesional A01', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(17, 'CAM-A02', 'Camiseta Profesional A02', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(18, 'CAM-A03', 'Camiseta Profesional A03', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(19, 'CAM-A04', 'Camiseta Profesional A04', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(20, 'CAM-A05', 'Camiseta Profesional A05', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(21, 'CAM-A06', 'Camiseta Profesional A06', NULL, NULL, 'Tela: molde:', 1, 5, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(22, 'SHT-A01', 'Short Profesional Sublimado 100%', NULL, NULL, 'Tela: molde:', 1, 5, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(23, 'CAM-F01', 'Camiseta Oficial F01', NULL, NULL, '<p>Tela: dry&nbsp;</p><p>molde: f01</p><p>logo parche</p><p>cuello rendodo rib</p><p>manga recta</p>', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 23:12:59'),
-	(24, 'CAM-F02', 'Camiseta Oficial F02', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(25, 'CAM-F03', 'Camiseta Oficial F03', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(26, 'CAM-F04', 'Camiseta Oficial F04', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(27, 'CAM-F05', 'Camiseta Oficial F05', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(28, 'CAM-F06', 'Camiseta Oficial F06', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(29, 'CAM-F07', 'Camiseta Oficial F07', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(30, 'CAM-F08', 'Camiseta Oficial F08', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(31, 'CAM-F09', 'Camiseta Oficial F09', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(32, 'CAM-F10', 'Camiseta Oficial F10', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(33, 'SHT-F01', 'Short Oficial F01', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(34, 'SHT-F02', 'Short Oficial F02', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(35, 'SHT-F03', 'Short Oficial F03', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(36, 'SHT-F04', 'Short Oficial F04', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(37, 'SHT-F05', 'Short Oficial F05', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(38, 'SHT-F06', 'Short Oficial F06', NULL, NULL, 'Tela: molde:', 1, 4, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(39, 'MD-F01', 'Media Zebin', NULL, NULL, 'Tela: molde:', 0, 4, 4, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(40, 'CAM-S01', 'Camiseta Estandar S01', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(41, 'CAM-S02', 'Camiseta Estandar S02', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(42, 'CAM-S03', 'Camiseta Estandar S03', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(43, 'CAM-S04', 'Camiseta Estandar S04', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(44, 'SH-S01', 'Short Estandar', NULL, NULL, 'Tela: molde:', 1, 3, 3, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(45, 'MD-S01', 'Media Zebin', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(46, 'CAM-B01', 'Camiseta Basic B01', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(47, 'CAM-B02', 'Camiseta Basic B02', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(48, 'CAM-B03', 'Camiseta Basic B03', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(49, 'CAM-B04', 'Camiseta Basic B04', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(50, 'CAMLG-F01', 'Camiseta Manga Larga Oficial F01', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(51, 'CAMLG-F03', 'Camiseta Manga Larga Oficial F03', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(52, 'PTN-05', 'Pantalon Acolchado Oficial', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(53, 'CML-E10', 'Camisilla Premium E10', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(54, 'CML-F01', 'Camisilla Oficial', NULL, NULL, 'Tela: molde:', 1, 4, 2, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(55, 'CML-S01', 'Camisilla Entrenamiento Estandar', NULL, NULL, 'Tela: molde:', 1, 3, 2, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(56, 'CML-B01', 'Camisola De Entrenamiento Oficial', NULL, NULL, 'Tela: molde:', 1, 4, 2, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(57, 'TM01', 'Termica Manga Corta', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(58, 'TM02', 'Termica Manga Larga', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(59, 'TM03', 'Calza Corta termica', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(60, 'TM04', 'Calza Larga termica', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(61, 'CAM-F11', 'Camiseta con cuello polo', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(62, 'REM-S08', 'Remera Polo Clasico', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(63, 'SC-F01', 'Campera deportiva Oficial', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(64, 'PTN-F01', 'Jogin Tira Sublimada', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(65, 'SC-S01', 'Campera deportiva Estandar', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(66, 'PTN-S01', 'Jogin Tira Simple', NULL, NULL, 'Tela: molde:', 1, 3, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(67, 'SC-B01', 'Campera deportiva Basic', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(68, 'PTN-B01', 'Buzo Pantalon', NULL, NULL, 'Tela: molde:', 1, 2, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(69, 'SC-C01', 'Campera deportiva escolar', NULL, NULL, 'Tela: molde:', 1, 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(70, 'PTN-C01', 'Buzo Pantalon', NULL, NULL, 'Tela: molde:', 1, 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(71, 'SC-PR01', 'Campera deportiva Premium', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(72, 'PTN-PR01', 'Buzo Pantalon Premium', NULL, NULL, 'Tela: molde:', 1, 7, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(73, 'AC-01', 'Mochilita de Tela Personalizada', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(74, 'AC-02', 'Botinera', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(75, 'AC-03', 'Neceser', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(76, 'AC-04', 'Bolson', NULL, NULL, 'Tela: molde:', 1, 4, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+-- Volcando estructura para tabla abprod1.productions
+CREATE TABLE IF NOT EXISTS `productions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `order_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `operator_id` bigint unsigned NOT NULL,
+  `status` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `productions_order_id_foreign` (`order_id`),
+  KEY `productions_center_id_foreign` (`center_id`),
+  KEY `productions_operator_id_foreign` (`operator_id`),
+  CONSTRAINT `productions_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `productions_operator_id_foreign` FOREIGN KEY (`operator_id`) REFERENCES `operators` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `productions_order_id_foreign` FOREIGN KEY (`order_id`) REFERENCES `orders` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.product_centers: ~0 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.productions: ~4 rows (aproximadamente)
+INSERT INTO `productions` (`id`, `date`, `order_id`, `center_id`, `operator_id`, `status`, `created_at`, `updated_at`) VALUES
+	(2, '2025-02-28', 1, 10, 41, 1, '2025-02-28 23:03:03', '2025-02-28 23:03:30'),
+	(3, '2025-02-28', 2, 10, 41, 1, '2025-02-28 23:07:35', '2025-02-28 23:07:57'),
+	(4, '2025-02-28', 2, 9, 36, 1, '2025-02-28 23:12:21', '2025-02-28 23:12:21'),
+	(5, '2025-02-28', 3, 10, 43, 1, '2025-02-28 23:21:10', '2025-02-28 23:27:14');
 
--- Volcando datos para la tabla abprod.questions: ~4 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.products
+CREATE TABLE IF NOT EXISTS `products` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `code` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `imagen` text COLLATE utf8mb4_unicode_ci,
+  `imagmolde` text COLLATE utf8mb4_unicode_ci,
+  `description` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `is_producible` tinyint(1) NOT NULL DEFAULT '1',
+  `line_id` bigint unsigned NOT NULL,
+  `category_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `tags` json DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `products_code_unique` (`code`),
+  KEY `products_line_id_foreign` (`line_id`),
+  KEY `products_category_id_foreign` (`category_id`),
+  CONSTRAINT `products_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `categories` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `products_line_id_foreign` FOREIGN KEY (`line_id`) REFERENCES `lines` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=167 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.products: ~135 rows (aproximadamente)
+INSERT INTO `products` (`id`, `code`, `name`, `imagen`, `imagmolde`, `description`, `is_producible`, `line_id`, `category_id`, `created_at`, `updated_at`, `tags`) VALUES
+	(1, 'CAM-E10', 'Camiseta Premium E10', 'product/01JN17F128Q43965F8D4TDXTDA.png', 'productmolde/01JN17T64M67X7KNT89E2EZSXG.jpg', '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Caracteristicas</p><ul><li>tejido scuares</li><li>espalda fluence</li><li>Cuello redondo</li><li>manga recta</li><li>tira costado microperfado</li></ul><p>Molde:</p><ul><li>N027 molde niña</li><li>N025 molde niño</li><li>N021 molde adulto</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-03-03 17:43:37', '["scuares", "deportivo", "fluence", "microperforado", "cuello redondo"]'),
+	(2, 'CAM-P10', 'Camiseta Premium P10', 'product/01JN45D31MSXYYCE05A6H3K8GA.png', NULL, '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Tejido tech<br>tira costado en micro</p>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-27 19:56:26', '["tech"]'),
+	(3, 'CAM-PR02', 'Camiseta Premium Pr02', 'product/01JN18KZN2B005B6P5V1D26EW2.png', 'productmolde/01JN15GSZX1QD5P14PS6PFTVD8.jpg', '<p>Caracteristicas de la linea&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Caracteristicas</p><ul><li>Tejido Tech</li><li>Cuello premium</li><li>tira costado&nbsp;</li><li>Ruedo grueso</li><li>Detalle en Ribana</li></ul><p>Molde</p><p><br></p>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-26 16:54:54', NULL),
+	(4, 'CAM-PR05', 'Camiseta Premium Pr05', 'product/01JN1H3BRE1RGC2XZX0H9E7HTT.png', 'productmolde/01JN1H3BRQQVN9TX1925N63AV1.jpg', '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p><br></p><p>Tejido tech<br>carterón personalizado<br>Tira hombro pro<br>Ruedo grueso<br>corte en espalda alta<br>detalles en Ribana<br><br></p>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-27 19:57:26', '["tech", "carteron"]'),
+	(5, 'CAM-PR03', 'Camiseta Premium Pr03', 'product/01JN45HSSRRTAGDWN83SPZB4DJ.png', NULL, '<p>microfino&nbsp;</p><p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Tejido microfino<br>manga ranglan<br>Cuello v escondido<br>Hombro en microperforado<br>Corte fontal en microperforado</p>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-27 19:59:29', '["microfino", "ranglan", "cuello v", "microperforado"]'),
+	(6, 'CAM-PR04', 'Camiseta Premium Pr04', 'product/01JN45MVRHKG0TDSDET6Y3Y3A2.png', NULL, 'microfino <p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-27 20:00:41', '["microfino", "microperforado", "cuello redondo"]'),
+	(7, 'CAM-PR06', 'Camiseta Premium Pr06', NULL, NULL, 'microfino <p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(8, 'CAM-PR07', 'Camiseta Premium Pr07', NULL, NULL, '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(9, 'CAM-PR08', 'Camiseta Premium Pr08', NULL, NULL, 'con cuello tipo cerro 2025 tela manchester <p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(10, 'CAM-A01', 'Camiseta Profesional A01', NULL, NULL, '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul>', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(11, 'CAM-A02', 'Camiseta Profesional A02', NULL, NULL, '', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(12, 'CAM-A03', 'Camiseta Profesional A03', NULL, NULL, '', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(13, 'CAM-A04', 'Camiseta Profesional A04', NULL, NULL, '', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(14, 'CAM-A05', 'Camiseta Profesional A05', NULL, NULL, '', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(15, 'CAM-A06', 'Camiseta Profesional A06', NULL, NULL, '', 1, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(16, 'CAM-F01', 'Camiseta Oficial F01', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(17, 'CAM-F02', 'Camiseta Oficial F02', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(18, 'CAM-F03', 'Camiseta Oficial F03', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(19, 'CAM-F04', 'Camiseta Oficial F04', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(20, 'CAM-F05', 'Camiseta Oficial F05', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(21, 'CAM-F06', 'Camiseta Oficial F06', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(22, 'CAM-F07', 'Camiseta Oficial F07', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(23, 'CAM-F11', 'Camiseta Oficial F08', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(24, 'CAM-F09', 'Camiseta Oficial F09', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(25, 'CAM-F10', 'Camiseta Oficial F10', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(26, 'CAM-S01', 'Camiseta Estandar S01', NULL, NULL, '', 1, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(27, 'CAM-S02', 'Camiseta Estandar S02', NULL, NULL, '', 1, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(28, 'CAM-S03', 'Camiseta Estandar S03', NULL, NULL, '', 1, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(29, 'CAM-S04', 'Camiseta Estandar S04', NULL, NULL, '', 1, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(30, 'CAM-B01', 'Camiseta Basic B01', NULL, NULL, '', 1, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(31, 'CAM-B02', 'Camiseta Basic B02', NULL, NULL, '', 1, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(32, 'CAM-B03', 'Camiseta Basic B03', NULL, NULL, '', 1, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(33, 'CAM-B04', 'Camiseta Basic B04', NULL, NULL, '', 1, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(34, 'CAM-F08', 'Camiseta con cuello polo', NULL, NULL, '', 1, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(35, 'CML-B01', 'Camisola De Entrenamiento Oficial', NULL, NULL, '', 1, 4, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(36, 'CML-PR01', 'Camisilla Premium Pr01', NULL, NULL, '', 1, 7, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(37, 'SHT-A01', 'Short Profesional Sublimado 100%', NULL, NULL, '', 1, 5, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(38, 'CML-E10', 'Camisilla Premium E10', NULL, NULL, '', 1, 7, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(39, 'CML-F01', 'Camisilla Oficial', NULL, NULL, '', 1, 4, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(40, 'CML-S01', 'Camisilla Entrenamiento Estandar', NULL, NULL, 'NO sublimado', 1, 3, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(41, 'CML-S10', 'Camisilla de Algodón', NULL, NULL, '', 1, 4, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(42, 'SHT-PR01', 'Short Premium Pr01', NULL, NULL, '', 1, 7, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(43, 'SHT-P10', 'Short Premium P10', NULL, NULL, '', 1, 7, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(44, 'SHT-E10', 'Short Premium E10', NULL, NULL, '', 1, 7, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(45, 'SHT-PR02', 'Short Premium Pr02', NULL, NULL, '', 1, 7, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(46, 'SHT-PR03', 'Short Premium Pr03', NULL, NULL, '', 1, 7, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(47, 'SHT-F01', 'Short Oficial F01', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(48, 'SHT-F02', 'Short Oficial F02', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(49, 'SHT-F03', 'Short Oficial F03', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(50, 'SHT-F04', 'Short Oficial F04', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(51, 'SHT-F05', 'Short Oficial F05', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(52, 'SHT-F06', 'Short Oficial F06', NULL, NULL, '', 1, 4, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(53, 'SHT-S01', 'Short Estandar', NULL, NULL, '', 1, 3, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(54, 'MD-S01', 'Media Zebin', NULL, NULL, '', 0, 3, 3, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(55, 'MD-PR01', 'Media Premium', NULL, NULL, '', 0, 7, 4, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(56, 'MD-F01', 'Media Zebin', NULL, NULL, '', 0, 4, 4, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(57, 'CAMLG-F01', 'Camiseta Manga Larga Oficial F01', NULL, NULL, '', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(58, 'CAMLG-F02', 'Camiseta Manga Larga Oficial F02', NULL, NULL, '', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(59, 'CAMLG-F03', 'Camiseta Manga Larga Oficial F03', NULL, NULL, '', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(60, 'CAMLG-F04', 'Camiseta Manga Larga Oficial F04', NULL, NULL, '', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(61, 'CAMLG-F10', 'Camiseta mangas largas con cierre', NULL, NULL, '', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(62, 'CAMLG-A10', 'Camiseta mangas largas con cierre Uv', NULL, NULL, 'tela uv', 1, 5, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(63, 'CAMLG-F11', 'Camiseta Manga Larga con Capucha', NULL, NULL, 'tela dry fit 1', 1, 4, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(64, 'CAMLG-A11', 'Camiseta Manga Larga con Capucha Uv', NULL, NULL, 'tela uv', 1, 5, 5, '2025-02-26 15:17:22', '2025-02-26 19:26:37', NULL),
+	(65, 'CAMLG-A12', 'Camiseta mangas largas tipo pesca capucha mas cuellera', NULL, NULL, '', 1, 7, 5, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(66, 'BTN-F01', 'Mochilita de Tela Personalizada', NULL, NULL, '', 1, 4, 6, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(67, 'BLU-B01', 'Blusa ALEGRA Basico', NULL, NULL, 'tela de color + un parche bordado', 1, 2, 7, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(68, 'BLU-S01', 'Blusa ALEGRA ESTANDAR', NULL, NULL, 'frente sublimado', 1, 3, 7, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(69, 'BLU-F01', 'Blusa ALEGRA TODO SUBLIMADO', NULL, NULL, 'Totalmente sublimado', 1, 4, 7, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(70, 'CMS-B01', 'Camisa Manga Corta', NULL, NULL, '', 1, 4, 8, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(71, 'CMS-B02', 'Camisa Manga Larga', NULL, NULL, '', 1, 4, 8, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(72, 'RP-S01', 'Remera Polo Clasico estandar pv', NULL, NULL, '<p>sin detalle sublimado mas un logo bordado o parche</p><p>tela pike PV&nbsp;</p><p>70 poliester</p><p>30 algodon</p>', 1, 3, 10, '2025-02-26 15:17:22', '2025-02-26 21:37:31', NULL),
+	(73, 'RP-S02', 'Remera Polo cuello obispo estandar', NULL, NULL, 'sin detalle sublimado mas un logo bordado o parche', 1, 3, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(74, 'RP-S03', 'Remera Polo tipo camisa estandar', NULL, NULL, 'sin detalle sublimado mas un logo bordado o parche', 1, 3, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(75, 'RP-f01', 'Remera Polo clasico oficial', NULL, NULL, 'carteron sublimado mas un logo bordado o parche, puño sublimado', 1, 4, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(76, 'RP-f02', 'Remera Polo cuello obispo ', NULL, NULL, 'carteron sublimado mas un logo bordado o parche, puño sublimado', 1, 4, 10, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(77, 'RP-f03', 'Remera Polo tipo camisa Oficial', NULL, NULL, 'carteron y tirilla sublimado mas un logo bordado o parche, puño sublimado', 1, 4, 10, '2025-02-26 15:17:22', '2025-02-26 19:19:26', NULL),
+	(78, 'BDR-01', 'bandera dry m2', NULL, NULL, '', 1, 4, 12, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(79, 'BDR-02', 'bandera diolen m2', NULL, NULL, '', 1, 4, 12, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(80, 'BDR-03', 'Backpodium', NULL, NULL, 'tiene estructura de hierro', 1, 4, 12, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(81, 'BMD-01', 'Bata médica', NULL, NULL, 's', 1, 4, 14, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(82, 'BDR-04', 'Bandera diolen estandar', NULL, NULL, '1.30m x0.7m', 1, 4, 12, '2025-02-26 15:17:22', '2025-02-26 19:24:26', NULL),
+	(83, 'KPS-01', 'kepis bordado', NULL, NULL, '<p>kepis + un parche o bordado</p>', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 19:29:02', NULL),
+	(84, 'KPS-02', 'kepis sublimable', NULL, NULL, '<p>kepis con red</p>', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 19:29:39', NULL),
+	(85, 'BDY-01', 'BODY', NULL, NULL, '', 1, 4, 17, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(86, 'AC-02', 'Botinera con cierre', NULL, NULL, '', 0, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(87, 'AC-03', 'Neceser', NULL, NULL, '', 0, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(88, 'AC-04', 'Bolson', NULL, NULL, '', 0, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(89, 'AC-05', 'Cuellera', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(90, 'AC-06', 'brazalete estandar', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(91, 'AC-07', 'brazalete premium', NULL, NULL, 'con cierre magnetico y personalizado', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(92, 'AC-08', 'Banda', NULL, NULL, 'banda para reina o rey', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(93, 'AC-09', 'Bincha', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(94, 'AC-10', 'Boina', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(95, 'AC-11', 'Bolsón Utilero', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(96, 'AC-12', 'Delantal sublimado', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(97, 'AC-13', 'Delantal  bordado', NULL, NULL, '', 1, 4, 18, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(98, 'CMP-01', 'Campera con Capucha', NULL, NULL, '', 1, 4, 19, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(99, 'CMP-02', 'Campera Impermeable', NULL, NULL, '', 1, 4, 19, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(100, 'CMP-03', 'Campera Rompeviento', NULL, NULL, '', 1, 4, 19, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(101, 'CNG-01', 'Canguro', NULL, NULL, '', 1, 4, 20, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(102, 'CHL-01', 'Chaleco', NULL, NULL, 'tela sarga con 4 bolsillos', 1, 4, 21, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(103, 'CHQ-01', 'Chaqueta', NULL, NULL, 'tela shell ', 1, 4, 22, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(104, 'CHM-01', 'Chomba', NULL, NULL, 'tela sarga', 1, 4, 23, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(105, 'CIC-F01', 'Ciclista manga larga ', NULL, NULL, '', 1, 4, 24, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(106, 'CIC-F02', 'Ciclista manga corta', NULL, NULL, '', 1, 4, 24, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(107, 'TM01', 'Termica Manga Corta', NULL, NULL, '', 1, 4, 25, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(108, 'TM02', 'Termica Manga Larga', NULL, NULL, '', 1, 4, 25, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(109, 'TM03', 'Calza Corta termica', NULL, NULL, '', 1, 4, 25, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(110, 'TM04', 'Calza Larga termica', NULL, NULL, '', 1, 4, 25, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(111, 'SC-F01', 'Campera deportiva Oficial', NULL, NULL, '', 1, 4, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(112, 'SC-S01', 'Campera deportiva Estandar', NULL, NULL, '', 1, 2, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(113, 'SC-B01', 'Campera deportiva Basic', NULL, NULL, '', 1, 2, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(114, 'SC-C01', 'Campera deportiva escolar', NULL, NULL, '', 1, 1, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(115, 'SC-PR01', 'Campera deportiva Premium', NULL, NULL, '', 1, 7, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(116, 'PTN-PR01', 'Buzo Pantalon Premium', NULL, NULL, 'acetato elastizado', 1, 7, 26, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(117, 'PTN-A05', 'Pantalon Acolchado Oficial', NULL, NULL, 'acetato elastizado', 1, 5, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(118, 'PTN-F01', 'Jogin Tira Sublimada', NULL, NULL, 'acetato pesado', 1, 4, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(119, 'PTN-S01', 'Jogin Tira Simple', NULL, NULL, 'acetato pesado', 1, 2, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(120, 'PTN-B01', 'Buzo Pantalon', NULL, NULL, 'Pv', 1, 2, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(121, 'PTN-C01', 'Buzo Pantalon', NULL, NULL, 'Pv', 1, 1, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(122, 'PTN-F02', 'Pantalon de trabajo cargo', NULL, NULL, 'tela sarga con bolsillo en los costados', 1, 4, 27, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(123, 'CAM-PR09', 'Camiseta Premium Pr09', NULL, NULL, 'replica de olimpia2025', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22', NULL),
+	(124, 'RP-S04', 'Remera Polo Clasico estandar vicuña', NULL, NULL, '<p>sin detalle sublimado mas un logo bordado o parche</p><p>tela pike vicuña</p><p>50 poliester</p><p>50 algodon</p>', 1, 3, 10, '2025-02-26 21:38:50', '2025-02-26 21:42:24', NULL),
+	(125, 'RP-S05', 'Remera Polo Carteron largo estandar vicuño', NULL, NULL, '<p>sin detalle sublimado mas un logo bordado o parche</p><p>tela pike vicuña</p><p>50 poliester</p><p>50 algodon</p>', 1, 3, 10, '2025-02-26 21:44:07', '2025-02-26 21:47:13', NULL),
+	(126, 'CAM-E11', 'Camiseta Premium E10', 'product/01JN17F128Q43965F8D4TDXTDA.png', 'productmolde/01JN17T64M67X7KNT89E2EZSXG.jpg', '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Caracteristicas</p><ul><li>tejido scuares</li><li>espalda fluence</li><li>Cuello V pro</li><li>manga recta</li><li>tira costado microperfado</li></ul><p>Molde:</p><ul><li>N027 molde niña</li><li>N025 molde niño</li><li>N021 molde adulto</li></ul>', 1, 7, 1, '2025-02-27 17:53:06', '2025-02-27 17:53:06', '["scuares", "deportivo", "fluence", "microperforado", "cuello v pro"]'),
+	(158, 'CML-F03', 'Camisilla OFicial f03', NULL, NULL, '<p>camisilla</p><p>cuello v</p><p>tela dry</p>', 1, 4, 2, '2025-03-03 17:17:03', '2025-03-03 17:17:03', '[]'),
+	(159, 'CML-A03', 'CAMISILLA PROFESIONAL A03', NULL, NULL, '<p>TELA MICROFINO&nbsp;</p><p>CUELLO V</p>', 1, 5, 2, '2025-03-03 17:19:10', '2025-03-03 17:19:10', '[]'),
+	(160, 'sev-01', 'Servicio de bordado ', NULL, NULL, '<p>Incluye un bordado tamaño pequeño</p>', 1, 4, 29, '2025-03-05 13:32:18', '2025-03-05 13:52:02', '["servicio", "bordado", "adicional"]'),
+	(161, 'sev-02', 'Servicio de serigrafia', NULL, NULL, '<p>incluye una serigrafia</p>', 1, 4, 29, '2025-03-05 13:33:26', '2025-03-05 13:46:35', '["servicio", "serigrafia"]'),
+	(162, 'sev-03', 'Servicio de bordado full', NULL, NULL, '<p>incluye un bordado tamaño grande</p>', 1, 4, 29, '2025-03-05 13:34:24', '2025-03-05 13:44:00', '["servicio", "bordado"]'),
+	(163, 'sev-04', 'Servicio de serigrafia full', NULL, NULL, '<p>incluye una serigrafia en colores</p>', 1, 4, 29, '2025-03-05 13:35:29', '2025-03-05 13:35:29', '["servicio", "serigrafia"]'),
+	(164, 'sev-05', 'Servicio de vinilo', NULL, NULL, '<p>incluye un vinilo pequeño nombre o numero</p>', 1, 4, 29, '2025-03-05 13:39:37', '2025-03-05 13:42:31', '["vinilo", "servicio"]'),
+	(165, 'sev-06', 'Servicio de vinilo full', NULL, NULL, '<p>incluye un vinilo de 25x25</p>', 1, 4, 29, '2025-03-05 13:40:43', '2025-03-05 13:55:26', '[]'),
+	(166, 'Env-01', 'Envio de paquetes', NULL, NULL, '<p>precio estandar de envio</p>', 0, 4, 29, '2025-03-05 13:54:25', '2025-03-05 13:54:53', '[]');
+
+-- Volcando estructura para vista abprod1.product_category_counts
+-- Creando tabla temporal para superar errores de dependencia de VIEW
+CREATE TABLE `product_category_counts` (
+	`id` BIGINT(20) UNSIGNED NOT NULL,
+	`production_date` DATE NOT NULL,
+	`center_name` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`category_name` VARCHAR(255) NOT NULL COLLATE 'utf8mb4_unicode_ci',
+	`total_products` BIGINT(19) NOT NULL,
+	`total_quantity` DECIMAL(32,0) NULL
+) ENGINE=MyISAM;
+
+-- Volcando estructura para tabla abprod1.product_centers
+CREATE TABLE IF NOT EXISTS `product_centers` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `price` int NOT NULL DEFAULT '0',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `product_centers_product_id_foreign` (`product_id`),
+  KEY `product_centers_center_id_foreign` (`center_id`),
+  CONSTRAINT `product_centers_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `product_centers_product_id_foreign` FOREIGN KEY (`product_id`) REFERENCES `products` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.product_centers: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.questions
+CREATE TABLE IF NOT EXISTS `questions` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `text` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type` enum('string','integer','list') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `options` text COLLATE utf8mb4_unicode_ci,
+  `is_required` tinyint(1) NOT NULL DEFAULT '0',
+  `category_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `questions_category_id_foreign` (`category_id`),
+  CONSTRAINT `questions_category_id_foreign` FOREIGN KEY (`category_id`) REFERENCES `question_categories` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.questions: ~15 rows (aproximadamente)
 INSERT INTO `questions` (`id`, `text`, `type`, `options`, `is_required`, `category_id`, `created_at`, `updated_at`) VALUES
-	(1, 'Color base', 'string', NULL, 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'Va tener Nombre?', 'list', '["Si","No"]', 0, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'Auspicio delantero', 'integer', NULL, 1, 1, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, 'Tipo de logo', 'list', '["Bordado","UV","Sublimado"]', 1, 2, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'Color base', 'string', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Va tener Nombre?', 'list', '["Si","No"]', 0, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Va tener Numero?', 'integer', '["Si","No"]', 1, 1, '2025-02-26 15:17:22', '2025-02-26 16:10:47'),
+	(4, 'Auspicio Delantero', 'integer', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 16:11:11'),
+	(5, 'Auspicio Manga Izquierda', 'integer', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 16:11:32'),
+	(6, 'Auspicio Manga Derecha', 'integer', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 16:11:49'),
+	(7, 'Tipo de logo', 'list', '["Bordado","UV","Sublimado"]', 1, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Serigrafia', 'list', '["Bordado","UV","Sublimado"]', 1, 2, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Auspicio Dorso', 'string', NULL, 1, 1, '2025-02-26 16:10:17', '2025-02-26 16:12:23'),
+	(10, 'Tipo de logo (bordado,serigrafia o parche)', 'string', NULL, 1, 3, '2025-02-26 16:13:10', '2025-02-26 16:13:25'),
+	(11, 'Tipo de tela', 'string', NULL, 0, 3, '2025-02-26 16:13:50', '2025-02-26 16:13:50'),
+	(12, 'Color base', 'string', NULL, 0, 3, '2025-02-26 16:14:19', '2025-02-26 16:30:23'),
+	(13, 'Color de Short', 'string', NULL, 0, 1, '2025-02-26 19:13:48', '2025-02-26 19:16:27'),
+	(14, 'Color de Media', 'string', NULL, 0, 1, '2025-02-26 19:14:04', '2025-02-26 19:14:04'),
+	(15, 'Obs general', 'string', NULL, 1, 1, '2025-03-03 17:11:42', '2025-03-03 17:11:42');
 
--- Volcando datos para la tabla abprod.question_categories: ~3 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.question_categories
+CREATE TABLE IF NOT EXISTS `question_categories` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.question_categories: ~3 rows (aproximadamente)
 INSERT INTO `question_categories` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-	(1, 'Deportivo', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'Escolar', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'Empresarial', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'Deportivo', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Escolar', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Empresarial', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22');
 
--- Volcando datos para la tabla abprod.reorders: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.reorders
+CREATE TABLE IF NOT EXISTS `reorders` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `date` date NOT NULL,
+  `error_order_id` bigint unsigned NOT NULL,
+  `center_id` bigint unsigned NOT NULL,
+  `operator_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `reorders_error_order_id_foreign` (`error_order_id`),
+  KEY `reorders_center_id_foreign` (`center_id`),
+  KEY `reorders_operator_id_foreign` (`operator_id`),
+  CONSTRAINT `reorders_center_id_foreign` FOREIGN KEY (`center_id`) REFERENCES `centers` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `reorders_error_order_id_foreign` FOREIGN KEY (`error_order_id`) REFERENCES `error_orders` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `reorders_operator_id_foreign` FOREIGN KEY (`operator_id`) REFERENCES `operators` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.roles: ~3 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.reorders: ~0 rows (aproximadamente)
+
+-- Volcando estructura para tabla abprod1.roles
+CREATE TABLE IF NOT EXISTS `roles` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `guard_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `roles_name_guard_name_unique` (`name`,`guard_name`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.roles: ~4 rows (aproximadamente)
 INSERT INTO `roles` (`id`, `name`, `guard_name`, `created_at`, `updated_at`) VALUES
 	(1, 'panel_user', 'web', '2025-02-10 19:58:53', '2025-02-10 19:58:53'),
 	(2, 'super_admin', 'web', '2025-02-10 20:11:49', '2025-02-10 20:11:49'),
-	(3, 'vendedor', 'web', '2025-02-10 20:58:22', '2025-02-10 20:58:22');
+	(3, 'vendedor', 'web', '2025-02-10 20:58:22', '2025-02-10 20:58:22'),
+	(4, 'Supervisor de ventas', 'web', '2025-03-04 15:39:34', '2025-03-04 15:39:34');
 
--- Volcando datos para la tabla abprod.role_has_permissions: ~351 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.role_has_permissions
+CREATE TABLE IF NOT EXISTS `role_has_permissions` (
+  `permission_id` bigint unsigned NOT NULL,
+  `role_id` bigint unsigned NOT NULL,
+  PRIMARY KEY (`permission_id`,`role_id`),
+  KEY `role_has_permissions_role_id_foreign` (`role_id`),
+  CONSTRAINT `role_has_permissions_permission_id_foreign` FOREIGN KEY (`permission_id`) REFERENCES `permissions` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `role_has_permissions_role_id_foreign` FOREIGN KEY (`role_id`) REFERENCES `roles` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.role_has_permissions: ~393 rows (aproximadamente)
 INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(1, 2),
 	(2, 2),
@@ -991,6 +2104,10 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(335, 2),
 	(336, 2),
 	(337, 2),
+	(338, 2),
+	(339, 2),
+	(340, 2),
+	(341, 2),
 	(79, 3),
 	(80, 3),
 	(81, 3),
@@ -1000,65 +2117,253 @@ INSERT INTO `role_has_permissions` (`permission_id`, `role_id`) VALUES
 	(104, 3),
 	(115, 3),
 	(116, 3),
+	(151, 3),
+	(152, 3),
 	(163, 3),
 	(164, 3),
 	(265, 3),
 	(266, 3),
-	(312, 3);
+	(312, 3),
+	(268, 4),
+	(269, 4),
+	(270, 4),
+	(271, 4),
+	(272, 4),
+	(273, 4),
+	(274, 4),
+	(275, 4),
+	(276, 4),
+	(277, 4),
+	(278, 4),
+	(279, 4),
+	(286, 4),
+	(287, 4),
+	(288, 4),
+	(289, 4),
+	(290, 4),
+	(291, 4),
+	(292, 4),
+	(293, 4),
+	(294, 4),
+	(295, 4),
+	(296, 4),
+	(297, 4),
+	(298, 4),
+	(299, 4),
+	(300, 4),
+	(301, 4),
+	(302, 4),
+	(303, 4),
+	(304, 4),
+	(305, 4),
+	(306, 4),
+	(307, 4),
+	(308, 4),
+	(309, 4);
 
--- Volcando datos para la tabla abprod.sales_goals: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.sales_goals
+CREATE TABLE IF NOT EXISTS `sales_goals` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `team_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `month` int NOT NULL,
+  `year` int NOT NULL,
+  `amount` int NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `sales_goals_team_id_foreign` (`team_id`),
+  KEY `sales_goals_user_id_foreign` (`user_id`),
+  CONSTRAINT `sales_goals_team_id_foreign` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `sales_goals_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.sizes: ~37 rows (aproximadamente)
-INSERT INTO `sizes` (`id`, `name`, `created_at`, `updated_at`) VALUES
-	(1, 'NORMAL', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, '1A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, '1A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(4, '2A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(5, '2A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(6, '4A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(7, '4A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(8, '6A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(9, '6A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(10, '8A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(11, '8A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(12, '10A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(13, '10A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(14, '14A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(15, '14A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(16, '16A-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(17, '16A-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(18, 'XP-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(19, 'XP-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(20, 'P-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(21, 'P-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(22, 'M-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(23, 'M-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(24, 'G-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(25, 'G-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(26, 'XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(27, 'XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(28, '2XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(29, '2XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(30, '3XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(31, '3XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(32, '4XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(33, '4XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(34, '5XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(35, '5XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(36, '6XG-CAB', '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(37, '6XG-DAM', '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+-- Volcando datos para la tabla abprod1.sales_goals: ~2 rows (aproximadamente)
+INSERT INTO `sales_goals` (`id`, `team_id`, `user_id`, `month`, `year`, `amount`, `created_at`, `updated_at`) VALUES
+	(1, 3, 12, 3, 2025, 140000000, '2025-03-03 15:35:03', '2025-03-03 15:35:03'),
+	(2, 3, 36, 3, 2025, 50000000, '2025-03-04 15:37:55', '2025-03-04 15:37:55');
 
--- Volcando datos para la tabla abprod.teams: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.sizes
+CREATE TABLE IF NOT EXISTS `sizes` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `color` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sizes_name_unique` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=38 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.sizes: ~37 rows (aproximadamente)
+INSERT INTO `sizes` (`id`, `name`, `color`, `created_at`, `updated_at`) VALUES
+	(1, 'NORMAL', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, '1A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, '1A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, '2A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, '2A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, '4A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, '4A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, '6A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, '6A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, '8A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, '8A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, '10A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, '10A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, '14A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, '14A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, '16A-CAB', 'bg-lightblue', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, '16A-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 'XP-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 'XP-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 'P-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 'P-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 'M-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 'M-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 'G-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 'G-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 'XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 'XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, '2XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, '2XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(30, '3XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(31, '3XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(32, '4XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(33, '4XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(34, '5XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(35, '5XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(36, '6XG-CAB', '', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(37, '6XG-DAM', 'bg-lightpink', '2025-02-26 15:17:22', '2025-02-26 15:17:22');
+
+-- Volcando estructura para tabla abprod1.teams
+CREATE TABLE IF NOT EXISTS `teams` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `leader_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `teams_leader_id_foreign` (`leader_id`),
+  CONSTRAINT `teams_leader_id_foreign` FOREIGN KEY (`leader_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.teams: ~4 rows (aproximadamente)
 INSERT INTO `teams` (`id`, `name`, `leader_id`, `created_at`, `updated_at`) VALUES
-	(1, 'Interno', 1, '2025-02-19 22:29:39', '2025-02-19 22:29:39');
+	(1, 'FIDELIZACION', 4, '2025-02-26 17:22:23', '2025-02-26 17:22:23'),
+	(2, 'EXTERNO', 4, '2025-02-26 17:22:41', '2025-02-26 17:22:41'),
+	(3, 'DIGITAL', 4, '2025-02-26 17:23:19', '2025-02-26 17:23:19'),
+	(4, 'COORPORATIVO', 4, '2025-02-26 17:23:48', '2025-02-26 17:23:48');
 
--- Volcando datos para la tabla abprod.team_members: ~0 rows (aproximadamente)
+-- Volcando estructura para tabla abprod1.team_members
+CREATE TABLE IF NOT EXISTS `team_members` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `team_id` bigint unsigned NOT NULL,
+  `user_id` bigint unsigned NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `team_members_team_id_foreign` (`team_id`),
+  KEY `team_members_user_id_foreign` (`user_id`),
+  CONSTRAINT `team_members_team_id_foreign` FOREIGN KEY (`team_id`) REFERENCES `teams` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `team_members_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Volcando datos para la tabla abprod.users: ~2 rows (aproximadamente)
+-- Volcando datos para la tabla abprod1.team_members: ~12 rows (aproximadamente)
+INSERT INTO `team_members` (`id`, `team_id`, `user_id`, `created_at`, `updated_at`) VALUES
+	(1, 3, 12, '2025-02-26 17:24:10', '2025-02-26 17:24:10'),
+	(2, 3, 36, '2025-02-26 17:24:23', '2025-02-26 17:24:23'),
+	(3, 1, 16, '2025-02-26 17:24:39', '2025-02-26 17:24:39'),
+	(4, 1, 29, '2025-02-26 17:25:09', '2025-02-26 17:25:09'),
+	(5, 1, 23, '2025-02-26 17:25:32', '2025-02-26 17:25:32'),
+	(6, 1, 7, '2025-02-26 17:25:51', '2025-02-26 17:25:51'),
+	(7, 2, 50, '2025-03-04 15:36:13', '2025-03-04 15:36:13'),
+	(8, 2, 51, '2025-03-04 15:36:25', '2025-03-04 15:36:25'),
+	(9, 2, 53, '2025-03-04 15:36:35', '2025-03-04 15:36:35'),
+	(10, 2, 54, '2025-03-04 15:36:49', '2025-03-04 15:36:49'),
+	(11, 2, 55, '2025-03-04 15:36:57', '2025-03-04 15:36:57'),
+	(12, 2, 56, '2025-03-04 15:37:07', '2025-03-04 15:37:07');
+
+-- Volcando estructura para tabla abprod1.users
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email_verified_at` timestamp NULL DEFAULT NULL,
+  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_unique` (`email`)
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Volcando datos para la tabla abprod1.users: ~56 rows (aproximadamente)
 INSERT INTO `users` (`id`, `name`, `email`, `email_verified_at`, `password`, `remember_token`, `created_at`, `updated_at`) VALUES
-	(1, 'daril diaz', 'darildiaz29@gmail.com', NULL, '$2y$12$FyGbVFztNT6TYXFfifPES.j0uabyqfskZD3sE3Y7A4uRpJdnqrhmK', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(2, 'admin', 'admin@abdiez.com', NULL, '$2y$12$burbNc6LZcroPW23nfBIFOXXvt3JS6eGnwHpXjjwn4o5SYy8G02m2', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11'),
-	(3, 'vendedor', 'vendedor@abdiez.com', NULL, '$2y$12$n1CeITTXc1UzdttZvh1U6ekvOHlv2ckB9wFEYS81rJTHZngZg1cTy', NULL, '2025-02-19 17:30:11', '2025-02-19 17:30:11');
+	(1, 'daril diaz', 'darildiaz29@gmail.com', NULL, '$2y$12$EK22xXAjhgL0edxtc0IDK.lINVflCQoMz1EfqSFjWViZfKPe97uFG', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'admin', 'admin@abdiez.com', NULL, '$2y$12$xzZv5UmAdgWJyXS/K4N98.jYkrwkK84fWqkX13NLyb6EPb6Z10VIC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'vendedor', 'vendedor@abdiez.com', NULL, '$2y$12$VeehDAOlby7TJWx2IcZBn.dAamxkI9ylLScHuHuB8G5ycJ5xKoaQ6', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'Aquino Rojas, Rodrigo Fabian', 'raquino@abdiez.com', NULL, '$2y$12$CAM4e7ckzEV2aXQbTR0zyeC2wsxc/hhX/dTMrzxhHXBG8LYp385Lq', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'Areco Gòmez, Ilcia Mariela', 'iareco@abdiez.com	', NULL, '$2y$12$8VKwYp.cMoA0Z4pb0H6voO/M6PpAKDqtPryN3WB/kY1yONdQsQUp2', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'Arevalos Alvarenga, Ada Ramona', 'aarevalos@abdiez.com', NULL, '$2y$12$SIVSAedorL9vep3oSrhc.eZHF015cMn7ufunfLfyiA9jTgLXuoSRG', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'Beraud Fernandez, Isis Maria Jesus', 'iberaud@abdiez.com', NULL, '$2y$12$foZUHEC103gHai.qsY8lmOErE5viGqexpao1D4qTzxqUqSGRv9pzy', 'h1YO1tJV1EaxFmSgVSng4jjLq6BZ8DretJ2SzTAXfvvcRwUdZyQOtIadN2F1', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Bogarín Ríos, Adrian Pastor', 'abogarin@abdiez.com', NULL, '$2y$12$0qmJ/71zzGKCX3J2c0iIyeHHztok4en5gVEwZQMbKoIC/Lly43z52', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Cabrera Barua, Laura Patricia', 'pcabrera@abdiez.com', NULL, '$2y$12$P.yRUeS5GNR/sUqlsPjw6uDgtOxj8idn7VUEKoXXljtdityrqpShy', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'Carballo,Antonio', 'acarballo@abdiez.com	', NULL, '$2y$12$956FBWoE3qa.1J8cAT2O8u/NBhAVSQANgicSRD7/wO9fwLhO/hw3K', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 'Castillo Ortiz, Jesús Alberto', 'jcastillo@abdiez.com', NULL, '$2y$12$mJkuWBVVVRmleKu7wdc/IumGkJGiFlKA5bZ0p0fi.EbIDKIoI2WGW', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 'Colmán, Liz Sandra', 'lcolman@abdiez.com', NULL, '$2y$12$l/n877YTl2CbLYWieWvPNupG6u.JHd86yxbOIX8Bzof6l7LQn6i/2', 'nXf2nhQxpoHSIHbe9Yk9nPGyATttvkDtCF3ZY7uRcFWg0yNSrn0KlP7vSk5T', '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 'Dìaz, Daril Andres', 'ddiaz@abdiez.com', NULL, '$2y$12$AE0OGRBBuhLmaEEvX83An.Wr40N8gRnAPT6o4tFzsw0Fxfw7R7mEq', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 'Duarte Medina, Ana Liz', 'aduarte@abdiez.com', NULL, '$2y$12$QJNH6cecTa/RgjFqQDctsO8zQrvVJ9ZFbHvJk2QLBPcdKJJjp114a', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 'Espinola Martinez, Mario', 'mespinola@abdiez.com', NULL, '$2y$12$r0DnJdJJObhC.3K29TTLf.Et105869BmoxroTpgOPRboai.OE0fRC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 'Espinola Ramírez, Liz Romina', 'respinola@abdiez.com', NULL, '$2y$12$hnMviZBEe7qzlQUdW/YC7OY8aKJ1QRJxFGD2fgUMYydsgZpZd.n0u', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, 'Irala Cassera, Nadia Monserrath', 'nirala@abdiez.com', NULL, '$2y$12$.PF8fbUBpLhgL6H4u/ZzP.7jHxFxjLQ3hTXNHrIum.z6iFkL/YIrW', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 'López, Anibal', 'alopez@abdiez.com', NULL, '$2y$12$UdLoYYHp/.aKf4301lCfaesmX5J5/CpptzpNeUg8pZnWjmD7NhsAO', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 'López, Norma', 'nlopez@abdiez.com', NULL, '$2y$12$ebyCGLvgfgo6rhcxWZCl6ekAQwBXFeczdtIu0U9diiqjYbL7j3.Sy', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 'López Osmar', 'olopez@abdiez.com', NULL, '$2y$12$7LFZiGLnFjyO.KJzL8CfdOGAkRMBT/hBjJGDKWBHmkh9dMHVYJRH6', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 'Mancuello, Miryam', 'mmancuello@abdiez.com', NULL, '$2y$12$tv4sF2KaJ6onJGYlGQISHOHuJEaPIYXrWtCxTmMxvlkptZEq212yC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 'Martiinez , Leticia', 'lmartinez@abdiez.com', NULL, '$2y$12$ANMXqiXYsP4dxubbcoVYueMCTs4zIUxXZPDDG0eswauJv5uNx8aEK', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 'Martinez Rojas, Fatima', 'fmartinez@abdiez.com', NULL, '$2y$12$67BPS/FXt3LSIdLllP4/U.AKjdu6O5IH9pL5rI95KqCwt/4kf8Y2.', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 'Meza Bogarin, Marcial Tobías Isaac', 'mmeza@abdiez.com', NULL, '$2y$12$ylvnqAfwK5VKjr5m30b7MuBB6OBsL1ZPKIynAu0Nrbq5aZWBpKi5i', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 'Mora Palacios, Cesar Benito	', 'cmora@abdiez.com', NULL, '$2y$12$eywg7Ig.Kq31GPyDI0FSD.DLFc9QhJDfS6cuXLn9Id5boKZcyz37a', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 'Ozorio Huchense, Ynocencia', 'yozorio@abdiez.com', NULL, '$2y$12$l2tFkqyrpU6wF4zWUNw2He5.6gd7qNRwkLKWVxP1kWblmHJ8emqI2', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 'Peña Javier', 'lpeña@abdiez.com', NULL, '$2y$12$rACQV6AiBXdv4h9B4Quls.EmHtw9IKHoy.8NOFDTAHv/zGHxxmbB.', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, 'Ramirez, Julio', 'jramirez@abdiez.com', NULL, '$2y$12$S2mFy33DobV8z/5sewv.1eSf0ifvlcofqi/Y/pSHmTuQpT5z/WBuC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, 'Ramirez Alegre, Laura Carolina	', 'lramirez@abdiez.com', NULL, '$2y$12$7qOLR45qRCoIPileCnTRrOY53M6fM.HR83qxeld9LZFJQrBgg6T1q', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(30, 'Ramos, Nelly', 'nramos@abdiez.com', NULL, '$2y$12$H8bq51IQV/m9ATkn3ptwcedF13m2u5tZc.x20EkDx70otC8Ej7Gq2', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(31, 'Rojas Barua, Olga María Liz', 'orojas@abdiez.com', NULL, '$2y$12$176SrUYEKav/wYBx01Fgs.ZBtasnnRon9zsDth4bn7lYEjBL.REdi', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(32, 'Rojas Insaurralde,Carlos Enrique', 'lrojas@abdiez.com', NULL, '$2y$12$LevlaBktusKVDq/zu.vh7urYwplOSmqIr97Bm9ojg8R0sGsZpsbMa', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(33, 'Ruíz Britez, Areli', 'arruiz@abdiez.com', NULL, '$2y$12$VbhCny6TftCQ/1FN4hA6GufNYRjnmWlVICzoiTmomFj6PhxVP84hq', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(34, 'Ruiz Britez, David Abdias', 'druiz@abdiez.com	', NULL, '$2y$12$sBNzGfw6TU74K4aH71vBjeej2sUGQJcRRtBjLJ.2LqM4rPBaObRmC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(35, 'Ruíz Martinez, Angela del Rosario', 'aruiz@abdiez.com', NULL, '$2y$12$wFy3Bn3C8kmRJ2zXridrtuLC7CfzrD8RmUlUJ5X6/5DXy.QclOTfK', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(36, 'Sorensen, Pedro', 'psorensen@abdiez.com', NULL, '$2y$12$WNIe0LCVwgbdelJ35rsMi.n8qSErWzb1b1SqCZ.aDjAXFgQlZCX.2', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(37, 'Vera Garcìa , Ronaldo Ruben', 'lvera@abdiez.com', NULL, '$2y$12$4K8Vky50GiD/pKb9bj/F5OUV.culVCZ1vNGca3e/oLINWEbSluMxG', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(38, 'Villalba, Alder	', 'avillalba@abdiez.com', NULL, '$2y$12$FsIWIHVo60.fDpxKiZU99.Hr9mXwkldYMey4PbrQiqf4UGFYhz3hG', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(39, 'Caballero López, Enry David', 'ecaballero@abdiez.com', NULL, '$2y$12$yFFmzYoRlunZmZtki36r6ueSsBTaBr.uRBgsYLiEvoA2OGxpkyuIy', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(40, 'Meza Gayozo, Cesar Ramón', 'cmeza@abdiez.com', NULL, '$2y$12$XmpA8SxmpemVER3Iftj3de5RpIj8XkriBTuNGdRNV7JVu8yI0Hgdq', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(41, 'Vera Acosta, Feliciano', 'fvera@abdiez.com', NULL, '$2y$12$LKGLOTI8RGfHQJgvZmpmPO/KXafN7/fjVvedS.bE1.jbxnQNDz85S', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(42, 'Viky', 'lviky@abdiez.com', NULL, '$2y$12$ZYTnxxtXic0ZVxJ9Xeamc.SdNKuXsqi0wfDACbvjNwjCPDxEQcojy', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(43, 'Perla', 'perla.taller@abdiez.com', NULL, '$2y$12$NHlCg67potLGA4z5hyMTiesN11YK6EgBTitlrIgLC8tXoQAp0kh02', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(44, 'Mauro', 'mauro.taller@abdiez.com', NULL, '$2y$12$g52jt5Mo8iPN5PsHNf2sF.TWREmTG.qcrmixlFsxZiNwOBwJ.8H26', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(45, 'Marciano', 'marciano.taller@abdiez.com', NULL, '$2y$12$I/ihUbH03m4ZSJ0P81cFD.NfAC34jPiG3oJd2ClJXm.k4.Shot3zW', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(46, 'Diosnel', 'diosnel.taller@abdiez.com', NULL, '$2y$12$SA1c5xaNDt6lWCtku0zHUuLVrJLCS3t0ocIs1U8wm51hfWpqgxUsq', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(47, 'Angela Jara', 'Ajara.taller@abdiez.com', NULL, '$2y$12$FXSklXIReoJ7Xi/pydqEn.4qOIDVGKdo8.m1zzdnh1A6bzgkAEWrC', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(48, 'Anicia', 'anicia.taller@abdiez.com', NULL, '$2y$12$NRLdT9KDz9mNW7Ci13/YYONl3uZ5G0x3YCoDHsq9oDPyZzyYbZIKW', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(49, 'Yolanda', 'yolanda.taller@abdiez.com', NULL, '$2y$12$vCHwquzAseVey7MOo3PSduYhHSomP.BYGsRzkHPsnAzxiT3px591q', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(50, 'Alex Quintana', 'aquintana@abdiez.com', NULL, '$2y$12$VQ/CrLkGlHd97jTcHBXlPecqp/1K.2d9Fz6SqSlwg/FYeg6ROQ/uO', NULL, '2025-03-04 15:30:32', '2025-03-04 15:30:32'),
+	(51, 'Cecilio Sanabria', 'csanabria@abdiez.com', NULL, '$2y$12$szd44ArAiGXmlTGlOSyy1.hzFTvo8HXLVomCVPS/mbWRtkkZYGnFK', NULL, '2025-03-04 15:31:10', '2025-03-04 15:31:10'),
+	(52, 'Eladio Cristaldo', 'ecristaldo@abdiez.com', NULL, '$2y$12$vDhvBcRjK8zz7NoZAEV0l.M.Q2mns58FJoy6IcCNK.1PL19C.2jQu', NULL, '2025-03-04 15:33:30', '2025-03-04 15:33:30'),
+	(53, 'halicher Valiente', 'hvaliente@abdiez.com', NULL, '$2y$12$uoWTJipXjyaPhQg7bWWfku3JSCWxRznLjcO/MX9oi6AOzywmSCZ6G', NULL, '2025-03-04 15:34:06', '2025-03-04 15:34:06'),
+	(54, 'Isidro Davalos', 'idavalos@abdiez.com', NULL, '$2y$12$pdNDSY8xE2tgnZJjy22ZqeD.A2aZH3A2lNhx3RAcXR25afVUsCo0m', NULL, '2025-03-04 15:34:35', '2025-03-04 15:34:35'),
+	(55, 'Sonia Razka', 'srazka@abdiez.com', NULL, '$2y$12$t9uNXPvRpa61OEDMZSQyv.CDGVkuBkF1yiM91WD4ZC7wISW9afqZe', NULL, '2025-03-04 15:35:05', '2025-03-04 15:35:05'),
+	(56, 'Francisco Amaro', 'famaro@abdiez.com', NULL, '$2y$12$MeLIJBQTCZu54FvR7CQGgetTKxyxRXXHCJSBTsfx1EasU0WbrwmXK', NULL, '2025-03-04 15:35:38', '2025-03-04 15:35:38');
+
+-- Volcando estructura para vista abprod1.order_reference_summaries
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `order_reference_summaries`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `order_reference_summaries` AS select concat(`oref`.`order_id`,'-',`oref`.`product_id`,'-',`oref`.`size_id`) AS `id`,`oref`.`order_id` AS `order_id`,`oref`.`product_id` AS `product_id`,`oref`.`size_id` AS `size_id`,concat(replace(`p`.`code`,'-',''),replace(`s`.`name`,'-','')) AS `new_code`,sum(`oref`.`quantity`) AS `total_quantity`,sum(`oref`.`price`) AS `total_price` from ((`order_references` `oref` join `products` `p` on((`p`.`id` = `oref`.`product_id`))) join `sizes` `s` on((`s`.`id` = `oref`.`size_id`))) group by `oref`.`order_id`,`oref`.`product_id`,`oref`.`size_id` order by `new_code`;
+
+-- Volcando estructura para vista abprod1.product_category_counts
+-- Eliminando tabla temporal y crear estructura final de VIEW
+DROP TABLE IF EXISTS `product_category_counts`;
+CREATE ALGORITHM=UNDEFINED SQL SECURITY DEFINER VIEW `product_category_counts` AS select row_number() OVER ()  AS `id`,`p`.`date` AS `production_date`,`c`.`name` AS `center_name`,`cat`.`name` AS `category_name`,count(distinct `prod`.`id`) AS `total_products`,sum(`pd`.`quantity`) AS `total_quantity` from ((((`productions` `p` join `productiondets` `pd` on((`p`.`id` = `pd`.`production_id`))) join `products` `prod` on((`pd`.`product_id` = `prod`.`id`))) join `categories` `cat` on((`prod`.`category_id` = `cat`.`id`))) join `centers` `c` on((`p`.`center_id` = `c`.`id`))) group by `p`.`date`,`c`.`name`,`cat`.`name`;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;

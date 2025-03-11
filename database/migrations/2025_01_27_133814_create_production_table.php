@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('productions', function (Blueprint $table) {
             $table->id();
             $table->date('date'); // Fecha de producción
+            $table->date('completed_date'); // Fecha de producción
+            //completed_date
             $table->foreignId('order_id')->constrained()->onDelete('cascade');
             $table->foreignId('center_id')->constrained('centers')->onDelete('cascade'); // Relación con centros
             $table->foreignId('operator_id')->constrained('operators')->onDelete('cascade'); // Relación con operadores

@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained('products')->onDelete('cascade'); // Relación con productos
             $table->foreignId('center_id')->constrained('centers')->onDelete('cascade'); // Relación con centros
             $table->integer('price')->default(0); // Precio del producto en el centro
+            $table->integer('type_of_valuation')->default(1 ); // Estado del pedido
+           
             $table->timestamps();
         });
     }

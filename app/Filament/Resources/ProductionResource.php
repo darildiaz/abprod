@@ -91,9 +91,15 @@ class ProductionResource extends Resource
                             ->minValue(0)
                             ->maxValue(fn (callable $get) => $get('orderquantity') - $get('prodquantity'))
                             ->required(),
-
+                        
                         Forms\Components\hidden::make('price')
                             ->label('Precio')
+                           // ->numeric()
+                           ->default(0)
+                            ->required(),
+
+                        Forms\Components\TextInput::make('valid_amount')
+                            ->label('Cantidad Valida')
                            // ->numeric()
                            ->default(0)
                             ->required(),
@@ -119,6 +125,10 @@ class ProductionResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('date')
                     ->label('Fecha')
+                    ->date()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('completed_date')
+                    ->label('Fecha entrega')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('order_id')
@@ -182,9 +192,10 @@ class ProductionResource extends Resource
                     // Actualizar fechas según el estado seleccionado
                     // if ($data['status'] == 1) {
                     //     $record->completion_date = now();
-                    // } elseif ($data['status'] == 2) {
-                    //     $record->shipping_date = now();
-                    // }
+                    // } else
+                    if ($data['status'] == 1) {
+                         $record->completed_date = now();
+                    }
                     $record->save();
                 })
                 ->form([
@@ -230,10 +241,17 @@ class ProductionResource extends Resource
         if (!$order_id || !$centerId) {
             return;
         }
-        $products = OrderReference::where('order_id', $order_id)
-            ->selectRaw('product_id, SUM(quantity) AS quantity_t')
-            ->groupBy('product_id')
-            ->get();
+        $products = OrderReference::where('order_references.order_id', $order_id)
+    ->join('order_items', function ($join) {
+        $join->on('order_references.order_id', '=', 'order_items.order_id')
+             ->on('order_references.item', '=', 'order_items.item');
+    })
+    ->selectRaw('order_references.product_id, 
+                 SUM(order_references.quantity) AS quantity_t, 
+                 COUNT(DISTINCT CONCAT(order_items.model, "-", order_references.size_id)) AS model_size_count, 
+                 COUNT(DISTINCT order_items.model) AS model_count')
+    ->groupBy('order_references.product_id')
+    ->get();
 
             $producedQuantities = Production::join('productiondets as pd', 'pd.production_id', '=', 'productions.id')
             ->where('productions.order_id', $order_id)
@@ -245,21 +263,34 @@ class ProductionResource extends Resource
         Log::info('Produced Quantities:', $producedQuantities->toArray());
 
         $prod = [];
+        $amount=0;
         foreach ($products as $product) {
                 if ($product->product->is_producible) {
                     $prodquantity = isset($producedQuantities[$product->product_id]) 
                     ? $producedQuantities[$product->product_id]->sumprod 
                     : 0;
-
+                    switch (self::getProducttype($product->product_id, $centerId)) {
+                        case  1:
+                            $amount = $product->quantity_t;
+                            break;
+                        case  2:
+                                $amount = $product->model_size_count;
+                                break;
+                        case  3:
+                                    $amount = $product->model_count;
+                                    break;
+                    }
                     $prod[] = [
                     'product_id' => $product->product_id,
                     'prodquantity' => $prodquantity,
                     'orderquantity' => $product->quantity_t,
                     'quantity' => $product->quantity_t-$prodquantity,
+                    'valid_amount' => $amount,
                     'price' => self::getProductPrice($product->product_id, $centerId),
                 ];
-                $maxQuantities[$product->product_id] = $product->quantity_t;
-                    }
+                $amount=0;
+                    $maxQuantities[$product->product_id] = $product->quantity_t;
+                }
                 
         }
 
@@ -270,5 +301,11 @@ class ProductionResource extends Resource
         return \App\Models\ProductCenter::where('product_id', $productId)
             ->where('center_id', $centerId)
             ->value('price') ?? 0; // Retrieves the price directly, returns 0 if null
+    }
+    public static function getProducttype(int $productId, int $centerId): ?int
+    {
+        return \App\Models\ProductCenter::where('product_id', $productId)
+            ->where('center_id', $centerId)
+            ->value('type_of_valuation') ?? 1; // Retrieves the price directly, returns 0 if null
     }
 }

@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class rollProdt extends Model
+{
+    use HasFactory;
+public function roll(){
+        return $this->belongsTo(roll::class, 'roll_id');
+    }
+
+    public function errorOrder()
+    {
+        return $this->belongsTo(errorOrder::class, );
+    }
+    public function production()
+    {
+        return $this->belongsTo(Production::class);
+    }
+}

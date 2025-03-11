@@ -33,7 +33,14 @@ class ProductCenterResource extends Resource
                     ->label('Centro')
                     ->relationship('center', 'name') // Relación con el modelo Center
                     ->required(),
-
+                Forms\Components\Select::make('type_of_valuation')
+                    ->label('Tipo de Valuación')
+                    ->options([
+                        1 => 'Unitario',
+                        2 => 'Modelo talle',
+                        3 => 'Modelo',
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('price')
                     ->label('Precio')
                     ->numeric() // Validar que sea un número

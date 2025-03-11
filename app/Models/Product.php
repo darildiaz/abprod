@@ -48,4 +48,8 @@ class Product extends Model
     protected $casts = [
             'tags' => 'array',
         ];
+    public function materialLists()
+    {
+        return $this->hasMany(MaterialList::class);
+    }
 }
