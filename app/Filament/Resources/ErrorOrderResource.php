@@ -34,7 +34,7 @@ class ErrorOrderResource extends Resource
                     ->label('Pedido')
                     ->relationship('order', 'id',
                         modifyQueryUsing: function (Builder $query): Builder {
-                            return $query->where('status', 0);
+                            return $query->where('status', 1);
                         }
                     )
                     ->searchable()
@@ -60,12 +60,11 @@ class ErrorOrderResource extends Resource
                 ->label('Parte')
                 ->required(),
                 Forms\Components\TextInput::make('quantity')
+                
                 ->label('Cantidad')
                 ->required()
                 ->numeric(),   
-                Forms\Components\TextInput::make('item')
-                    ->required()
-                    ->numeric(),
+                
                 Forms\Components\Textarea::make('obs_det')
                 ->label('Observaciones detalle')
                     ->required(),

@@ -67,5 +67,7 @@ class Order extends Model
     {
         return $this->hasMany(Planning::class);
     }
-    
+    public function PaymentHistories(){
+        return $this->hasMany(PaymentHistory::class);
+    }
 }

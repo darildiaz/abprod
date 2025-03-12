@@ -18,7 +18,9 @@ class SizeGroupResource extends Resource
     protected static ?string $model = SizeGroup::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    public static ?string $navigationGroup = 'Productos';
+    public static ?string $navigationLabel = 'Grupo de talles';
+    public static ?string $pluralLabel = 'Grupo de talles';
     public static function form(Form $form): Form
     {
         return $form

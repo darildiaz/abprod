@@ -201,9 +201,10 @@ class ProductionResource extends Resource
                 ->form([
                     Forms\Components\Select::make('status')
                         ->options([
-                            0 => 'Pendiente',
+                           
                             1 => 'Completado',
                         ])
+                        ->default(1)
                         ->required(),
                         ])->requiresConfirmation(),
                 
@@ -211,6 +212,26 @@ class ProductionResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('Cargar_rollo')
+            ->label('Ver Detalle de Referencias')
+          //  ->action()
+            ->form([
+                Forms\Components\Select::make('roll_id')
+                    ->label('rollo')
+                    ->relationship('roll', 'id')
+                    ->createOptionForm([
+                        Forms\Components\DatePicker::make('date')
+                ->default(now())
+                    ->required(),
+                Forms\Components\TextInput::make('impresora')
+                    ->required()
+                    ->maxLength(255),
+
+                    ])
+                    ->required(),
+                
+            ])
+            ->requiresConfirmation(),
                 ]),
             ]);
     }

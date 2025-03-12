@@ -106,6 +106,8 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
             ->label('Ver Detalle de Referencias')
             ->action(fn (Collection $records) => $this->redirectToSummaryPage($records))
             ->requiresConfirmation(),
+
+            
             
         ])
         ->paginated(50);

@@ -2,9 +2,9 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RollProdtResource\Pages;
-use App\Filament\Resources\RollProdtResource\RelationManagers;
-use App\Models\RollProdt;
+use App\Filament\Resources\PaymentMethodResource\Pages;
+use App\Filament\Resources\PaymentMethodResource\RelationManagers;
+use App\Models\PaymentMethod;
 use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -13,9 +13,9 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class RollProdtResource extends Resource
+class PaymentMethodResource extends Resource
 {
-    protected static ?string $model = RollProdt::class;
+    protected static ?string $model = PaymentMethod::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -23,15 +23,10 @@ class RollProdtResource extends Resource
     {
         return $form
             ->schema([
-                Forms\Components\Select::make('roll_id')
+                Forms\Components\TextInput::make('name')
+                ->label('Descripcion')
                     ->required()
-                    ->relationship('roll', 'id'),
-                Forms\Components\select::make('production_id')
-                    ->relationship( 'production', 'id')
-                    ->label('Producción'),
-                Forms\Components\select::make('error_order_id')
-                    ->relationship( 'errorOrder', 'order_id')
-                    ->label('Orden de Error')
+                    ->maxLength(255),
             ]);
     }
 
@@ -39,15 +34,8 @@ class RollProdtResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('roll_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('production_id')
-                    ->numeric()
-                    ->sortable(),
-                Tables\Columns\TextColumn::make('error_order_id')
-                    ->numeric()
-                    ->sortable(),
+                Tables\Columns\TextColumn::make('name')
+                    ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -81,10 +69,10 @@ class RollProdtResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRollProdts::route('/'),
-            'create' => Pages\CreateRollProdt::route('/create'),
-            'view' => Pages\ViewRollProdt::route('/{record}'),
-            'edit' => Pages\EditRollProdt::route('/{record}/edit'),
+            'index' => Pages\ListPaymentMethods::route('/'),
+            'create' => Pages\CreatePaymentMethod::route('/create'),
+            'view' => Pages\ViewPaymentMethod::route('/{record}'),
+            'edit' => Pages\EditPaymentMethod::route('/{record}/edit'),
         ];
     }
 }

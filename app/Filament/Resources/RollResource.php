@@ -24,9 +24,12 @@ class RollResource extends Resource
         return $form
             ->schema([
                 Forms\Components\DatePicker::make('date')
+                ->label('fecha')
+                ->default(now())
                     ->required(),
                 Forms\Components\TextInput::make('impresora')
-                    ->required()
+                ->label('impresora')    
+                ->required()
                     ->maxLength(255),
             ]);
     }
@@ -36,11 +39,14 @@ class RollResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('id')
+                    ->label('id')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('date')
+                ->label('Fecha')
                     ->date()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('impresora')
+                    ->label('Impresora')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
@@ -68,7 +74,9 @@ class RollResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            RelationManagers\RollProdtsRelationManager::class,
+            RelationManagers\RollErrorsRelationManager::class,
+
         ];
     }
 

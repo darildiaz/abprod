@@ -16,47 +16,8 @@ use Filament\Tables\Columns\Summarizers\Sum;
 class OrderItemRelationManager extends RelationManager
 {
     protected static string $relationship = 'OrderItems';
-
-    public function form(Form $form): Form
-    {
-        return $form
-            ->schema([
-                Forms\Components\TextInput::make('name')
-                    ->label('Name')
-                    ->required()
-                    ->maxLength(255),
-                
-                Forms\Components\TextInput::make('number')
-                    ->label('Number')
-                    ->required()
-                    ->maxLength(255),
-
-                Forms\Components\TextInput::make('other')
-                    ->label('Other Details')
-                    ->maxLength(255),
-
-                Forms\Components\TextInput::make('quantity')
-                    ->label('Quantity')
-                    ->numeric()
-                    ->required(),
-
-                Forms\Components\TextInput::make('price')
-                    ->label('Price')
-                    ->numeric()
-                    ->required(),
-
-                Forms\Components\Select::make('size_id')
-                    ->label('Size')
-                    ->relationship('size', 'name') // Relación con el modelo Size
-                    ->required(),
-
-                Forms\Components\Select::make('model')
-                    ->label('Mold')
-                    ->relationship('model', 'title') // Relación con el modelo Mold
-                    ->required(),
-            ]);
-    }
-
+   
+   
     public function table(Table $table): Table
     {
         return $table

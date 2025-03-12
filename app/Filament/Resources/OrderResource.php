@@ -31,6 +31,7 @@ use Illuminate\Support\Carbon;
 use App\Models\TeamMember;
 use App\Models\ClassCenter;
 use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
@@ -447,6 +448,10 @@ implements HasShieldPermissions
                     ->collapsible(),
                 ])
             ->defaultSort('id', 'desc')
+            ->query(fn () => auth()->user()->can('ver_todos_order')
+                ? Order::query() // Si es admin, muestra todos los pedidos
+                : Order::query()->where('manager_id', auth()->id()) // Si no, filtra por manager_id
+                )
             ->columns([
                 Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
                 Tables\Columns\TextColumn::make('bitrix_id'),
@@ -465,8 +470,26 @@ implements HasShieldPermissions
                 Tables\Columns\TextColumn::make('manager.name')->label('Gestor'), // Relación con User
                 Tables\Columns\TextColumn::make('reference_name')->label('Referencia')->searchable(),
                 Tables\Columns\TextColumn::make('total')->label('Total')->money('Gs.')
+                ->visible(fn () => auth()->user()->can('seller_order'))
                 ->summarize(Sum::make())
                 ->sortable(),
+                Tables\Columns\TextColumn::make('PaymentHistories.amount')->label('Monto Recibido')
+              //  ->summarize('PaymentHistories.amount')
+              ->visible(fn () => auth()->user()->can('seller_order'))
+              
+              ->state(function (Model $record): int {
+                return  $record->paymentHistories()->where('status', true)->sum('amount');
+            })
+              ->money('Gs.'),
+                Tables\Columns\TextColumn::make('Saldo')->label('Saldo')
+                ->visible(fn () => auth()->user()->can('seller_order'))
+              
+                ->state(function (Model $record): int {
+                    return $record->total - $record->paymentHistories()->where('status', true)->sum('amount');
+                })
+              ->money('Gs.')
+                ,
+                
                 Tables\Columns\TextColumn::make('classification.name')->label('Clasificacion'), // Relación con QuestionCategory
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
@@ -520,7 +543,9 @@ implements HasShieldPermissions
                     ,
                     Tables\Filters\selectFilter::make('manager.name')
                     ->relationship('manager', 'name')
-                    ->default(auth()->id())
+                 //->hidden(fn () => auth()->user()->can('ver_todos'))
+                 
+                 ->default(auth()->id())
                     ,
                      
             ])
@@ -528,10 +553,39 @@ implements HasShieldPermissions
 
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('paymenthistory')
+                ->label('Pagos')
+                ->form([
+                    Forms\Components\Repeater::make('paymenth')
+                    ->label('Planificación')
+                    ->relationship('paymenthistories') // Relación con la tabla order_references
+                    ->schema([
+                            Forms\Components\DatePicker::make('date')
+                                        ->default(now())
+                                        ->required(),
+                            Forms\Components\TextInput::make('amount')
+                                ->required()
+                                ->suffix('Gs.')
+                                ->numeric(),
+                            Forms\Components\Select::make('payment_method_id')
+                                ->relationship('paymentMethod', 'name')
+                                ->required(),
+                            Forms\Components\TextInput::make('reference')
+                                ->required()
+                                ->maxLength(255),
+                            Forms\Components\FileUpload::make('image')->label('Image')
+                            ->directory('pay')
+                            ->required(),
+                            Forms\Components\TextInput::make('seller_id')
+                                ->required()
+                                ->numeric(),
+                    ])
+                    ->columns(3)
+                ]),
                 Tables\Actions\Action::make('pdf') 
                     ->label('PDF')
                     ->color('success')
-                    //->icon('heroicon-s-download')
+                    //->icon('heroicon-o-archive')
                     ->action(function (Model $record) {
                         return response()->streamDownload(function () use ($record) {
                             foreach ($record->orderItems as $item) {
@@ -542,6 +596,14 @@ implements HasShieldPermissions
                                     ->where('order_references.item', $item->item)
                                     ->pluck('categories.name')
                                     ->implode('+ ');
+                            }
+                            foreach ($record->orderMolds as $model) {
+                                $qrCode = QrCode::size(100)->generate( asset('storage/' . $model->imagen ?? 'N/A' ));
+                                // Convertir el QR a Base64 para insertarlo en el PDF
+                                $qrCodeBase64 = base64_encode($qrCode);
+                                
+                                // Asignar el QR Base64 al modelo para pasarlo al Blade
+                                $model->qr = 'data:image/svg+xml;base64,' . $qrCodeBase64;
                             }
                             echo Pdf::loadHtml(
                                 Blade::render('pdf.invoice', ['order' => $record])

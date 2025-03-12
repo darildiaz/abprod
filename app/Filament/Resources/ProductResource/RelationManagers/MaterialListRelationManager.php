@@ -1,34 +1,24 @@
 <?php
 
-namespace App\Filament\Resources;
+namespace App\Filament\Resources\ProductResource\RelationManagers;
 
-use App\Filament\Resources\MaterialListResource\Pages;
-use App\Filament\Resources\MaterialListResource\RelationManagers;
-use App\Models\MaterialList;
 use Filament\Forms;
 use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class MaterialListResource extends Resource
+class MaterialListRelationManager extends RelationManager
 {
-    protected static ?string $model = MaterialList::class;
-
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-    public static ?string $navigationGroup = 'Productos';
-    public static ?string $navigationLabel = 'Lista de materiales';
-    public static ?string $pluralLabel = 'lista de materiales';
-    public static function form(Form $form): Form
+    protected static string $relationship = 'MaterialLists';
+    //protected $label='Lista de Materiales';
+    public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\select::make('product_id')
-                    ->relationship( 'product', 'code')
-                    ->label('Productos')    
-                    ->required(),
+                
                 Forms\Components\select::make('material_id')
                     ->relationship( 'material', 'name')
                     ->label('Materiales')
@@ -43,14 +33,12 @@ class MaterialListResource extends Resource
             ]);
     }
 
-    public static function table(Table $table): Table
+    public function table(Table $table): Table
     {
         return $table
+            ->recordTitleAttribute('Lista de materiales')
             ->columns([
-                Tables\Columns\TextColumn::make('product.code')
-                    ->numeric()
-                    ->label('Productos')
-                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make('material.name')
                     ->label('Materiales')
                     ->numeric()
@@ -75,31 +63,17 @@ class MaterialListResource extends Resource
             ->filters([
                 //
             ])
+            ->headerActions([
+                Tables\Actions\CreateAction::make(),
+            ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
-    }
-
-    public static function getRelations(): array
-    {
-        return [
-            //
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListMaterialLists::route('/'),
-            'create' => Pages\CreateMaterialList::route('/create'),
-            'view' => Pages\ViewMaterialList::route('/{record}'),
-            'edit' => Pages\EditMaterialList::route('/{record}/edit'),
-        ];
     }
 }

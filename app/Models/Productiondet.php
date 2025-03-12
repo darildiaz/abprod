@@ -18,5 +18,12 @@ class Productiondet extends Model
     {
         return $this->belongsTo(Product::class);
     }
-    
+    public function roll()
+    {
+        return $this->belongsTo(Roll::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

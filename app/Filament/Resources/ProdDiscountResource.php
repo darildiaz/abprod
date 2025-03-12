@@ -18,7 +18,9 @@ class ProdDiscountResource extends Resource
     protected static ?string $model = ProdDiscount::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    public static ?string $navigationGroup = 'Produccion';
+    public static ?string $navigationLabel = 'Descuentos';
+    public static ?string $pluralLabel = 'Descuentos';
     public static function form(Form $form): Form
     {
         return $form
@@ -56,7 +58,7 @@ class ProdDiscountResource extends Resource
 
                     ->suffix(' Gs.'),
                 Forms\Components\TextInput::make('subtotal')
-                   ->readOnly(false)
+                   ->readOnly()
                     ->label('Subtotal')
                     ->numeric(),
             ]);
@@ -66,6 +68,12 @@ class ProdDiscountResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id')
+                ->label('id')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('date')
                 ->label('Fecha')
                     ->date()
@@ -101,7 +109,9 @@ class ProdDiscountResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\selectFilter::make('user.name')
+                    ->relationship('user', 'name')
+                    ,
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),

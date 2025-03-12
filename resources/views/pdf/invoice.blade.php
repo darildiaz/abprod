@@ -2,6 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orden #{{ $order->id }}</title>
     <style>
@@ -127,6 +129,11 @@
                         <td>
                             
                                 <img src="{{ public_path('storage/' . $item->imagen ?? 'N/A' ) }}" alt="Imagen del modelo" style="max-width: 500px; max-height: 500px;">
+                                
+                               
+                        </td>
+                        <td>
+                            <img src="{{ $item->qr}}" alt="QR Code">
                             
                         </td>
                     </tr>
