@@ -42,3 +42,11 @@ FROM order_references oref
 JOIN products p ON p.id = oref.product_id
 JOIN sizes s ON s.id = oref.size_id
 GROUP BY oref.order_id, product_id, size_id;
+
+
+
+
+
+
+docker build . -t abprod
+docker run -it -p 8000:8000 abprod
