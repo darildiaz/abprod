@@ -117,7 +117,7 @@ implements HasShieldPermissions
                                             ->tel() // Input con validación para números de teléfono
                                             ->placeholder('Ingrese el número de teléfono'),
 
-                                        Forms\Components\hidden::make('user_id')
+                                        Forms\Components\Hidden::make('user_id')
                                             ->default(auth()->id()) // Predetermina el usuario logueado
                                         ])
                                         ->required(),
