@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class materialList extends Model
+class MaterialList extends Model
 {
     use HasFactory;
     public function product()

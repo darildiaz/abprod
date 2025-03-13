@@ -22,7 +22,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\Price;
 use App\Models\Product;
 use App\Models\Size;
-use App\Models\category;
+use App\Models\Category;
 use App\Models\user;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
@@ -525,7 +525,7 @@ implements HasShieldPermissions
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\selectFilter::make('customer.name')
+                Tables\Filters\SelectFilter::make('customer.name')
                 ->label('Cliente') 
                 // Mostrar el nombre del vendedor
                 
@@ -538,10 +538,10 @@ implements HasShieldPermissions
                         2 => 'Completo',
                         3 => 'Enviado',
                 ]),
-                Tables\Filters\selectFilter::make('seller.name')
+                Tables\Filters\SelectFilter::make('seller.name')
                     ->relationship('seller', 'name')
                     ,
-                    Tables\Filters\selectFilter::make('manager.name')
+                    Tables\Filters\SelectFilter::make('manager.name')
                     ->relationship('manager', 'name')
                  //->hidden(fn () => auth()->user()->can('ver_todos'))
                  
