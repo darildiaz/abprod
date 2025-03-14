@@ -15,6 +15,12 @@ class RollSeeder extends Seeder
     public function run()
     {
         DB::statement("
+        INSERT INTO `question_categories` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
+	(1, 'Deportivo', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Escolar', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Empresarial', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22');
+        ");
+        DB::statement("
         INSERT INTO `products` (`id`, `code`, `name`, `imagen`, `imagmolde`, `description`, `is_producible`, `line_id`, `category_id`, `created_at`, `updated_at`, `tags`) VALUES
             (1, 'CAM-E10', 'Camiseta Premium E10', 'product/01JN17F128Q43965F8D4TDXTDA.png', 'productmolde/01JN17T64M67X7KNT89E2EZSXG.jpg', '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Caracteristicas</p><ul><li>tejido scuares</li><li>espalda fluence</li><li>Cuello redondo</li><li>manga recta</li><li>tira costado microperfado</li></ul><p>Molde:</p><ul><li>N027 molde niña</li><li>N025 molde niño</li><li>N021 molde adulto</li></ul>', 1, 7, 1, '2025-02-26 15:17:22', '2025-03-11 22:03:28', '["scuares", "deportivo", "fluence", "microperforado", "cuello redondo"]'),
             (2, 'CAM-P10', 'Camiseta Premium P10', 'product/01JN45D31MSXYYCE05A6H3K8GA.png', NULL, '<p>Caracteristicas&nbsp;</p><ul><li>Combinación de tejido premium</li><li>Escudo bordado</li><li>Full Estampado</li><li>Modelo exclusivo</li><li>Nombre/Número Individual</li><li>Hasta 12 auspicios</li></ul><p>Tejido tech<br>tira costado en micro</p>', 1, 7, 1, '2025-02-26 15:17:22', '2025-02-27 19:56:26', '["tech"]'),
