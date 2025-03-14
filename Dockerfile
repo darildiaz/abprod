@@ -1,11 +1,12 @@
-# Usar la imagen oficial de PHP con extensiones necesarias
+# Usar una imagen base de PHP con FPM
 FROM php:8.3-fpm
 
 # Establecer el directorio de trabajo
 WORKDIR /app
 
-# Instalar dependencias del sistema
+# Instalar herramientas necesarias
 RUN apt-get update && apt-get install -y \
+    apt-utils \
     curl \
     zip \
     unzip \
@@ -17,7 +18,9 @@ RUN apt-get update && apt-get install -y \
     libxml2-dev \
     libzip-dev \
     sqlite3 \
-    mariadb-client \
+    libsqlite3-dev \
+    pkg-config \
+    && docker-php-ext-configure pdo_mysql \
     && docker-php-ext-install pdo pdo_mysql pdo_sqlite mbstring gd xml zip
 
 # Instalar Composer
