@@ -2,23 +2,48 @@
 
 namespace Database\Seeders;
 
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
-class RollSeeder extends Seeder
+class ProductSeeder extends Seeder
 {
     /**
-     * Ejecuta las semillas de la base de datos.
-     *
-     * @return void
+     * Run the database seeds.
      */
-    public function run()
+    public function run(): void
     {
         DB::statement("
-        INSERT INTO `question_categories` (`id`, `name`, `description`, `created_at`, `updated_at`) VALUES
-	(1, 'Deportivo', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
-	(2, 'Escolar', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
-	(3, 'Empresarial', NULL, '2025-02-26 15:17:22', '2025-02-26 15:17:22');
+        INSERT INTO `categories` (`id`, `name`, `code`, `description`, `order`, `is_important`, `created_at`, `updated_at`) VALUES
+	(1, 'Camiseta', 'CAM', NULL, 1, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(2, 'Camisilla', 'CMLL', NULL, 2, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(3, 'Short', 'SHT', NULL, 3, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(4, 'Media', 'MED', NULL, 4, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(5, 'Camiseta Manga largas', 'CAMLG', NULL, 5, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(6, 'Botinera', 'BTN', NULL, 6, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(7, 'Blusa', 'BLU', NULL, 7, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(8, 'Camisa', 'CMS', NULL, 8, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(9, 'Remera', 'REM', NULL, 9, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(10, 'Remera Polo', 'RP', NULL, 10, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(11, 'Cuellera', 'CUE', NULL, 11, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(12, 'Bandera', 'BDR', NULL, 12, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(13, 'Brazalete', 'BRZ', NULL, 13, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(14, 'Bata Médica', 'BMD', NULL, 14, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(15, 'Bincha', 'BIN', NULL, 15, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(16, 'Crop Top de Algodón', 'CTA', NULL, 16, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(17, 'Body', 'BDY', NULL, 17, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(18, 'Accesorio', 'ACC', NULL, 18, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(19, 'Campera', 'CMP', NULL, 19, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(20, 'Canguro', 'CNG', NULL, 20, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(21, 'Chaleco', 'CHL', NULL, 21, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(22, 'Chaqueta', 'CHQ', NULL, 22, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(23, 'Chomba', 'CHM', NULL, 23, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(24, 'Ciclista', 'CIC', NULL, 24, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(25, 'Termica', 'TM', NULL, 25, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(26, 'Saco', 'SC', NULL, 26, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(27, 'Pantalon', 'PTN', NULL, 27, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(28, 'crop top', 'CT', NULL, 28, 1, '2025-02-26 15:17:22', '2025-02-26 15:17:22'),
+	(29, 'Servicios', 'SEV', NULL, 0, 0, '2025-03-05 13:30:09', '2025-03-05 13:30:09');
         ");
         DB::statement("
         INSERT INTO `products` (`id`, `code`, `name`, `imagen`, `imagmolde`, `description`, `is_producible`, `line_id`, `category_id`, `created_at`, `updated_at`, `tags`) VALUES
@@ -965,4 +990,5 @@ class RollSeeder extends Seeder
             (980, 'MD-F02', 'Media Kanxa Economico', NULL, NULL, '<p>MARCA: KANXA<br>MODELO: ECONÓMICO<br>TEJIDO POLIESTER</p>', 1, 4, 4, '2025-03-10 20:05:01', '2025-03-10 20:05:01', '[]');
             ");
 
-    }}
+    }
+}
