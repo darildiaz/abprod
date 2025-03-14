@@ -29,9 +29,11 @@ class PartResource extends Resource
             ->schema([
                 Forms\Components\TextInput::make('name')
                     ->required()
+                    ->label('Parte')
                     ->maxLength(255),
                 Forms\Components\TextInput::make('loss_percentage')
                     ->required()
+                    ->label('Porcentaje de perdida')
                     ->numeric(),
             ]);
     }
@@ -41,9 +43,13 @@ class PartResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
+                ->label('Parte')
+
                     ->searchable(),
                 Tables\Columns\TextColumn::make('loss_percentage')
                     ->numeric()
+                    ->label('Porcentaje de perdida')
+
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()

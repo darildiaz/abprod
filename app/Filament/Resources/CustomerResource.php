@@ -43,7 +43,9 @@ class CustomerResource extends Resource
                 ->required()
                 ->maxLength(255)
                 ->placeholder('Ingrese el nombre del cliente'),
-
+            Forms\Components\TextInput::make('email')
+            ->email()
+                ->label('Correo electrónico'),
             Forms\Components\Textarea::make('address')
                 ->label('Dirección')
                 ->rows(3)
@@ -71,6 +73,10 @@ class CustomerResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->query(fn () => auth()->user()->can('ver_todos_order')
+            ? Customer::query() // Si es admin, muestra todos los pedidos
+            : Customer::query()->where('user_id', auth()->id()) // Si no, filtra por manager_id
+            )
             ->columns([
                 
                 Tables\Columns\TextColumn::make('nif')

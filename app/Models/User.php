@@ -96,4 +96,8 @@ class User extends Authenticatable implements FilamentUser
     {
         return $this->hasMany(Payment::class);
     }
+    public function proddesign()
+    {
+        return $this->hasMany(ProdDesign::class);
+    }
 }

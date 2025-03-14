@@ -18,7 +18,9 @@ class PaymentMethodResource extends Resource
     protected static ?string $model = PaymentMethod::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    public static ?string $navigationGroup = 'Pedidos';
+    protected static ?string $navigationLabel = 'Metodos de pago';
+    protected static ?string $pluralLabel = 'Metodos de pago'; 
     public static function form(Form $form): Form
     {
         return $form
@@ -51,6 +53,7 @@ class PaymentMethodResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

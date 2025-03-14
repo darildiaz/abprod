@@ -22,4 +22,5 @@ class Operator extends Model
     {
         return $this->hasMany(Production::class);
     }
+    
 }

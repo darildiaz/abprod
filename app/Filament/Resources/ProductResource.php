@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductResource extends Resource
 {
@@ -73,6 +74,8 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
+                Tables\Columns\TextColumn::make('id'),
+
                 Tables\Columns\TextColumn::make('code')
                     ->label('Código')
                     ->sortable()
@@ -88,6 +91,11 @@ class ProductResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('line.name')
                     ->label('Línea')
+                    ->numeric()
+                    ->searchable()
+                    ->sortable(),
+                    Tables\Columns\TextColumn::make('price.price')
+                    ->label('Precio')
                     ->numeric()
                     ->searchable()
                     ->sortable(),
@@ -123,7 +131,10 @@ class ProductResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    ExportBulkAction::make(),   
+
                 ]),
+
             ]);
     }
 

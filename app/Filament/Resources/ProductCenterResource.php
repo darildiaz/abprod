@@ -12,6 +12,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 
 class ProductCenterResource extends Resource
 {
@@ -19,7 +20,7 @@ class ProductCenterResource extends Resource
     public static ?string $navigationIcon = 'heroicon-o-link';
     public static ?string $navigationGroup = 'Produccion';
     public static ?string $navigationLabel = 'ProduccionCentros';
-    public static ?string $pluralLabel = 'Produccion por Centros precios';
+    public static ?string $pluralLabel = ' Precios de Produccion por Centros';
     public static function form(Form $form): Form
     {
         return $form
@@ -28,7 +29,6 @@ class ProductCenterResource extends Resource
                     ->label('Producto')
                     ->relationship('product', 'code') // Relación con el modelo Product
                     ->required(),
-
                 Forms\Components\Select::make('center_id')
                     ->label('Centro')
                     ->relationship('center', 'name') // Relación con el modelo Center
@@ -55,10 +55,14 @@ class ProductCenterResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('product.code')
-                    ->label('Product Code'), // Relación con Product
+                ->searchable()    
+                ->label('Codigo de Producto'), // Relación con Product
                 Tables\Columns\TextColumn::make('center.name')
-                    ->label('Center Name'), // Relación con Center
-                Tables\Columns\TextColumn::make('price'),
+                    ->label('Centro'), // Relación con Center
+                Tables\Columns\TextColumn::make('price')
+                ->label('Precio')
+                ->money('Gs.')
+                ,
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -69,7 +73,9 @@ class ProductCenterResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('center_id')
+                    ->label('Centro')
+                    ->relationship('center', 'name'),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -77,6 +83,8 @@ class ProductCenterResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                ExportBulkAction::make(),   
+
                 ]),
             ]);
     }

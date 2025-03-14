@@ -103,14 +103,25 @@
             <tr>
                 <th>Pregunta</th>
                 <th>Respuesta</th>
+                <th>Pregunta</th>
+                <th>Respuesta</th>
             </tr>
         </thead>
         <tbody>
-            @foreach($order->questionAnswers as $answer)
-                <tr>
+                @foreach($order->questionAnswers as $index => $answer)
+                    @if($index % 2 == 0)
+                    <tr>
                     <td>{{ $answer->question->text }}</td>
-                    <td>{{ $answer->answer }}</td>
-                </tr>
+                            <td>{{ $answer->answer }}</td>
+
+                    @endif
+                    @if($index % 2 == 1)
+                    
+                            <td>{{ $answer->question->text }}</td>
+                            <td>{{ $answer->answer }}</td>
+                 </tr>      
+
+                    @endif
             @endforeach
         </tbody>
     </table>
@@ -120,21 +131,23 @@
                 <tr>
                     <th>Modelo</th>
                     <th>Imagen</th>
+                    <th>Qr</th>
                 </tr>
             </thead>
             <tbody>
                 @foreach($order->orderMolds as $item)
                     <tr>
-                        <td><h1 class="text-rotate">{{ $item->title }}</h1></td>
+                        <td><center><h2 class="">{{ $item->title }}</h2></center></td>
                         <td>
-                            
-                                <img src="{{ public_path('storage/' . $item->imagen ?? 'N/A' ) }}" alt="Imagen del modelo" style="max-width: 500px; max-height: 500px;">
+                        <center>
+                                <img src="{{ public_path('storage/' . $item->imagen ?? 'N/A' ) }}" alt="Imagen del modelo" style="max-width: 300px; max-height: 300px;">
                                 
-                               
+                            </center>
                         </td>
                         <td>
+                            <center>
                             <img src="{{ $item->qr}}" alt="QR Code">
-                            
+                        </center>
                         </td>
                     </tr>
                 @endforeach

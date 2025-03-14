@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Material extends Model
+class ProdDesign extends Model
 {
     use HasFactory;
-    public function MaterialList()
+    public function user()
     {
-        return $this->hasMany(MaterialList::class);
+        return $this->belongsTo(User::class);
     }
 }

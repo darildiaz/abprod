@@ -13,10 +13,12 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Models\OrderReference;
+use BezhanSalleh\FilamentShield\Contracts\HasShieldPermissions;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
 use Illuminate\Support\Facades\Log;
 class ProductionResource extends Resource
+implements HasShieldPermissions
 {
     protected static ?string $model = Production::class;
 
@@ -24,6 +26,20 @@ class ProductionResource extends Resource
     public static ?string $navigationGroup = 'Produccion';
     public static ?string $navigationLabel = 'Produccion';
     protected static ?string $pluralLabel = 'Producciones';
+    Public static function getPermissionPrefixes(): array
+    {
+        return [
+            'view',
+            'view_any',
+            'create',
+            'update',
+            'delete',
+            'delete_any',
+            'status_production',
+            'center_all',
+            'ver_todos'
+        ];
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -113,6 +129,10 @@ class ProductionResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+        ->query(fn () => auth()->user()->can('ver_todos_production')
+        ? Production::query() // Si es admin, muestra todos los pedidos
+        : Production::query()->where('operator_id', auth()->id()) // Si no, filtra por manager_id
+        )
         ->defaultGroup('status')
 
         ->groups([ 

@@ -105,7 +105,9 @@ implements HasShieldPermissions
                                             ->required()
                                             ->maxLength(255)
                                             ->placeholder('Ingrese el nombre del cliente'),
-
+                                        Forms\Components\TextInput::make('email')
+                                                ->email()
+                                                ->label('Correo electrónico'),
                                         Forms\Components\Textarea::make('address')
                                             ->label('Direccion')
                                             ->rows(3)

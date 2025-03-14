@@ -18,6 +18,7 @@ use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Tables\Columns\Summarizers\Sum;
 
 class ProductiondetResource extends Resource
+
 {
     protected static ?string $model = Productiondet::class;
 
@@ -152,12 +153,6 @@ class ProductiondetResource extends Resource
                 ->label(' estado ')
                 ->action(function ($record, $data) {
                     $record->pay = $data['pay'];
-                    // Actualizar fechas según el estado seleccionado
-                    // if ($data['status'] == 1) {
-                    //     $record->completion_date = now();
-                    // } elseif ($data['status'] == 2) {
-                    //     $record->shipping_date = now();
-                    // }
                     $record->save();
                 })
                 ->form([

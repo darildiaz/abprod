@@ -42,9 +42,8 @@ class PaymentHistoryResource extends Resource
                 ->directory('orders')
                 ->required(),
                 
-                Forms\Components\TextInput::make('seller_id')
-                    ->required()
-                    ->numeric(),
+                Forms\Components\Hidden::make('seller_id')
+                    ->default(auth()->id()),
                 Forms\Components\Select::make('order_id')
                     ->relationship('order', 'id')
                     ->required(),
@@ -84,8 +83,7 @@ class PaymentHistoryResource extends Resource
                     ->numeric()
                     ->suffix(' Gs.')
                     ->sortable(),
-                Tables\Columns\ToggleColumn::make('status')
-                    ,
+                
                 Tables\Columns\TextColumn::make('order.seller.name')
                     ->numeric()
                     ->label('Vendedor')
@@ -95,7 +93,7 @@ class PaymentHistoryResource extends Resource
                 ->label('Confirmado por')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                
+                Tables\Columns\IconColumn::make('status')->boolean(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -111,6 +109,21 @@ class PaymentHistoryResource extends Resource
             ->actions([
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('status')
+                ->visible(fn () => auth()->user()->can('status_production_order'))
+                ->label('Estado ')
+                ->action(function ($record, $data) {
+                    $record->status = $data['status'];
+                    $record->date_confirmation=now();
+                    $record->save();
+                })
+                ->form([
+                    Forms\Components\Select::make('status')
+                        ->options([
+                            1 => 'Confirmado',
+                        ])
+                        ->required(),
+                        ])->requiresConfirmation(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
