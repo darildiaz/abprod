@@ -75,7 +75,7 @@ COPY .envDev .env
 RUN php artisan octane:install --server="swoole"
 
 # Exponer puerto
-EXPOSE 8000
+EXPOSE 8100
 
 # Comando para iniciar la aplicación
-CMD ["sh", "-c", "wait-for-it mysql:3306 -- php artisan migrate --force && php artisan octane:start --server=swoole --host=0.0.0.0 --port=8000"]
+CMD ["sh", "-c", "wait-for-it mysql:3306 -- php artisan migrate --force && php artisan octane:start --server=swoole --host=0.0.0.0 --port=8100"]

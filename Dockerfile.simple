@@ -54,7 +54,7 @@ RUN php artisan key:generate
 RUN php artisan octane:install --server=swoole
 
 # Exponer puerto
-EXPOSE 8000
+EXPOSE 8100
 
 # Iniciar aplicación
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8000"] 
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8100"] 

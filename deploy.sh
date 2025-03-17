@@ -12,7 +12,7 @@ if [ "$1" == "simple" ]; then
   
   # Ejecutar el contenedor
   echo "Ejecutando contenedor..."
-  docker run -it -p 8100:8000 abprod
+  docker run -it -p 8100:8100 abprod
 else
   # Usar docker-compose completo
   echo "Usando configuración completa con docker-compose..."
@@ -26,7 +26,7 @@ else
   docker-compose up --build -d
   
   echo "Servicios disponibles en:"
-  echo "- Laravel: http://localhost:8000"
+  echo "- Laravel: http://localhost:8100"
   echo "- phpMyAdmin: http://localhost:8080"
 fi
 
