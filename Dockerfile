@@ -15,7 +15,7 @@ RUN apt-get update && apt-get install -y \
     make \
     libssl-dev \
     libtool \
-    mysql-client
+    default-mysql-client
 
 # Instalar extensiones PHP
 RUN docker-php-ext-install \
