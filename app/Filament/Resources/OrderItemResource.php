@@ -19,7 +19,7 @@ class OrderItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
     public static ?string $navigationGroup = 'Orders details';
-    protected static ?string $pluralLabel = 'Detelles de pedidos'; 
+    protected static ?string $pluralLabel = 'Detalles de pedidos'; 
 
     public static function form(Form $form): Form
     {
@@ -39,35 +39,35 @@ class OrderItemResource extends Resource
                         name: 'model',
                         titleAttribute: 'title',
                         modifyQueryUsing: fn (Builder $query) => $query->where('order_id', 
-                        21
-                        //$get('order_id')
+                        
+                        $get('order_id')
                         
                         ))
                         ->required(),
 
                     Forms\Components\TextInput::make('name')
-                        ->label('Custom Name')
+                        ->label('Nombre')
                         ->required(),
 
                     Forms\Components\TextInput::make('number')
-                        ->label('Custom Number'),
+                        ->label('Numero'),
 
                     Forms\Components\TextInput::make('other')
-                        ->label('Other Custom Data'),
+                        ->label('Otros datos'),
 
                     Forms\Components\Select::make('size_id')
-                        ->label('Size')
+                        ->label('Talla')
                         ->relationship('size', 'name') // Relación con la tabla sizes
 
                      //   ->options(Size::pluck('name', 'id'))
                         ->required(),
 
                     Forms\Components\TextInput::make('quantity')
-                        ->label('Quantity')
+                        ->label('Cantidad')
                         ->numeric()
                         ->required(),
                         Forms\Components\TextInput::make('subtotal')
-                        ->label('Quantity')
+                        ->label('Subtotal')
                         ->numeric()
                         ->required(),
                         Forms\Components\TagsInput::make('tags')->label('Products')

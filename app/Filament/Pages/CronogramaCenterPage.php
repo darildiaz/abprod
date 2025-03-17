@@ -16,8 +16,10 @@ use Filament\Actions\RedirectAction;
 use Filament\Tables\Grouping\Group;
 use App\Models\Category;
 use App\Models\Order;
-use App\Models\center;
+use App\Models\Center;
 use Livewire\Attributes\Url;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Form;
 class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
@@ -31,6 +33,7 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
     
     #[Url] // Permite recibir parámetros en la URL
     public string $centerId = '';
+    
     /**
      * Define la tabla de datos en la página.
      */
@@ -39,7 +42,28 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 
     public function mount(): void
     {
-        static::$title = 'Cronograma de ' . optional(center::find($this->centerId))->name;
+        // Si no hay centerId, usar el centro 1 por defecto
+        if (empty($this->centerId)) {
+            $this->centerId = '1';
+        }
+        
+        static::$title = 'Cronograma de ' . optional(Center::find($this->centerId))->name;
+    }
+    
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Select::make('centerId')
+                    ->label('Seleccionar Centro')
+                    ->options(Center::pluck('name', 'id'))
+                    ->searchable()
+                    ->live()
+                    ->afterStateUpdated(function ($state) {
+                        $this->redirect(route('filament.admin.pages.reporte-ordenes-centro', ['centerId' => $state]));
+                    })
+                    ->default($this->centerId ?: '1'),
+            ]);
     }
     
     public function table(Tables\Table $table): Tables\Table
@@ -145,6 +169,11 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
      */
     protected function getOrdersQuery(): Builder
     {
+        // Si no hay centro seleccionado, usar el centro 1 por defecto
+        if (empty($this->centerId)) {
+            $this->centerId = '1';
+        }
+        
         // Obtener solo las categorías importantes usando el modelo Category
         $categories = Category::where('is_important', 1)->pluck('name', 'id');
 

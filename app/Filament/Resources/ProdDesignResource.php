@@ -21,7 +21,10 @@ class ProdDesignResource extends Resource
 {
     protected static ?string $model = ProdDesign::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static ?string $navigationGroup = "Pedidos";
+    protected static ?string $navigationLabel = 'Diseños';
+    protected static ?string $pluralLabel = 'Diseños';
 
     public static function form(Form $form): Form
     {
@@ -30,18 +33,21 @@ class ProdDesignResource extends Resource
             ->schema([
                 Forms\Components\DatePicker::make('date')
                 ->default(now())
+                ->label('Fecha')
                     ->required(),
                 Forms\Components\TextInput::make('bitrix')
-
+                ->label('Referencia')
                     ->required()
                     ->maxLength(255),
                 Forms\Components\Select::make('type')
+                ->label('Tipo')
                 ->options(
                     ['Nuevo'=>'Nuevo','Modificacion'=>'Modificacion']
                 )
                 ->default('Nuevo')    
                 ->required(),
                 Forms\Components\Select::make('user_id')
+                ->label('Diseñador')
                 ->relationship('user', 'name')
                 ->default(auth()->id())
                     ->required(),

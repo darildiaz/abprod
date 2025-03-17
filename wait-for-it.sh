@@ -5,9 +5,11 @@ host="$1"
 shift
 cmd="$@"
 
-until mysql -h "$host" -u root -proot -e "SELECT 1" &> /dev/null; do
-  echo "Esperando a que MySQL esté listo..."
+echo "Esperando a que MySQL esté disponible en $host..."
+until mysql -h "$host" -u root -p"ja_Riz657tH]" -e "SELECT 1" &> /dev/null; do
+  echo "MySQL aún no está listo - esperando..."
   sleep 2
 done
 
+echo "MySQL está listo! Ejecutando comando: $cmd"
 exec $cmd

@@ -47,6 +47,26 @@ GROUP BY oref.order_id, product_id, size_id;
 
 
 
+## instalar docker
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y docker.io
+docker --version
+sudo systemctl enable --now docker
+sudo apt install -y docker-compose
+docker-compose --version
+docker volume create portainer_data
+
+
+
+docker run -d -p 9000:9000 -p 8000:8000 --name=portainer \
+    --restart=always \
+    -v /var/run/docker.sock:/var/run/docker.sock \
+    -v portainer_data:/data \
+    portainer/portainer-ce
+
+
+
+
 
 docker build . -t abprod
-docker run -it -p 8000:8000 abprod
+docker run -it -p 8100:8000 abprod
