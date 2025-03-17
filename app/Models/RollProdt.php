@@ -12,10 +12,7 @@ public function roll(){
         return $this->belongsTo(roll::class, 'roll_id');
     }
 
-    public function errorOrder()
-    {
-        return $this->belongsTo(errorOrder::class, );
-    }
+    
     public function production()
     {
         return $this->belongsTo(Production::class);

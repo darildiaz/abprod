@@ -16,7 +16,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 class OrderReferenceRelationManager extends RelationManager
 {
     protected static string $relationship = 'orderReferenceSummaries';
-
+    protected static ?string $title = 'Resumen de Productos';
     public function form(Form $form): Form
     {
         return $form

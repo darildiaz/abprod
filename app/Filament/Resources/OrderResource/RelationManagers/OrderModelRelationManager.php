@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class OrderModelRelationManager extends RelationManager
 {
     protected static string $relationship = 'orderMolds';
+    protected static ?string $title = 'Modelos';
 
     public function form(Form $form): Form
     {

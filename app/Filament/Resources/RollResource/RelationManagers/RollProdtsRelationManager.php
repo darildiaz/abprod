@@ -13,14 +13,23 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class RollProdtsRelationManager extends RelationManager
 {
     protected static string $relationship = 'RollProdts';
+    protected static ?string $title = 'Producciones';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('production')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('production_id')
+                    ->relationship(
+                        'production',
+                        'order_id',
+                        modifyQueryUsing: function (Builder $query) {
+                            return $query->where('center_id', '=', 7);
+                        }
+                    )
+                    
+                    ->label('Orden')
+                ->required()
             ]);
     }
 
@@ -29,7 +38,13 @@ class RollProdtsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('production')
             ->columns([
-                Tables\Columns\TextColumn::make('production'),
+                Tables\Columns\TextColumn::make('production.date')
+                    ->label('Fecha'),
+
+                Tables\Columns\TextColumn::make('production.order_id')
+                    ->label('Orden'),
+                Tables\Columns\TextColumn::make('production.order.reference_name')
+                    ->label('Referencia'),
             ])
             ->filters([
                 //

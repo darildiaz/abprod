@@ -16,6 +16,7 @@ use Filament\Tables\Columns\Summarizers\Sum;
 class OrderItemRelationManager extends RelationManager
 {
     protected static string $relationship = 'OrderItems';
+    protected static ?string $title = 'Lista';
    
    
     public function table(Table $table): Table

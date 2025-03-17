@@ -13,14 +13,16 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 class RollErrorsRelationManager extends RelationManager
 {
     protected static string $relationship = 'RollErrors';
+    protected static ?string $title = 'Reimpresion';
 
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('error')
+                Forms\Components\Select::make('error_order_id')
+                    ->label('Error')
+                    ->relationship('errorOrder', 'id')
                     ->required()
-                    ->maxLength(255),
             ]);
     }
 
@@ -29,7 +31,13 @@ class RollErrorsRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('error')
             ->columns([
-                Tables\Columns\TextColumn::make('error'),
+                Tables\Columns\TextColumn::make('errorOrder.id')
+                    ->label('id Error'),
+                    Tables\Columns\TextColumn::make('errorOrder.order_id')
+                    ->label('OT'),
+                Tables\Columns\TextColumn::make('errorOrder.part.name'),
+                Tables\Columns\TextColumn::make('errorOrder.obs_det'),
+                Tables\Columns\TextColumn::make('errorOrder.quantity'),
             ])
             ->filters([
                 //
