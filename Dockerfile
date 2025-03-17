@@ -17,7 +17,12 @@ RUN apk add --no-cache \
     oniguruma-dev \
     icu-dev \
     npm \
-    mysql-client
+    mysql-client \
+    autoconf \
+    g++ \
+    make \
+    gcc \
+    libtool
 
 # Instalar y configurar extensiones PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
