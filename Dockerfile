@@ -1,46 +1,34 @@
-# Usar una imagen base de PHP con FPM
-FROM php:8.3-fpm-alpine
+FROM php:8.3-cli
 
-# Instalar dependencias del sistema
-RUN apk add --no-cache \
-    linux-headers \
-    bash \
+# Instalar dependencias
+RUN apt-get update && apt-get install -y \
     git \
     curl \
-    zip \
-    unzip \
     libpng-dev \
-    libjpeg-turbo-dev \
-    freetype-dev \
+    libonig-dev \
     libxml2-dev \
     libzip-dev \
-    oniguruma-dev \
-    icu-dev \
-    npm \
-    mysql-client \
+    zip \
+    unzip \
     autoconf \
     g++ \
     make \
-    gcc \
+    libssl-dev \
     libtool \
-    libssl-dev
+    mysql-client
 
-# Instalar y configurar extensiones PHP
-RUN docker-php-ext-configure gd --with-freetype --with-jpeg
+# Instalar extensiones PHP
 RUN docker-php-ext-install \
     pdo \
     pdo_mysql \
     mysqli \
     mbstring \
     xml \
-    pcntl \
     gd \
     zip \
-    sockets \
-    bcmath \
-    intl
+    bcmath
 
-# Instalar Swoole para Laravel Octane
+# Instalar Swoole
 RUN pecl install swoole && docker-php-ext-enable swoole
 
 # Instalar Composer
@@ -49,24 +37,14 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 # Establecer directorio de trabajo
 WORKDIR /app
 
-# Copiar archivos de composer primero para aprovechar la caché
-COPY composer.json composer.lock ./
-RUN composer install --no-scripts --no-autoloader --no-dev
-
-# Copiar el resto de los archivos del proyecto
+# Copiar archivos del proyecto
 COPY . .
 
-# Generar autoloader optimizado
-RUN composer dump-autoload --optimize --no-dev
+# Instalar dependencias
+RUN composer install --no-interaction --optimize-autoloader
 
 # Configurar permisos
-RUN mkdir -p /app/storage/logs /app/storage/framework/cache /app/storage/framework/sessions /app/storage/framework/views
-RUN chmod -R 775 /app/storage /app/bootstrap/cache
-RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
-
-# Copiar script de inicio
-COPY start-octane.sh /usr/local/bin/start-octane
-RUN chmod +x /usr/local/bin/start-octane
+RUN chmod -R 775 storage bootstrap/cache
 
 # Copiar archivo de entorno
 COPY .envDev .env
@@ -80,5 +58,5 @@ RUN php artisan octane:install --server="swoole"
 # Exponer puerto
 EXPOSE 8100
 
-# Comando para iniciar la aplicación
-CMD ["/usr/local/bin/start-octane"]
+# Iniciar aplicación
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8100", "--max-requests=500"]
