@@ -16,6 +16,7 @@ use App\Filament\Resources\OrderResource\RelationManagers\OrderItemRelationManag
 use App\Filament\Resources\OrderResource\RelationManagers\OrderReferenceRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderModelRelationManager;
 use App\Filament\Resources\OrderResource\RelationManagers\OrderQuestionAnswerRelationManager;
+use App\Filament\Resources\OrderResource\RelationManagers\ProductionRelationManager;
 use App\Models\Question;
 use App\Models\QuestionCategory;
 use Illuminate\Support\Facades\DB;
@@ -50,7 +51,7 @@ implements HasShieldPermissions
 //    protected static ?string $navigationParentItem = 'Notifications';
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::where('status',0)->count();
+        return static::getModel()::where('status',1)->count();
     }
     Public static function getPermissionPrefixes(): array
     {
@@ -716,7 +717,8 @@ implements HasShieldPermissions
             OrderItemRelationManager::class,
             OrderReferenceRelationManager::class,
             OrderModelRelationManager::class,
-            OrderQuestionAnswerRelationManager::class
+            OrderQuestionAnswerRelationManager::class,
+            ProductionRelationManager::class
         ];
     }
 

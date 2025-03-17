@@ -32,8 +32,10 @@ class OrderModelRelationManager extends RelationManager
         return $table
             ->recordTitleAttribute('title')
             ->columns([
-                Tables\Columns\TextColumn::make('title'),
-                Tables\Columns\ImageColumn::make('imagen'),
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Modelo'),
+                Tables\Columns\ImageColumn::make('imagen')
+                    ->label('Imagen'),
             ])
             ->filters([
                 //

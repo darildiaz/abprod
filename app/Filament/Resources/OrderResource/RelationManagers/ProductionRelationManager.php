@@ -10,16 +10,15 @@ use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
-class OrderQuestionAnswerRelationManager extends RelationManager
+class ProductionRelationManager extends RelationManager
 {
-    protected static string $relationship = 'questionAnswers';
-    protected static ?string $title = 'Detalles de la Orden';
-
+    protected static string $relationship = 'production';
+    protected static ?string $title = 'Producciones';
     public function form(Form $form): Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('text')
+                Forms\Components\TextInput::make('date')
                     ->required()
                     ->maxLength(255),
             ]);
@@ -28,12 +27,14 @@ class OrderQuestionAnswerRelationManager extends RelationManager
     public function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('text')
+            ->recordTitleAttribute('date')
             ->columns([
-                Tables\Columns\TextColumn::make('question.text')
-                    ->label('Pregunta'),
-                Tables\Columns\TextColumn::make('answer')
-                    ->label('Respuesta'),
+                Tables\Columns\TextColumn::make('date')
+                    ->label('Fecha'),
+                Tables\Columns\TextColumn::make('center.name')
+                    ->label('Centro'),
+                Tables\Columns\TextColumn::make('operator.name')
+                    ->label('Operador'),
             ])
             ->filters([
                 //
@@ -49,7 +50,6 @@ class OrderQuestionAnswerRelationManager extends RelationManager
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ])
-            ;
+            ]);
     }
 }

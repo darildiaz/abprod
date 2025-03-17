@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\Support\Facades\DB;
 use pxlrbt\FilamentExcel\Actions\Tables\ExportBulkAction;
 use Filament\Tables\Columns\Summarizers\Sum;
+use pxlrbt\FilamentExcel\Exports\ExcelExport;
 
 class OrderItemRelationManager extends RelationManager
 {
@@ -25,21 +26,28 @@ class OrderItemRelationManager extends RelationManager
             ->recordTitleAttribute('total')
             ->columns([
             Tables\Columns\TextColumn::make('item')
+                ->label('Item')
                 ->searchable(),   
             Tables\Columns\TextColumn::make('model')
+                ->label('Modelo')
                 ->numeric()
                 ->sortable(),
             
             Tables\Columns\TextColumn::make('name')
+                ->label('Nombre')
                 ->searchable(),
             Tables\Columns\TextColumn::make('number')
+                ->label('Numero')
                 ->searchable(),
             Tables\Columns\TextColumn::make('other')
+                ->label('Otro')
                 ->searchable(),
             Tables\Columns\TextColumn::make('size.name')
+                ->label('Talle')
                 ->numeric()
                 ->sortable(),
             Tables\Columns\TextColumn::make('quantity')
+                ->label('Cantidad')
                 ->numeric()
                 ->summarize(Sum::make())
 
@@ -89,22 +97,21 @@ class OrderItemRelationManager extends RelationManager
                 //
             ])
             ->headerActions([
-                Tables\Actions\CreateAction::make(),
-                Tables\Actions\Action::make('copy_table')
-                    ->label('Copy Table Data')
-                    ->icon('heroicon-o-clipboard')
-                    ->action(fn () => null) // No acción en PHP, solo en JS
-                    ->extraAttributes([
-                        'x-data' => '{}',
-                        'x-on:click' => 'copyTableData()',
-                    ]),
+               // Tables\Actions\CreateAction::make(),
+                
             ])
             ->actions([
                // Tables\Actions\EditAction::make(),
                // Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
-                ExportBulkAction::make(),   
+                ExportBulkAction::make()
+                ->exports([
+                    ExcelExport::make()
+                    //->withFilename(fn ($filename) => 'prefix-' . $filename)
+                    ->withFilename(date('Y-m-d') . ' - Lista')
+                    ,
+                ]),   
                 // Tables\Actions\BulkActionGroup::make([
                 //     Tables\Actions\DeleteBulkAction::make(),
                 // ]),

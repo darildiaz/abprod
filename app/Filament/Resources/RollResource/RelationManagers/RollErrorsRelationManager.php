@@ -8,6 +8,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 
 class RollErrorsRelationManager extends RelationManager
@@ -23,6 +24,7 @@ class RollErrorsRelationManager extends RelationManager
                     ->label('Error')
                     ->relationship('errorOrder', 'id')
                     ->required()
+                    ->getOptionLabelFromRecordUsing(fn (Model $record) => "({$record->id}) OT: {$record->order_id} - {$record->obs_det}")
             ]);
     }
 

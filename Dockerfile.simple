@@ -13,7 +13,8 @@ RUN apt-get update && apt-get install -y \
     autoconf \
     g++ \
     make \
-    libssl-dev
+    libssl-dev \
+    libtool
 
 # Instalar extensiones PHP
 RUN docker-php-ext-install \
@@ -24,7 +25,8 @@ RUN docker-php-ext-install \
     pcntl \
     bcmath \
     gd \
-    zip
+    zip \
+    sockets
 
 # Instalar Swoole
 RUN pecl install swoole && docker-php-ext-enable swoole
@@ -51,10 +53,10 @@ COPY .envDev .env
 RUN php artisan key:generate
 
 # Instalar Octane
-RUN php artisan octane:install --server=swoole
+RUN php artisan octane:install --server="swoole"
 
 # Exponer puerto
 EXPOSE 8100
 
 # Iniciar aplicación
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8100"] 
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8100", "--workers=4", "--max-requests=500"] 

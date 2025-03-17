@@ -22,7 +22,8 @@ RUN apk add --no-cache \
     g++ \
     make \
     gcc \
-    libtool
+    libtool \
+    libssl-dev
 
 # Instalar y configurar extensiones PHP
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg
@@ -40,8 +41,7 @@ RUN docker-php-ext-install \
     intl
 
 # Instalar Swoole para Laravel Octane
-RUN pecl install swoole
-RUN docker-php-ext-enable swoole
+RUN pecl install swoole && docker-php-ext-enable swoole
 
 # Instalar Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
@@ -64,12 +64,15 @@ RUN mkdir -p /app/storage/logs /app/storage/framework/cache /app/storage/framewo
 RUN chmod -R 775 /app/storage /app/bootstrap/cache
 RUN chown -R www-data:www-data /app/storage /app/bootstrap/cache
 
-# Copiar script de espera para MySQL
-COPY wait-for-it.sh /usr/local/bin/wait-for-it
-RUN chmod +x /usr/local/bin/wait-for-it
+# Copiar script de inicio
+COPY start-octane.sh /usr/local/bin/start-octane
+RUN chmod +x /usr/local/bin/start-octane
 
 # Copiar archivo de entorno
 COPY .envDev .env
+
+# Generar clave de aplicación
+RUN php artisan key:generate
 
 # Instalar Octane
 RUN php artisan octane:install --server="swoole"
@@ -78,4 +81,4 @@ RUN php artisan octane:install --server="swoole"
 EXPOSE 8100
 
 # Comando para iniciar la aplicación
-CMD ["sh", "-c", "wait-for-it mysql:3306 -- php artisan migrate --force && php artisan octane:start --server=swoole --host=0.0.0.0 --port=8100"]
+CMD ["/usr/local/bin/start-octane"]

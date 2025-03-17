@@ -18,7 +18,8 @@ class RollResource extends Resource
     protected static ?string $model = Roll::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
-
+    protected static ?string $navigationGroup = "Produccion";
+    protected static ?string $pluralLabel = 'Informe de Rollos';
     public static function form(Form $form): Form
     {
         return $form

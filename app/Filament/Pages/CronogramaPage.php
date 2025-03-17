@@ -101,6 +101,12 @@ class CronogramaPage extends Page implements Tables\Contracts\HasTable
             ])
             ->default(1)
         ])
+        ->actions([
+        Tables\Actions\Action::make('view')
+            ->label('Ver')
+            ->url(fn ($record) => "/admin/orders/{$record->id}")
+            ->icon('heroicon-o-eye')
+        ])
         ->bulkActions([
             Tables\Actions\BulkAction::make('showOrderReferenceSummaries')
             ->label('Ver Detalle de Referencias')

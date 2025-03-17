@@ -21,9 +21,7 @@ class OrderReferenceRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('product_id')
-                    ->required()
-                    ->maxLength(255),
+                
             ]);
     }
    
@@ -44,11 +42,11 @@ class OrderReferenceRelationManager extends RelationManager
 
             ->columns([
                 Tables\Columns\TextColumn::make('new_code')
-                    ->label('Product code')
+                    ->label('Codigo externo')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product.code')
-                    ->label('Product ID')
+                    ->label('codigo producto')
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('product.name')
@@ -56,13 +54,13 @@ class OrderReferenceRelationManager extends RelationManager
                     ->searchable()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('size.name')
-                    ->label('Size ID')
+                    ->label('talle')
                     ->sortable(),
                     
                 Tables\Columns\TextColumn::make('total_quantity')
                 ->summarize(Sum::make())
                 
-                    ->label('Total Quantity'),
+                    ->label('Cantidad total'),
             ])
             ->filters([
                 //

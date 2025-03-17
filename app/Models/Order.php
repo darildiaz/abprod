@@ -70,4 +70,8 @@ class Order extends Model
     public function PaymentHistories(){
         return $this->hasMany(PaymentHistory::class);
     }
+    public function production(): HasMany
+    {
+        return $this->hasMany(Production::class);
+    }
 }
