@@ -12,7 +12,6 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Notifications\Notification;
 
 class UserResource extends Resource
 {
@@ -84,31 +83,7 @@ class UserResource extends Resource
             
             ->actions([
                 Tables\Actions\EditAction::make(),
-                Tables\Actions\Action::make('changePassword')
-                    ->label('Cambiar Contraseña')
-                    ->icon('heroicon-o-key')
-                    ->form([
-                        Forms\Components\TextInput::make('password')
-                            ->label('Nueva Contraseña')
-                            ->password()
-                            ->required()
-                            ->minLength(8)
-                            ->confirmed(),
-                        Forms\Components\TextInput::make('password_confirmation')
-                            ->label('Confirmar Contraseña')
-                            ->password()
-                            ->required(),
-                    ])
-                    ->action(function (User $record, array $data): void {
-                        $record->update([
-                            'password' => bcrypt($data['password']),
-                        ]);
-                        
-                        Notification::make()
-                            ->title('Contraseña actualizada')
-                            ->success()
-                            ->send();
-                    }),
+                
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

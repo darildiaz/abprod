@@ -4,19 +4,18 @@ services:
   laravel:
     build: .
     container_name: laravel_app
-    restart: unless-stopped
     ports:
-      - "8100:8100"
+      - "8000:8000"
     volumes:
-      - ./storage:/app/storage
-      - ./bootstrap/cache:/app/bootstrap/cache
+      - .:/app
     depends_on:
       - mysql
     networks:
       - laravel_network
     environment:
-      - APP_ENV=production
-      - APP_DEBUG=false
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:your-app-key
       - DB_CONNECTION=mysql
       - DB_HOST=mysql
       - DB_PORT=3306
@@ -27,7 +26,7 @@ services:
   mysql:
     image: mysql:8.0
     container_name: mysql_db
-    restart: unless-stopped
+    restart: always
     environment:
       MYSQL_DATABASE: abprod
       MYSQL_ROOT_PASSWORD: ja_Riz657tH]
@@ -37,20 +36,16 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - laravel_network
-    command: --default-authentication-plugin=mysql_native_password
 
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: phpmyadmin
-    restart: unless-stopped
+    restart: always
     ports:
       - "8080:80"
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: ja_Riz657tH]
-      PMA_USER: root
-      PMA_PASSWORD: ja_Riz657tH]
-      UPLOAD_LIMIT: 300M
     depends_on:
       - mysql
     networks:
@@ -58,8 +53,6 @@ services:
 
 volumes:
   mysql_data:
-    driver: local
 
 networks:
   laravel_network:
-    driver: bridge
