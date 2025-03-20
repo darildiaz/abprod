@@ -9,29 +9,23 @@ fi
 mkdir -p /var/www/html
 
 # Copiar el código fuente (evitando copiar el directorio en sí mismo)
-cp -r /var/www/* /var/www/html/ 2>/dev/null || true
+find /var/www -maxdepth 1 -not -path "/var/www" -not -path "/var/www/html" -exec cp -rf {} /var/www/html/ \;
 
 # Ir al directorio de trabajo
 cd /var/www/html
 
 # Crear directorios necesarios
-mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views
+mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
 chmod -R 777 storage bootstrap/cache
 
 # Instalar dependencias como root
 composer install --no-dev --ignore-platform-reqs
 
-# Crear archivo .env si no existe
-if [ ! -f ".env" ]; then
-    # Si existe .env.example, copiarlo
-    if [ -f ".env.example" ]; then
-        cp .env.example .env
-    else
-        # Si no existe, crear uno nuevo con configuración básica
-        cat > .env << 'EOL'
-APP_NAME=Laravel
+# Crear un nuevo archivo .env con una clave de aplicación predefinida
+cat > .env << 'EOL'
+APP_NAME=ABPROD
 APP_ENV=local
-APP_KEY=
+APP_KEY=base64:e9aI+UNsQH3SFb84o4aslf0LWxEnqNJXQ5aWHS6WQBQ=
 APP_DEBUG=true
 APP_URL=http://localhost:8081
 
@@ -89,10 +83,8 @@ VITE_PUSHER_PORT="${PUSHER_PORT}"
 VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
 VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 EOL
-    fi
-fi
 
-# Ejecutar script de corrección de políticas antes de generar la clave
+# Ejecutar script de corrección de políticas
 chmod +x /var/www/fix-policies.sh
 /var/www/fix-policies.sh
 
@@ -100,29 +92,15 @@ chmod +x /var/www/fix-policies.sh
 chown -R laravel_user:www-data /var/www/html
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Forzar la generación de la clave de aplicación
-echo "Generando clave de aplicación..."
-php artisan key:generate --force
-php artisan config:cache
-
-# Limpiar cachés de configuración
+# Limpiar cachés
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
 php artisan cache:clear
+php artisan config:cache
 
 # Optimizar autoloader
 composer dump-autoload -o
-
-# Verificar si la clave se generó correctamente
-if grep -q "APP_KEY=base64:" .env; then
-    echo "Clave de aplicación generada correctamente"
-else
-    echo "ERROR: No se pudo generar la clave de aplicación"
-    # Intento alternativo de generación de clave
-    php -r "echo 'APP_KEY=base64:'.base64_encode(random_bytes(32));" >> .env
-    echo "Clave generada manualmente"
-fi
 
 # Cambiar al usuario laravel_user
 su laravel_user
