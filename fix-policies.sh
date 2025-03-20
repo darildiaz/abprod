@@ -21,12 +21,15 @@ ensure_dir() {
     fi
 }
 
+# Ir al directorio de trabajo
+cd /var/www/html || exit
+
 # Asegurar que los directorios existan
 ensure_dir "/var/www/html/app/Policies"
-ensure_dir "/var/www/html/app/Filament/Pages/Auth"
 
 # Renombrar archivos de políticas
-cd /var/www/html/app/Policies
+echo "Corrigiendo nombres de archivos de políticas..."
+cd /var/www/html/app/Policies || exit
 
 # Renombrar archivos de políticas
 rename_file "rollPolicy.php" "RollPolicy.php"
@@ -37,9 +40,25 @@ rename_file "prodDiscountPolicy.php" "ProdDiscountPolicy.php"
 rename_file "sizeGroupPolicy.php" "SizeGroupPolicy.php"
 rename_file "rollProdtPolicy.php" "RollProdtPolicy.php"
 
-# Renombrar archivo de perfil
-cd /var/www/html/app/Filament/Pages/Auth
-rename_file "EditProfile.php" "EditProfile.php"
+# Verificar si existe el directorio Filament
+if [ -d "/var/www/html/app/Filament" ]; then
+    echo "Buscando archivo EditProfile.php..."
+    
+    # Buscar el archivo en diferentes ubicaciones
+    if [ -f "/var/www/html/app/Filament/Pages/EditProfile.php" ]; then
+        echo "Encontrado en /app/Filament/Pages/"
+        ensure_dir "/var/www/html/app/Filament/Pages/Auth"
+        cp "/var/www/html/app/Filament/Pages/EditProfile.php" "/var/www/html/app/Filament/Pages/Auth/EditProfile.php"
+        echo "Copiado EditProfile.php a directorio Auth/"
+    elif [ -f "/var/www/html/app/Filament/Pages/Auth/EditProfile.php" ]; then
+        echo "El archivo ya está en la ubicación correcta"
+    else
+        echo "No se encontró el archivo EditProfile.php"
+    fi
+else
+    echo "El directorio Filament no existe"
+fi
 
 # Volver al directorio original
-cd /var/www/html 
+cd /var/www/html
+echo "Corrección de archivos completada" 

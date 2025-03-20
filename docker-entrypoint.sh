@@ -1,7 +1,9 @@
 #!/bin/bash
 
-# Instalar herramienta pgrep
-apt-get update && apt-get install -y procps
+# Verificar si procps ya está instalado antes de intentar instalarlo
+if ! dpkg -l | grep -q procps; then
+    apt-get update && apt-get install -y procps
+fi
 
 # Crear directorio de trabajo si no existe
 mkdir -p /var/www/html
@@ -90,8 +92,18 @@ EOL
     fi
 fi
 
+# Ejecutar script de corrección de políticas antes de generar la clave
+chmod +x /var/www/fix-policies.sh
+/var/www/fix-policies.sh
+
+# Corregir permisos
+chown -R laravel_user:www-data /var/www/html
+chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+
 # Forzar la generación de la clave de aplicación
+echo "Generando clave de aplicación..."
 php artisan key:generate --force
+php artisan config:cache
 
 # Limpiar cachés de configuración
 php artisan config:clear
@@ -102,13 +114,15 @@ php artisan cache:clear
 # Optimizar autoloader
 composer dump-autoload -o
 
-# Corregir permisos
-chown -R laravel_user:www-data /var/www/html
-chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
-
-# Ejecutar script de corrección de políticas
-chmod +x /var/www/fix-policies.sh
-/var/www/fix-policies.sh
+# Verificar si la clave se generó correctamente
+if grep -q "APP_KEY=base64:" .env; then
+    echo "Clave de aplicación generada correctamente"
+else
+    echo "ERROR: No se pudo generar la clave de aplicación"
+    # Intento alternativo de generación de clave
+    php -r "echo 'APP_KEY=base64:'.base64_encode(random_bytes(32));" >> .env
+    echo "Clave generada manualmente"
+fi
 
 # Cambiar al usuario laravel_user
 su laravel_user
