@@ -70,3 +70,8 @@ docker run -d -p 9000:9000 -p 8000:8000 --name=portainer \
 
 docker build . -t abprod
 docker run -it -p 8100:8000 abprod
+
+
+
+mkdir -p docker/nginx docker/php docker/mysql
+mkdir docker; mkdir docker/nginx; mkdir docker/php; mkdir docker/mysql
