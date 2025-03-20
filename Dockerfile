@@ -1,54 +1,83 @@
-FROM php:8.3-fpm
+FROM elrincondeisma/php-for-laravel:8.3.7
 
-ARG user=laravel_user
-ARG uid=1000
+WORKDIR /var/www/html
+COPY . .
 
-# Establecer el directorio de trabajo
-WORKDIR /var/www
+RUN composer install --no-dev --ignore-platform-reqs
+RUN composer require laravel/octane
+RUN mkdir -p /var/www/html/storage/logs
 
-# Instalar herramientas necesarias
-RUN apt-get update && apt-get install -y \
-    apt-utils \
-    curl \
-    zip \
-    unzip \
-    git \
-    libpng-dev \
-    libjpeg-dev \
-    libfreetype6-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libgd3 \
-    libgd-dev \
-    libicu-dev \
-    && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd xml zip intl
+# Crear archivo .env con clave predefinida
+RUN cat > .env << 'EOL'
+APP_NAME=ABPROD
+APP_ENV=local
+APP_KEY=base64:e9aI+UNsQH3SFb84o4aslf0LWxEnqNJXQ5aWHS6WQBQ=
+APP_DEBUG=true
+APP_URL=http://localhost:8081
+
+LOG_CHANNEL=stack
+LOG_DEPRECATIONS_CHANNEL=null
+LOG_LEVEL=debug
+
+DB_CONNECTION=mysql
+DB_HOST=mysql
+DB_PORT=3306
+DB_DATABASE=abprod
+DB_USERNAME=abprod
+DB_PASSWORD=ja_Riz657tH]
+
+BROADCAST_DRIVER=log
+CACHE_DRIVER=file
+FILESYSTEM_DISK=local
+QUEUE_CONNECTION=sync
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+
+MEMCACHED_HOST=127.0.0.1
+
+REDIS_HOST=127.0.0.1
+REDIS_PASSWORD=null
+REDIS_PORT=6379
+
+MAIL_MAILER=smtp
+MAIL_HOST=mailpit
+MAIL_PORT=1025
+MAIL_USERNAME=null
+MAIL_PASSWORD=null
+MAIL_ENCRYPTION=null
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+
+AWS_ACCESS_KEY_ID=
+AWS_SECRET_ACCESS_KEY=
+AWS_DEFAULT_REGION=us-east-1
+AWS_BUCKET=
+AWS_USE_PATH_STYLE_ENDPOINT=false
+
+PUSHER_APP_ID=
+PUSHER_APP_KEY=
+PUSHER_APP_SECRET=
+PUSHER_HOST=
+PUSHER_PORT=443
+PUSHER_SCHEME=https
+PUSHER_APP_CLUSTER=mt1
+
+VITE_APP_NAME="${APP_NAME}"
+VITE_PUSHER_APP_KEY="${PUSHER_APP_KEY}"
+VITE_PUSHER_HOST="${PUSHER_HOST}"
+VITE_PUSHER_PORT="${PUSHER_PORT}"
+VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
+VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
+EOL
+
+# Configurar permisos
+RUN chmod -R 777 storage bootstrap/cache
 
 # Instalar Swoole
-RUN pecl install swoole \
-    && docker-php-ext-enable swoole
-
-# Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Crear usuario del sistema
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
-
-# Configurar Git para directorios seguros
-RUN git config --global --add safe.directory /var/www
-
-# Configurar PHP
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
+RUN php artisan octane:install --server="swoole"
 
 # Exponer puerto
 EXPOSE 8081
 
-# Entrada inicial con script separado
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
-
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Comando por defecto
+CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8081"]
