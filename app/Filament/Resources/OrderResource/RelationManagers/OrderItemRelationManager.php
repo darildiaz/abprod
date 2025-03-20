@@ -57,31 +57,41 @@ class OrderItemRelationManager extends RelationManager
                 ->label('References')
                 ->getStateUsing(function ($record) {
                     return DB::table('order_references')
-                        ->join('products', 'order_references.product_id', '=', 'products.id')
-                        ->join('categories', 'products.category_id', '=', 'categories.id')
-                        
-                        ->where('order_references.order_id', $record->order_id)
-                        ->where('order_references.item', $record->item)
-                        ->pluck('categories.name')
-                        
-                        ->implode('+ ');
+            ->join('products', 'order_references.product_id', '=', 'products.id')
+            ->join('categories', 'products.category_id', '=', 'categories.id')
+            ->where('order_references.order_id', $record->order_id)
+            ->where('order_references.item', $record->item)
+            ->join('sizes', 'order_references.size_id', '=', 'sizes.id') // Asumimos que hay una tabla sizes
+            ->select('categories.name', 'sizes.name') // Obtener la categoría y el tamaño
+            ->get()
+            ->map(function ($row) {
+                // Devolver la categoría seguida del tamaño entre paréntesis
+                return "{$row->name}({$row->name})";
+            })
+            ->implode(' + '); // Unir todo con un signo de más
+                
                 }),
                 Tables\Columns\TextColumn::make('references_c')
                 ->label('References')
                 ->getStateUsing(function ($record) {
                     return DB::table('order_references')
-                        ->join('products', 'order_references.product_id', '=', 'products.id')
-                        ->where('order_references.order_id', $record->order_id)
-                        ->where('order_references.item', $record->item)
-                        ->pluck('products.code') // Cambiado a product.name
-                        ->implode(' + ');
+            ->join('products', 'order_references.product_id', '=', 'products.id')
+            ->where('order_references.order_id', $record->order_id)
+            ->where('order_references.item', $record->item)
+            ->join('sizes', 'order_references.size_id', '=', 'sizes.id') // Asumimos que hay una tabla sizes
+            ->select('products.code', 'sizes.name') // Obtener el código del producto y el tamaño
+            ->get()
+            ->map(function ($row) {
+                // Devolver el código seguido del tamaño entre paréntesis
+                return "{$row->code}({$row->name})";
+            })
+            ->implode(' + '); // Unir todo con un signo de más
                 }),
                 Tables\Columns\TextColumn::make('subtotal')
                // ->visible(false)
                 
                 ->visible(fn () => auth()->user()->can('seller_order'))
                 ->summarize(Sum::make())
-                
                 ->numeric()
                 ->sortable(),
             Tables\Columns\TextColumn::make('created_at')

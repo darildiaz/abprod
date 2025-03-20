@@ -78,7 +78,6 @@ implements HasShieldPermissions
                         ->schema([
                             // Tab 1: Datos generales del cliente y pedido
                             Forms\Components\TextInput::make('bitrix_id'),
-
                             Forms\Components\TextInput::make('reference_name')
                                         ->label('Referencia')
                                        // ->default('ORD-'.date('Ymd').'-'.rand(1000,9999))
@@ -174,50 +173,35 @@ implements HasShieldPermissions
 
                     ]) ->columns(3),
 
-                    Forms\Components\Wizard\Step::make('Models')
-                    ->label('Modelos')
-                    ->schema([
-                    // Tab 2: Cargar lista de modelos
-                    Forms\Components\Repeater::make('models')
-                    ->label('Modelos')
-                    ->relationship('orderMolds')
-                    ->schema([
-                        Forms\Components\Select::make('title')
-                            ->label('Titulo')
-                            ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
-                            ->required()
-                            ->searchable()
-                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
-                                // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
-                                if (!$state) {
-                                    $models = $get('../../models') ?? []; // Obtener todos los modelos en el repeater
-                                    $nextIndex = count($models) ; // Definir el próximo número
-                                    $set('title', "MODELO $nextIndex"); // Asignar el valor predeterminado
-                                }
-                            }),
-
-                        Forms\Components\FileUpload::make('imagen')->label('Imagen')
-                        ->required()
-                        ->image()
-                        ->directory('orders')
-                        ,
-                    ])
-                    ->columns(2)
-                    ->required(),
-                        ]),
                         Forms\Components\Wizard\Step::make('Items import')
                                 ->label('Importar items')
                                 ->schema([
                                     // Tab 4: Cargar lista de ítems de la orden
-                                    Forms\Components\Toggle::make('order_items_import')
+                                    Forms\Components\Toggle::make('order_items_orden')
                                     ->default(true)
                                 ->dehydrated(false) // No se guarda en la base de datos
 
                                     ->label('ordenar'),
+                                    Forms\Components\Toggle::make('order_items_hab_diccionario')
+
+                                    ->default(true)
+                                ->dehydrated(false) // No se guarda en la base de datos
+                                ->label('Habilitar Diccionario'),
+
+                                    Forms\Components\TextArea::make('order_items_diccionario')
+                                    ->placeholder("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
+                                    ->default("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
+                                
+                                    ->dehydrated(false) // No se guarda en la base de datos
+                                    ->rows(4)
+                                    ->live(onBlur: true),
+
 
                                     Forms\Components\TextArea::make('order_items_text')
-                                ->label('Pedido Items (Pegue Texto)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCamiseta,Short")
+                                ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f01,Sht-f01\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f01,Sht-f01\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->dehydrated(false) // No se guarda en la base de datos
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
@@ -227,7 +211,23 @@ implements HasShieldPermissions
                                     $items = self::parseOrderItemsText($state, $set, $get);
                                     $set('orderItems', $items); // Actualiza el Repeater
                                 }),
-                                        ]),
+
+                                Forms\Components\TextArea::make('order_items_text_price')
+                                ->label('Pedido Items  con precio (Pegue Texto, Reemplazar texto sin el titulo)')
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n1\t\t\t\t\t\t\tSht-f03\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n2\t\t\t\t\t\t\tSht-f03\t35000")
+                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n1\t\t\t\t\tm-cab\t1\tSht-f03\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n2\t\t\t\t\tm-cab\t1\tSht-f03\t35000")
+                                ->rows(8)
+                                ->dehydrated(false) // No se guarda en la base de datos
+                                ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
+                                ->live(onBlur: true)
+                                ->afterStateUpdated(function ($state, $set, $get) {
+                                    // Procesar el texto y actualizar el estado del Repeater
+                                   // log::info('Order Items:', $state);
+                                    $items = self::parseOrderItemsTextprice($get('order_items_text_price'),$get('order_items_diccionario'), $set, $get);
+                                    $set('orderItems', $items); // Actualiza el Repeater
+                                }),
+                                ]),
+                                
                             Forms\Components\Wizard\Step::make('Items')
                                             ->schema([
                                                 TableRepeater::make('orderItems')
@@ -279,6 +279,8 @@ implements HasShieldPermissions
                                           ,
                                             Forms\Components\TextInput::make('price')
                                             ->label('Precio')
+                                         ->hiddenOn('view')
+
                                             ->readOnly()
                                             ->numeric()
                                            // ->disabled()
@@ -288,6 +290,8 @@ implements HasShieldPermissions
                                             ->afterStateUpdated(fn ($state, $set, $get) => self::updateSubtotal($set, $get)),
                                         Forms\Components\TextInput::make('subtotal')
                                             ->label('Subtotal')
+                                         ->hiddenOn('view')
+
                                             ->readOnly()
                                             ->numeric()
                                             // ->disabled() // Deshabilita el campo para que no se pueda editar
@@ -313,7 +317,8 @@ implements HasShieldPermissions
                                      ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getRefences($set, $get))
 
 
-                                    ->required(),
+                                    ->required()
+                                    ,
                                     Forms\Components\TextInput::make('total')
                                         ->label('Total')
                                         ->readOnly()
@@ -324,17 +329,10 @@ implements HasShieldPermissions
                                         ->numeric()
                                         ->required(),
 
-                                ])
-                                ,
-                                Forms\Components\Wizard\Step::make('References')
-                                ->label('Referencias')
-
-                        ->schema([
                             // Tab 3: Cargar lista de referencias
                             TableRepeater::make('references')
                             ->reorderable()
-                
-                ->collapsible()
+                                ->collapsible()
                                 ->label('References')
                                 ->relationship('orderReferences') // Relación con la tabla order_references
                                 ->schema([
@@ -342,21 +340,23 @@ implements HasShieldPermissions
                                         ->readOnly()
                                    
                                     ->default(1),
+                                    Forms\Components\Hidden::make('product_id'),
 
                                     Forms\Components\Select::make('product_id')
                                         ->label('Producto')
-                                        // ->disabled()
+                                         ->disabled()
                                         //->readOnly()
 
                                         ->relationship('product', 'code') // Relación con la tabla products
                                         ->default(1)
                                         ->required(),
+                                        Forms\Components\Hidden::make('size_id'),
                                         Forms\Components\Select::make('size_id')
                                         ->label('Talle')
                                         ->default(1)
                                         //->readOnly()
 
-                                        // ->disabled()
+                                         ->disabled()
                                         //->live()
                                         ->relationship('size', 'name') // Relación con la tabla sizes
                                         ->required(),
@@ -370,6 +370,8 @@ implements HasShieldPermissions
 
                                         Forms\Components\TextInput::make('price')
                                         ->label('Precio')
+                                        ->hiddenOn('view')
+
                                         // ->disabled()
                                         ->default(1)
                                         ->live(onBlur: true)
@@ -379,18 +381,13 @@ implements HasShieldPermissions
                                        
                                 ])
                                 ->live(onBlur: true)
-
-                                ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getitems($set, $get))
-                                
-                             //   ->columns(6)
-                                ->live() // Habilita la reactividad
-,
+                                ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getitems($set, $get)),
                                 Forms\Components\TextInput::make('total')
                                         ->label('Total')
+                                        ->hiddenOn('view')
                                         ->readOnly()
                                         ->numeric()
                                         ->live() // Habilita la reactividad
-                                        //->disabled() // Deshabilita el campo para que no se pueda editar
                                         ->default(0)
                                         ->numeric()
                                         ->required(),
@@ -399,6 +396,34 @@ implements HasShieldPermissions
                             ->label('Informacion adicional')
 
                             ->schema([   
+                                Forms\Components\Repeater::make('models')
+                                ->label('Modelos')
+                                ->relationship('orderMolds')
+                                ->schema([
+                                    Forms\Components\Select::make('title')
+                                        ->label('Titulo')
+                                        ->options(collect(range(1, 20))->mapWithKeys(fn ($num) => ["MODELO $num" => "MODELO $num"]))
+                                        ->required()
+                                        ->searchable()
+                                        ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                            // Si el estado aún no tiene valor, definirlo como el siguiente número disponible
+                                            if (!$state) {
+                                                $models = $get('../../models') ?? []; // Obtener todos los modelos en el repeater
+                                                $nextIndex = count($models) ; // Definir el próximo número
+                                                $set('title', "MODELO $nextIndex"); // Asignar el valor predeterminado
+                                            }
+                                        }),
+            
+                                    Forms\Components\FileUpload::make('imagen')->label('Imagen')
+                                    ->required()
+                                    ->image()
+                                    ->directory('orders')
+                                    ,
+                                ])
+                                ->columns(2)
+                                ->required(),
+                                
+                                
                                 TableRepeater::make('questionAnswers')
                                ->label('Questions')
                                ->relationship('questionAnswers')
@@ -456,8 +481,8 @@ implements HasShieldPermissions
                 : Order::query()->where('manager_id', auth()->id()) // Si no, filtra por manager_id
                 )
             ->columns([
-                Tables\Columns\TextColumn::make('id')->label('ID')->sortable(),
-                Tables\Columns\TextColumn::make('bitrix_id'),
+                Tables\Columns\TextColumn::make('id')->label('ID')->sortable()->searchable(),
+                Tables\Columns\TextColumn::make('bitrix_id')->searchable(),
                 Tables\Columns\TextColumn::make('issue_date')->label('Fecha de emision')->date(),
                 Tables\Columns\TextColumn::make('delivery_date')->label('Fecha de entrega')->date(),
                 Tables\Columns\TextColumn::make('completion_date')
@@ -595,10 +620,12 @@ implements HasShieldPermissions
                                 $item->type = DB::table('order_references')
                                     ->join('products', 'order_references.product_id', '=', 'products.id')
                                     ->join('categories', 'products.category_id', '=', 'categories.id')
+                                    ->join('sizes', 'order_references.size_id', '=', 'sizes.id') // Asumimos que hay una tabla sizes
+                                    ->select(DB::raw('CONCAT(categories.name, " (", sizes.name, ")") as category_size'))
                                     ->where('order_references.order_id', $record->id)
                                     ->where('order_references.item', $item->item)
-                                    ->pluck('categories.name')
-                                    ->implode('+ ');
+                                    ->pluck('category_size') // Extraer el resultado concatenado
+                                    ->implode(' + '); // Unir todos los resultados con "+"
                             }
                             foreach ($record->orderMolds as $model) {
                                 $qrCode = QrCode::size(100)->generate( asset('storage/' . $model->imagen ?? 'N/A' ));
@@ -758,12 +785,14 @@ $references=$get('references');
 $itemsorg = $get('orderItems') ;
 //Log::info('Order Items:', $references->toarray());
 $items = [];
+$prod=[];
 $total = 0;
 foreach ($itemsorg as $item) {
     $price = 0;
     
     foreach ($references as $ref) {
         if ($ref['item'] == $item['item']) {
+            $prod[]= $ref['product_id'];
             $price = $price + $ref['price'];
         }    
     }
@@ -775,10 +804,12 @@ foreach ($itemsorg as $item) {
             'other' => $item['other'],
             'size_id' => $item['size_id'],
             'quantity' => $item['quantity'],
-            'ProductsItem' => $item['ProductsItem'],
+            'ProductsItem' => $prod,
             'price' => $price,
             'subtotal' => $price * $item['quantity'],
         ];
+$prod=[];
+        
     $total = $total + $price * $item['quantity'];
 }
 
@@ -897,7 +928,124 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
 
     return $items;
 }
+protected static function parseOrderItemsTextprice(string $text,string $dicctext,  $set,$get): array
+{
+    // $hab=false;
 
+    // $hab=$get('order_items_hab_diccionario');
+    
+    $diccss=[];
+    $references = [];
+    $items = [];
+    $total = 0;
+    $item1 = true;
+
+    // Convertir las líneas en arrays asociativos
+    // if($hab){
+        //$dicctext = $get('order_items_diccionario');
+        $Ddiccs= array_map(function($diccs){
+            $columnDs = explode("\t", trim($diccs));
+            return[
+                    'product_name' => $columnDs[0] ?? '',
+                    'code' => $columnDs[1] ?? '',
+            ];
+            
+        }, explode("\n", trim($dicctext)));
+        
+    // }
+    $lines = array_map(function ($line) {
+        $columns = explode("\t", trim($line));
+        $nombreprod=$columns[7] ?? '';
+       
+        return [
+            'id' => (int) ($columns[0] ?? 0),
+            'model' => $columns[1] ?? '',
+            'name' => $columns[2] ?? '',
+            'number' => $columns[3] ?? '',
+            'other' => $columns[4] ?? '',
+            'size' => $columns[5] ?? '',
+            'quantity' => (int) ($columns[6] ?? 0),
+            'products' => $nombreprod, // Convertir productos en array
+            'price' => (int) ($columns[8] ?? 0) , // Convertir productos en array
+        ];
+    }, explode("\n", trim($text)));
+
+   
+
+    // Procesar cada línea después de ordenar
+    foreach ($lines as $line) {
+        $item1 = true;
+        $productIds = [];
+        // Obtener IDs de productos
+         // if($hab){
+            foreach ($Ddiccs as $dicc) {
+                if($dicc['product_name']==$line['products']){
+                    $nombreprod=$dicc['code'];
+                    break; // Salir del bucle si se encuentra una coincidencia
+                } else {
+                    $nombreprod=$line['products'];
+                }
+            }
+        // }
+        $productId = self::getProductIdByName(trim($nombreprod, ' '));
+        // Calcular precios
+            $references[] = [
+                'item' => $line['id'],
+                'product_id' => $productId,
+                'size_id' => self::getSizeIdByName($line['size']),
+                'quantity' => $line['quantity'],
+                'price' => $line['price'],
+                'subtotal' => $line['quantity'] * $line['price'],
+            ];
+
+        // Calcular subtotal y total
+        $subtotal =$line['price'] * $line['quantity'];
+        $total += $subtotal;
+
+        // Agregar datos al array de items
+        
+            $c=0;
+        foreach ($items as $item) {
+            
+            if ($c+1== $line['id']) {
+                $items[$c]['ProductsItem'][] = $productId;
+                $items[$c]['price'] = $item['price'] + $line['price'];
+                $items[$c]['subtotal'] = $items[$c]['price'] * $line['quantity'];
+                $item1=false;
+                
+                
+                // $item['ProductsItem'][] = $productId;
+                // $item['price'] = $item['price'] + $line['price'];
+                // $item['subtotal'] = $item['price'] * $line['quantity'];
+                // $item1=false;
+            }
+            $c++;
+        }
+        if($item1){
+            $item1=true;
+            $productIds[] = $productId;
+            $items[] = [
+                'item' => (int)($line['id']),
+                'model' => $line['model'],
+                'name' => $line['name'],
+                'number' => $line['number'],
+                'other' => $line['other'],
+                'size_id' => self::getSizeIdByName($line['size']),
+                'quantity' => $line['quantity'],
+                'ProductsItem' => $productIds,
+                'price' =>  $line['price'],
+                'subtotal' => $line['price'] * $line['quantity'],
+            ];
+        }
+        
+    }
+
+    // Asignar los valores finales
+    $set('references', $references);
+    $set('total', $total);
+
+    return $items;
+}
     private static function getPrice(callable $set, callable $get)
     {
         $productIds = $get('ProductsItem'); // Es un array porque es múltiple
