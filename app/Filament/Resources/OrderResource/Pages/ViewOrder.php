@@ -10,10 +10,24 @@ use Illuminate\Support\Facades\DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
+use Filament\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class ViewOrder extends ViewRecord
 {
     protected static string $resource = OrderResource::class;
+
+    protected function getHeaderWidgets(): array
+    {
+        return [];
+    }
+
+    protected function getFooterWidgets(): array
+    {
+        return [];
+    }
 
     protected function getHeaderActions(): array
     {
@@ -35,12 +49,6 @@ class ViewOrder extends ViewRecord
                                 ->where('order_references.item', $item->item)
                                 ->pluck('category_size') // Extraer el resultado concatenado
                                 ->implode(' + '); // Unir todos los resultados con "+"
- 
- 
-                                        
- 
- 
- 
                                 }
                             foreach ($record->orderMolds as $model) {
                                 $qrCode = QrCode::size(100)->generate( asset('storage/' . $model->imagen ?? 'N/A' ));
@@ -54,6 +62,56 @@ class ViewOrder extends ViewRecord
                                 Blade::render('pdf.invoice', ['order' => $record])
                             )->stream();
                         }, $record->id . ' Pedido.pdf');
+                    }),
+            Actions\Action::make('linkPublico') 
+                    ->label('Enlace Público')
+                    ->color('primary')
+                    ->icon('heroicon-o-link')
+                    ->action(function (Model $record) {
+                        try {
+                            // Generar URL firmada que expira en 7 días
+                            $url = URL::temporarySignedRoute(
+                                'orden.publica',
+                                now()->addDays(7),
+                                ['orderId' => $record->id]
+                            );
+                            
+                            Log::info('URL pública generada para el pedido #' . $record->id . ': ' . $url);
+                            
+                            // Crear notificación usando el sistema de Filament
+                            Notification::make()
+                                ->title('Enlace público generado correctamente')
+                                ->body('El enlace expirará en 7 días. Cópialo o compártelo ahora.')
+                                ->actions([
+                                    \Filament\Notifications\Actions\Action::make('copiar')
+                                        ->label('Copiar enlace')
+                                        ->button()
+                                        ->color('primary')
+                                        ->icon('heroicon-o-clipboard-document')
+                                        ->extraAttributes([
+                                            'onclick' => "navigator.clipboard.writeText('{$url}'); this.innerText = 'Copiado!'; setTimeout(() => { this.innerText = 'Copiar enlace' }, 2000)"
+                                        ]),
+                                    \Filament\Notifications\Actions\Action::make('abrir')
+                                        ->label('Abrir enlace')
+                                        ->button()
+                                        ->url($url, true)
+                                        ->icon('heroicon-o-arrow-top-right-on-square'),
+                                ])
+                                ->duration(10000)
+                                ->persistent()
+                                ->success()
+                                ->send();
+                            
+                            return redirect()->back();
+                        } catch (\Exception $e) {
+                            Log::error('Error al generar enlace público: ' . $e->getMessage());
+                            Notification::make()
+                                ->title('Error al generar el enlace')
+                                ->body('Se produjo un error: ' . $e->getMessage())
+                                ->danger()
+                                ->send();
+                            return redirect()->back();
+                        }
                     }), 
         ];
     }
