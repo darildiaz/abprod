@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# Copiar el código fuente
-cp -r /var/www/* /var/www/html/
+# Instalar herramienta pgrep
+apt-get update && apt-get install -y procps
+
+# Crear directorio de trabajo si no existe
+mkdir -p /var/www/html
+
+# Copiar el código fuente (evitando copiar el directorio en sí mismo)
+cp -r /var/www/* /var/www/html/ 2>/dev/null || true
+
+# Ir al directorio de trabajo
 cd /var/www/html
 
 # Crear directorios necesarios
@@ -25,13 +33,18 @@ fi
 php artisan config:clear
 php artisan route:clear
 php artisan view:clear
+php artisan cache:clear
 
-# Cambiar permisos
+# Optimizar autoloader
+composer dump-autoload -o
+
+# Corregir permisos
 chown -R laravel_user:www-data /var/www/html
 chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Instalar herramienta pgrep
-apt-get update && apt-get install -y procps
+# Ejecutar script de corrección de políticas
+chmod +x /var/www/fix-policies.sh
+/var/www/fix-policies.sh
 
 # Cambiar al usuario laravel_user
 su laravel_user
