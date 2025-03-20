@@ -1,0 +1,12 @@
+.git
+.github
+.vscode
+.idea
+.env
+node_modules
+vendor
+public/storage
+storage/*.key
+bootstrap/cache/*
+Dockerfile*
+docker-compose* 

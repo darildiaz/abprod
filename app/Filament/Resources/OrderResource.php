@@ -589,24 +589,29 @@ implements HasShieldPermissions
                     ->relationship('paymenthistories') // Relación con la tabla order_references
                     ->schema([
                             Forms\Components\DatePicker::make('date')
+                            ->label('Fecha')
                                         ->default(now())
                                         ->required(),
                             Forms\Components\TextInput::make('amount')
-                                ->required()
+                                
+                            ->label('Monto')
+                            ->required()
                                 ->suffix('Gs.')
                                 ->numeric(),
                             Forms\Components\Select::make('payment_method_id')
+                            ->label('Metodo de pago')
                                 ->relationship('paymentMethod', 'name')
                                 ->required(),
                             Forms\Components\TextInput::make('reference')
                                 ->required()
                                 ->maxLength(255),
                             Forms\Components\FileUpload::make('image')->label('Image')
+                            ->label('Comprobante')
                             ->directory('pay')
                             ->required(),
-                            Forms\Components\TextInput::make('seller_id')
-                                ->required()
-                                ->numeric(),
+                            Forms\Components\Hidden::make('seller_id')
+                                ->default(auth()->id()) // Predetermina el usuario logueado
+                                 ->required()
                     ])
                     ->columns(3)
                 ]),

@@ -1,54 +1,61 @@
-FROM php:8.3-fpm
+FROM php:8.3-apache
 
-ARG user=laravel_user
-ARG uid=1000
-
-# Establecer el directorio de trabajo
-WORKDIR /var/www
-
-# Instalar herramientas necesarias
+# Instalar dependencias
 RUN apt-get update && apt-get install -y \
-    apt-utils \
-    curl \
-    zip \
-    unzip \
-    git \
     libpng-dev \
     libjpeg-dev \
     libfreetype6-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libgd3 \
-    libgd-dev \
+    zip \
+    unzip \
+    git \
     libicu-dev \
+    libzip-dev \
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-configure intl \
-    && docker-php-ext-install pdo pdo_mysql mbstring exif pcntl bcmath gd xml zip intl
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql intl zip
 
-# Instalar Swoole
-RUN pecl install swoole \
-    && docker-php-ext-enable swoole
+# Configurar mod_rewrite de Apache
+RUN a2enmod rewrite
 
 # Instalar Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && chmod +x /usr/local/bin/composer
 
-# Crear usuario del sistema
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
+# Configurar virtualhost
+RUN echo '<VirtualHost *:80>\n\
+    DocumentRoot /var/www/html/public\n\
+    <Directory /var/www/html/public>\n\
+        AllowOverride All\n\
+        Require all granted\n\
+    </Directory>\n\
+</VirtualHost>' > /etc/apache2/sites-available/000-default.conf
 
-# Configurar Git para directorios seguros
-RUN git config --global --add safe.directory /var/www
+# Establecer directorio de trabajo
+WORKDIR /var/www/html
 
-# Configurar PHP
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
+# Copiar script de entrada y hacerlo ejecutable
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Exponer puerto
-EXPOSE 8081
+# Configurar límites de memoria de PHP
+RUN echo "memory_limit=512M" > /usr/local/etc/php/conf.d/memory-limit.ini
 
-# Entrada inicial con script separado
-COPY docker-entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+# Crear script de configuración simple que no requiere artisan
+RUN echo '#!/bin/bash\n\
+mkdir -p /var/www/html/storage/app/public\n\
+mkdir -p /var/www/html/storage/logs\n\
+mkdir -p /var/www/html/storage/framework/cache\n\
+mkdir -p /var/www/html/storage/framework/sessions\n\
+mkdir -p /var/www/html/storage/framework/views\n\
+mkdir -p /var/www/html/bootstrap/cache\n\
+chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache\n\
+rm -f /var/www/html/public/storage\n\
+ln -sf /var/www/html/storage/app/public /var/www/html/public/storage\n\
+exec apache2-foreground\n\
+' > /usr/local/bin/init-laravel.sh \
+&& chmod +x /usr/local/bin/init-laravel.sh
 
-ENTRYPOINT ["docker-entrypoint.sh"]
+# Exponer puerto para Apache
+EXPOSE 80
+
+# Comando predeterminado
+CMD ["/usr/local/bin/init-laravel.sh"]
