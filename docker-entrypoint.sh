@@ -8,14 +8,15 @@ fi
 # Crear directorio de trabajo si no existe
 mkdir -p /var/www/html
 
+# Configurar Git para permitir el directorio como seguro (ejecutar como root)
+git config --system --add safe.directory /var/www/html
+git config --global --add safe.directory /var/www/html
+
 # Copiar el código fuente (evitando copiar el directorio en sí mismo)
 find /var/www -maxdepth 1 -not -path "/var/www" -not -path "/var/www/html" -exec cp -rf {} /var/www/html/ \;
 
 # Ir al directorio de trabajo
 cd /var/www/html
-
-# Configurar Git para permitir el directorio como seguro
-git config --global --add safe.directory /var/www/html
 
 # Crear directorios necesarios
 mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache

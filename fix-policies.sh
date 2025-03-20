@@ -40,35 +40,46 @@ rename_file "prodDiscountPolicy.php" "ProdDiscountPolicy.php"
 rename_file "sizeGroupPolicy.php" "SizeGroupPolicy.php"
 rename_file "rollProdtPolicy.php" "RollProdtPolicy.php"
 
-# Verificar si existe el directorio Filament
-if [ -d "/var/www/html/app/Filament" ]; then
-    echo "Corrigiendo problema de EditProfile.php..."
-    
-    # Verificar si existe EditProfile.php en Pages
-    if [ -f "/var/www/html/app/Filament/Pages/EditProfile.php" ]; then
-        # Verificar el namespace en el archivo
-        if grep -q "namespace App\\Filament\\Pages\\Auth;" "/var/www/html/app/Filament/Pages/EditProfile.php"; then
-            # Si el archivo tiene namespace Auth pero está en la ubicación incorrecta
-            ensure_dir "/var/www/html/app/Filament/Pages/Auth"
-            # Mover el archivo a Auth/ y renombrarlo
-            mv "/var/www/html/app/Filament/Pages/EditProfile.php" "/var/www/html/app/Filament/Pages/Auth/EditProfile.php"
-            echo "Movido EditProfile.php al directorio Auth/ para corregir namespace"
-        else
-            # Editar el namespace para que coincida con la ubicación
-            sed -i 's/namespace App\\Filament\\Pages\\Auth;/namespace App\\Filament\\Pages;/g' "/var/www/html/app/Filament/Pages/EditProfile.php"
-            echo "Corregido namespace en EditProfile.php"
-        fi
-    fi
-    
-    # Verificar duplicado en Auth/
-    if [ -f "/var/www/html/app/Filament/Pages/Auth/EditProfile.php" ] && [ -f "/var/www/html/app/Filament/Pages/EditProfile.php" ]; then
-        # Si existen ambos archivos, eliminar uno para evitar conflicto
-        rm "/var/www/html/app/Filament/Pages/EditProfile.php"
-        echo "Eliminado archivo duplicado para evitar conflicto de clase"
-    fi
-else
-    echo "El directorio Filament no existe"
-fi
+# Arreglar problema de EditProfile.php
+echo "Solucionando problema de EditProfile.php..."
+
+# Buscar y eliminar todos los archivos EditProfile.php en diferentes ubicaciones
+find /var/www/html -name EditProfile.php -exec rm -f {} \;
+echo "Eliminados todos los archivos EditProfile.php existentes"
+
+# Asegurar que existe el directorio Auth
+ensure_dir "/var/www/html/app/Filament/Pages/Auth"
+
+# Crear archivo en la ubicación correcta con el contenido correcto y namespace modificado
+cat > "/var/www/html/app/Filament/Pages/Auth/EditProfile.php" << 'EOL'
+<?php
+ 
+namespace App\Filament\Pages\Auth;
+ 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Form;
+use Filament\Pages\Auth\EditProfile as BaseEditProfile;
+ 
+class EditProfile extends BaseEditProfile
+{
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                $this->getNameFormComponent(),
+                $this->getEmailFormComponent(),
+                $this->getPasswordFormComponent(),
+                $this->getPasswordConfirmationFormComponent(),
+            ]);
+    }
+}
+EOL
+echo "Creado archivo EditProfile.php en la ubicación correcta con contenido simplificado"
+
+# Limpiar cachés de autoloader
+cd /var/www/html
+composer dump-autoload -o
+echo "Recargado autoloader"
 
 # Volver al directorio original
 cd /var/www/html
