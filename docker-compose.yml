@@ -8,8 +8,9 @@ services:
     ports:
       - "80:80"
     volumes:
-      - .:/var/www/html
-      - ./storage:/var/www/html/storage
+      - ./storage/app/public:/var/www/html/storage/app/public
+      - ./storage/logs:/var/www/html/storage/logs
+      - ./storage/framework:/var/www/html/storage/framework
       - ./bootstrap/cache:/var/www/html/bootstrap/cache
     depends_on:
       - mysql
