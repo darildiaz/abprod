@@ -6,9 +6,9 @@ mkdir -p /var/www/html/storage/logs /var/www/html/storage/framework/cache /var/w
 chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Crear archivo .env con clave predefinida si no existe
-if [ ! -f ".env" ]; then
+if [ ! -f "/var/www/html/.env" ]; then
     echo "Creando archivo .env..."
-    cat > .env << 'EOL'
+    cat > /var/www/html/.env << 'EOL'
 APP_NAME=ABPROD
 APP_ENV=local
 APP_KEY=base64:e9aI+UNsQH3SFb84o4aslf0LWxEnqNJXQ5aWHS6WQBQ=
@@ -54,45 +54,35 @@ fi
 mkdir -p /var/www/html/storage/app/public
 
 # Eliminar y recrear enlace simbólico
-rm -f ./public/storage
+rm -f /var/www/html/public/storage
 echo "Enlazando almacenamiento correctamente..."
-ln -sf /var/www/html/storage/app/public ./public/storage
-
-# Arreglar problemas de PSR-4 sin usar artisan
-echo "Corrigiendo archivos de políticas..."
-find ./app/Policies -name "*Policy.php" -exec bash -c 'filename=$(basename "$1"); uppercase_filename="$(echo ${filename:0:1} | tr "[:lower:]" "[:upper:]")${filename:1}"; if [ "$filename" != "$uppercase_filename" ]; then mv "$1" "$(dirname "$1")/$uppercase_filename"; fi' bash {} \; 2>/dev/null || true
-
-# Eliminar y recrear archivo EditProfile.php si existe con namespace incorrecto
-if [ -f "./app/Filament/Pages/EditProfile.php" ]; then
-    mkdir -p ./app/Filament/Pages/Auth
-    mv ./app/Filament/Pages/EditProfile.php ./app/Filament/Pages/Auth/EditProfile.php 2>/dev/null || true
-fi
+ln -sf /var/www/html/storage/app/public /var/www/html/public/storage
 
 # Instalar dependencias si vendor no existe
-if [ ! -d "vendor" ]; then
+if [ ! -d "/var/www/html/vendor" ]; then
     echo "Instalando dependencias..."
-    composer install --no-interaction --prefer-dist --optimize-autoloader || composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
+    cd /var/www/html && composer install --no-interaction --prefer-dist --optimize-autoloader || composer install --no-interaction --prefer-dist --optimize-autoloader --ignore-platform-reqs
 fi
 
 # Asegurar que composer.lock existe
-if [ ! -f "composer.lock" ]; then
+if [ ! -f "/var/www/html/composer.lock" ]; then
     echo "Creando composer.lock..."
-    composer update --no-interaction
+    cd /var/www/html && composer update --no-interaction
 fi
 
 # Verificar si vendor/autoload.php existe antes de ejecutar comandos Artisan
-if [ -f "vendor/autoload.php" ]; then
+if [ -f "/var/www/html/vendor/autoload.php" ]; then
     # Limpiar caché
     echo "Limpiando caché..."
-    php artisan config:clear
-    php artisan route:clear
-    php artisan view:clear
-    php artisan cache:clear
-    php artisan config:cache
-    php artisan optimize
+    cd /var/www/html && php artisan config:clear
+    cd /var/www/html && php artisan route:clear
+    cd /var/www/html && php artisan view:clear
+    cd /var/www/html && php artisan cache:clear
+    cd /var/www/html && php artisan config:cache
+    cd /var/www/html && php artisan optimize
 else
     echo "El archivo vendor/autoload.php no existe. Saltando comandos Artisan."
 fi
 
-# Ejecutar comandos adicionales si es necesario
-exec "$@" 
+# Ejecutar Apache en primer plano
+exec apache2-foreground 
