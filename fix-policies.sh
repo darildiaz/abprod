@@ -42,18 +42,29 @@ rename_file "rollProdtPolicy.php" "RollProdtPolicy.php"
 
 # Verificar si existe el directorio Filament
 if [ -d "/var/www/html/app/Filament" ]; then
-    echo "Buscando archivo EditProfile.php..."
+    echo "Corrigiendo problema de EditProfile.php..."
     
-    # Buscar el archivo en diferentes ubicaciones
+    # Verificar si existe EditProfile.php en Pages
     if [ -f "/var/www/html/app/Filament/Pages/EditProfile.php" ]; then
-        echo "Encontrado en /app/Filament/Pages/"
-        ensure_dir "/var/www/html/app/Filament/Pages/Auth"
-        cp "/var/www/html/app/Filament/Pages/EditProfile.php" "/var/www/html/app/Filament/Pages/Auth/EditProfile.php"
-        echo "Copiado EditProfile.php a directorio Auth/"
-    elif [ -f "/var/www/html/app/Filament/Pages/Auth/EditProfile.php" ]; then
-        echo "El archivo ya está en la ubicación correcta"
-    else
-        echo "No se encontró el archivo EditProfile.php"
+        # Verificar el namespace en el archivo
+        if grep -q "namespace App\\Filament\\Pages\\Auth;" "/var/www/html/app/Filament/Pages/EditProfile.php"; then
+            # Si el archivo tiene namespace Auth pero está en la ubicación incorrecta
+            ensure_dir "/var/www/html/app/Filament/Pages/Auth"
+            # Mover el archivo a Auth/ y renombrarlo
+            mv "/var/www/html/app/Filament/Pages/EditProfile.php" "/var/www/html/app/Filament/Pages/Auth/EditProfile.php"
+            echo "Movido EditProfile.php al directorio Auth/ para corregir namespace"
+        else
+            # Editar el namespace para que coincida con la ubicación
+            sed -i 's/namespace App\\Filament\\Pages\\Auth;/namespace App\\Filament\\Pages;/g' "/var/www/html/app/Filament/Pages/EditProfile.php"
+            echo "Corregido namespace en EditProfile.php"
+        fi
+    fi
+    
+    # Verificar duplicado en Auth/
+    if [ -f "/var/www/html/app/Filament/Pages/Auth/EditProfile.php" ] && [ -f "/var/www/html/app/Filament/Pages/EditProfile.php" ]; then
+        # Si existen ambos archivos, eliminar uno para evitar conflicto
+        rm "/var/www/html/app/Filament/Pages/EditProfile.php"
+        echo "Eliminado archivo duplicado para evitar conflicto de clase"
     fi
 else
     echo "El directorio Filament no existe"

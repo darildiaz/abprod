@@ -14,9 +14,16 @@ find /var/www -maxdepth 1 -not -path "/var/www" -not -path "/var/www/html" -exec
 # Ir al directorio de trabajo
 cd /var/www/html
 
+# Configurar Git para permitir el directorio como seguro
+git config --global --add safe.directory /var/www/html
+
 # Crear directorios necesarios
 mkdir -p storage/logs storage/framework/cache storage/framework/sessions storage/framework/views bootstrap/cache
 chmod -R 777 storage bootstrap/cache
+
+# Ejecutar script de corrección de políticas primero
+chmod +x /var/www/fix-policies.sh
+/var/www/fix-policies.sh
 
 # Instalar dependencias como root
 composer install --no-dev --ignore-platform-reqs
@@ -83,10 +90,6 @@ VITE_PUSHER_PORT="${PUSHER_PORT}"
 VITE_PUSHER_SCHEME="${PUSHER_SCHEME}"
 VITE_PUSHER_APP_CLUSTER="${PUSHER_APP_CLUSTER}"
 EOL
-
-# Ejecutar script de corrección de políticas
-chmod +x /var/www/fix-policies.sh
-/var/www/fix-policies.sh
 
 # Corregir permisos
 chown -R laravel_user:www-data /var/www/html
