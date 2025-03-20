@@ -1,7 +1,7 @@
 FROM php:8.3-fpm
 
-ARG user
-ARG uid
+ARG user=laravel_user
+ARG uid=1000
 
 # Establecer el directorio de trabajo
 WORKDIR /var/www
@@ -38,24 +38,17 @@ RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
 
-# Configurar PHP
-COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
-
 # Configurar Git para directorios seguros
 RUN git config --global --add safe.directory /var/www
 
-# Set working directory
-WORKDIR /var/www
-
-# Copiar código fuente
-COPY . /var/www
-RUN chown -R $user:$user /var/www
-
-# Establecer usuario por defecto
-USER $user
+# Configurar PHP
+COPY docker/php/php.ini /usr/local/etc/php/conf.d/app.ini
 
 # Exponer puerto
 EXPOSE 8081
 
-# Iniciar Laravel Octane con Swoole
-CMD ["php", "artisan", "octane:start", "--server=swoole", "--host=0.0.0.0", "--port=8081"]
+# Entrada inicial con script separado
+COPY docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
