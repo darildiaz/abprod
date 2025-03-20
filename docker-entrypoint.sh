@@ -90,10 +90,8 @@ EOL
     fi
 fi
 
-# Generar clave de aplicación si no existe
-if ! grep -q "APP_KEY=" .env || grep -q "APP_KEY=base64:" .env; then
-    php artisan key:generate
-fi
+# Forzar la generación de la clave de aplicación
+php artisan key:generate --force
 
 # Limpiar cachés de configuración
 php artisan config:clear

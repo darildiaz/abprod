@@ -12,8 +12,21 @@ rename_file() {
     fi
 }
 
+# Función para crear directorio si no existe
+ensure_dir() {
+    local dir=$1
+    if [ ! -d "$dir" ]; then
+        mkdir -p "$dir"
+        echo "Creado directorio: $dir"
+    fi
+}
+
+# Asegurar que los directorios existan
+ensure_dir "/var/www/html/app/Policies"
+ensure_dir "/var/www/html/app/Filament/Pages/Auth"
+
 # Renombrar archivos de políticas
-cd /var/www/html/app/Policies 2>/dev/null || mkdir -p /var/www/html/app/Policies
+cd /var/www/html/app/Policies
 
 # Renombrar archivos de políticas
 rename_file "rollPolicy.php" "RollPolicy.php"
@@ -25,7 +38,7 @@ rename_file "sizeGroupPolicy.php" "SizeGroupPolicy.php"
 rename_file "rollProdtPolicy.php" "RollProdtPolicy.php"
 
 # Renombrar archivo de perfil
-cd /var/www/html/app/Filament/Pages/Auth 2>/dev/null || mkdir -p /var/www/html/app/Filament/Pages/Auth
+cd /var/www/html/app/Filament/Pages/Auth
 rename_file "EditProfile.php" "EditProfile.php"
 
 # Volver al directorio original
