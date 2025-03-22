@@ -22,7 +22,7 @@ services:
       - abprod_network
 
   mysql:
-    image: mysql:8.0
+    image: mariadb:10.5
     container_name: abprod_mysql
     restart: unless-stopped
     ports:
@@ -32,12 +32,9 @@ services:
       - MYSQL_USER=abprod
       - MYSQL_PASSWORD=ja_Riz657tH]
       - MYSQL_ROOT_PASSWORD=secret
-      - MYSQL_INNODB_BUFFER_POOL_SIZE=20M
-      - MYSQL_INNODB_LOG_FILE_SIZE=10M
-      - MYSQL_MAX_CONNECTIONS=10
-    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --skip-innodb-read-only-compressed
     volumes:
       - mysql_data:/var/lib/mysql
+      - ./mysql-config/my.cnf:/etc/mysql/conf.d/my.cnf
     networks:
       - abprod_network
 
