@@ -13,6 +13,7 @@ use Illuminate\Database\Query\Expression;
 use App\Models\OrderReference;
 use Filament\Tables\Grouping\Group;
 use Filament\Tables\Columns\Summarizers\Sum;
+
 class OrderReferenceRelationManager extends RelationManager
 {
     protected static string $relationship = 'orderReferenceSummaries';
@@ -20,11 +21,9 @@ class OrderReferenceRelationManager extends RelationManager
     public function form(Form $form): Form
     {
         return $form
-            ->schema([
-                
-            ]);
+            ->schema([]);
     }
-   
+
 
     public function table(Table $table): Table
     {
@@ -34,9 +33,9 @@ class OrderReferenceRelationManager extends RelationManager
 
             ->groups([
                 Group::make('product.code')
-                ->collapsible(), 
+                    ->collapsible(),
                 Group::make('size.name')
-                ->collapsible(),
+                    ->collapsible(),
             ])
             ->reorderable('size_id')
 
@@ -56,10 +55,13 @@ class OrderReferenceRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('size.name')
                     ->label('talle')
                     ->sortable(),
-                    
+                Tables\Columns\TextColumn::make('price')
+                    ->label('precio')
+                    ->sortable(),
+
                 Tables\Columns\TextColumn::make('total_quantity')
-                ->summarize(Sum::make())
-                
+                    ->summarize(Sum::make())
+
                     ->label('Cantidad total'),
             ])
             ->filters([

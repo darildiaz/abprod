@@ -29,7 +29,7 @@ class RollResource extends Resource
                 ->default(now())
                     ->required(),
                 Forms\Components\TextInput::make('impresora')
-                ->label('impresora')    
+                ->label('impresora')
                 ->required()
                     ->maxLength(255),
             ]);
@@ -48,6 +48,10 @@ class RollResource extends Resource
                     ->sortable(),
                 Tables\Columns\TextColumn::make('impresora')
                     ->label('Impresora')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('productions')
+                    ->label('d
+                    ')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
