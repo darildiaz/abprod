@@ -50,8 +50,7 @@ class RollResource extends Resource
                     ->label('Impresora')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('productions')
-                    ->label('d
-                    ')
+                    ->label('d')
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
