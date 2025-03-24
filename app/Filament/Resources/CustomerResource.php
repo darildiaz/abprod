@@ -20,7 +20,7 @@ class CustomerResource extends Resource
     protected static ?string $navigationIcon = 'heroicon-o-user-group'; // Icono del menú
     protected static ?string $navigationLabel = 'Clientes';
     protected static ?string $pluralLabel = 'Clientes'; // Etiqueta plural
-   
+
     public static ?string $navigationGroup = 'Pedidos';
 
     public static function getNavigationBadge(): ?string
@@ -31,7 +31,7 @@ class CustomerResource extends Resource
     {
         return $form
             ->schema([
-                
+
             Forms\Components\TextInput::make('nif')
                 ->label('NIF')
                 ->required()
@@ -64,7 +64,7 @@ class CustomerResource extends Resource
                 ->default(auth()->id()) // Predetermina el usuario logueado
                 ->required()
                 ->hiddenOn('edit')
-                
+
                 ->searchable()
                 //->disabled() // Hace que el campo no sea editable
                 ->placeholder('Usuario autenticado'),
@@ -79,7 +79,7 @@ class CustomerResource extends Resource
             : Customer::query()->where('user_id', auth()->id()) // Si no, filtra por manager_id
             )
             ->columns([
-                
+
                 Tables\Columns\TextColumn::make('nif')
                     ->label('NIF')
                     ->searchable(),
@@ -111,13 +111,13 @@ class CustomerResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\selectFilter::make('user.name')
+                Tables\Filters\SelectFilter::make('user.name')
                 ->label('Vendedor') // Mostrar el nombre del vendedor
-                
+
                 ->relationship('user', 'name')
                  ->default(auth()->id()),
-               
-                  
+
+
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
