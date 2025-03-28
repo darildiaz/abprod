@@ -22,7 +22,7 @@ services:
       - abprod_network
 
   mysql:
-    image: mysql:8.0
+    image: mariadb:10.5
     container_name: abprod_mysql
     restart: unless-stopped
     ports:
