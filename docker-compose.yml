@@ -14,7 +14,7 @@ services:
     environment:
       - APP_ENV=local
       - DB_HOST=mysql
-      - DB_PORT=3306
+      - DB_PORT=3307
       - DB_DATABASE=abprod
       - DB_USERNAME=abprod
       - DB_PASSWORD=ja_Riz657tH]
@@ -26,7 +26,7 @@ services:
     container_name: abprod_mysql
     restart: unless-stopped
     ports:
-      - "3306:3306"
+      - "3307:3306"
     environment:
       - MYSQL_DATABASE=abprod
       - MYSQL_USER=abprod
