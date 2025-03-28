@@ -6,7 +6,7 @@ services:
     container_name: abprod_app
     restart: unless-stopped
     ports:
-      - "80:80"
+      - "8100:80"
     volumes:
       - .:/var/www/html
     depends_on:
