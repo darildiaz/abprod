@@ -16,7 +16,7 @@ use Filament\Actions\RedirectAction;
 use Filament\Tables\Grouping\Group;
 use App\Models\Category;
 use App\Models\Order;
-use App\Models\center;
+use App\Models\Center;
 use Livewire\Attributes\Url;
 class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 {
@@ -39,7 +39,7 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 
     public function mount(): void
     {
-        static::$title = 'Cronograma de ' . optional(center::find($this->centerId))->name;
+        static::$title = 'Cronograma de ' . optional(Center::find($this->centerId))->name;
     }
     
     public function table(Tables\Table $table): Tables\Table
