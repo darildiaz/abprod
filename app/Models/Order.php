@@ -43,7 +43,7 @@ class Order extends Model
     }
     public function productions()
     {
-        return $this->hasMany(production::class);
+        return $this->hasMany(Production::class);
     }
 
     public function orderReferences()

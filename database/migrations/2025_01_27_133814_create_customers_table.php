@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('name'); // Nombre del cliente
             $table->string('address'); // Dirección del cliente
             $table->string('phone'); // Teléfono del cliente
+            $table->string('email'); // Teléfono del cliente
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade'); // Relación con vendedores
             
             $table->timestamps();

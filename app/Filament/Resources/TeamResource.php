@@ -31,7 +31,7 @@ class TeamResource extends Resource
                 ->label('Nombre')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\select::make('leader_id')
+                Forms\Components\Select::make('leader_id')
                 ->label('Lider')   
                 ->relationship('leader', 'name')
                     ->searchable()
