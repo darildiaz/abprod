@@ -109,7 +109,7 @@ class ProdDiscountResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\selectFilter::make('user.name')
+                Tables\Filters\SelectFilter::make('user.name')
                     ->relationship('user', 'name')
                     ,
             ])
