@@ -111,14 +111,17 @@ implements HasShieldPermissions
                                         Forms\Components\Textarea::make('address')
                                             ->label('Direccion')
                                             ->rows(3)
-                                            ->placeholder('Ingrese la dirección del cliente'),
+                                            ->required()
+
+                                            ->placeholder('Ingrese la Ciudad del cliente'),
 
                                         Forms\Components\TextInput::make('phone')
                                             ->label('Celular')
                                             ->maxLength(15)
                                             ->tel() // Input con validación para números de teléfono
-                                            ->placeholder('Ingrese el número de teléfono'),
-
+                                            ->placeholder('Ingrese el número de teléfono')
+                                            ->required()
+                                            ,
                                         Forms\Components\Hidden::make('user_id')
                                             ->default(auth()->id()) // Predetermina el usuario logueado
                                         ])

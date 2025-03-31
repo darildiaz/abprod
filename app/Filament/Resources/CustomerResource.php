@@ -49,6 +49,7 @@ class CustomerResource extends Resource
                 ->label('Correo electrónico'),
             Forms\Components\Textarea::make('address')
                 ->label('Dirección')
+                ->required()
                 ->rows(3)
                 ->placeholder('Ingrese la dirección del cliente'),
 
