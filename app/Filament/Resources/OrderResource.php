@@ -179,46 +179,71 @@ implements HasShieldPermissions
                         Forms\Components\Wizard\Step::make('Items import')
                                 ->label('Importar items')
                                 ->schema([
-                                    // Tab 4: Cargar lista de ítems de la orden
-                                    Forms\Components\Toggle::make('order_items_orden')
-                                    ->default(true)
-                                ->dehydrated(false) // No se guarda en la base de datos
+                                    TableRepeater::make('Diccionario')
+                                    //      ->cloneable()
+                                    ->dehydrated(false)
+                                    ->default([
+                                        [
+                                            'product_id' => 1,
+                                            'Category' => 'Camiseta',
+                                        ],
+                                        [
+                                            'product_id' => 37,
+                                            'Category' => 'Short',
+                                        ],
+                                    ])
+                              ->label('Order Items')
+                              ->relationship('orderItems') // Relación con la tabla order_items
+                              ->schema([
+                                  
+                                  Forms\Components\TextInput::make('Category')
+                                  ->label('Categoria'),
+                                  Forms\Components\Select::make('product_id')
+                                    ->label('Producto')
+                                    ->relationship('product', 'code') // Relación con la tabla products
 
-                                    ->label('ordenar'),
-                                    Forms\Components\Toggle::make('order_items_hab_diccionario')
+                                  ->searchable(),
+                              ]),
+                                //     // Tab 4: Cargar lista de ítems de la orden
+                                //     Forms\Components\Toggle::make('order_items_orden')
+                                //     ->default(true)
+                                // ->dehydrated(false) // No se guarda en la base de datos
 
-                                    ->default(true)
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->label('Habilitar Diccionario'),
+                                //     ->label('ordenar'),
+                                //     Forms\Components\Toggle::make('order_items_hab_diccionario')
 
-                                    Forms\Components\TextArea::make('order_items_diccionario')
-                                    ->placeholder("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
-                                    ->default("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
+                                //     ->default(true)
+                                // ->dehydrated(false) // No se guarda en la base de datos
+                                // ->label('Habilitar Diccionario'),
+
+                                    // Forms\Components\TextArea::make('order_items_diccionario')
+                                    // ->placeholder("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
+                                    // ->default("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
                                 
-                                    ->dehydrated(false) // No se guarda en la base de datos
-                                    ->rows(4)
-                                    ->live(onBlur: true),
+                                    // ->dehydrated(false) // No se guarda en la base de datos
+                                    // ->rows(4)
+                                    // ->live(onBlur: true),
 
 
-                                    Forms\Components\TextArea::make('order_items_text')
-                                ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->rows(8)
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(function ($state, $set, $get) {
-                                    // Procesar el texto y actualizar el estado del Repeater
-                                    $items = self::parseOrderItemsText($state, $set, $get);
-                                    $set('orderItems', $items); // Actualiza el Repeater
-                                }),
+                                //     Forms\Components\TextArea::make('order_items_text')
+                                // ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
+                                // ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                // ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                // ->dehydrated(false) // No se guarda en la base de datos
+                                // ->rows(8)
+                                // ->dehydrated(false) // No se guarda en la base de datos
+                                // ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
+                                // ->live(onBlur: true)
+                                // ->afterStateUpdated(function ($state, $set, $get) {
+                                //     // Procesar el texto y actualizar el estado del Repeater
+                                //     $items = self::parseOrderItemsText($state, $set, $get);
+                                //     $set('orderItems', $items); // Actualiza el Repeater
+                                // }),
 
                                 Forms\Components\TextArea::make('order_items_text_price')
                                 ->label('Pedido Items  con precio (Pegue Texto, Reemplazar texto sin el titulo)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n1\t\t\t\t\t\t\tSht-f03\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n2\t\t\t\t\t\t\tSht-f03\t35000")
-                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n1\t\t\t\t\tm-cab\t1\tSht-f03\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCam-f03\t85000\n2\t\t\t\t\tm-cab\t1\tSht-f03\t35000")
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\t\t\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCamiseta3\t85000\n2\t\t\t\t\t\t\tShort\t35000")
+                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\tm-cab\t1\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tcamiseta\t85000\n2\t\t\t\t\tm-cab\t1\tShort\t35000")
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
