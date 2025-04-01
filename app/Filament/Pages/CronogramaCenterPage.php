@@ -18,9 +18,14 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Center;
 use Livewire\Attributes\Url;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Form;
+use Filament\Forms\Concerns\InteractsWithForms;
+
 class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 {
     use Tables\Concerns\InteractsWithTable;
+    use InteractsWithForms;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
     protected static string $view = 'filament.pages.cronograma-page';
@@ -39,9 +44,28 @@ class CronogramaCenterPage extends Page implements Tables\Contracts\HasTable
 
     public function mount(): void
     {
+        if (empty($this->centerId)) {
+            $firstCenter = Center::first();
+            if ($firstCenter) {
+                $this->centerId = $firstCenter->id;
+            }
+        }
         static::$title = 'Cronograma de ' . optional(Center::find($this->centerId))->name;
     }
-    
+    public function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Select::make('centerId')
+                    ->label('Centro')
+                    ->options(Center::pluck('name', 'id'))
+                    ->live()
+                    ->default($this->centerId)
+                    ->afterStateUpdated(function ($state) {
+                        $this->redirect(route('filament.admin.pages.reporte-ordenes-centro', ['centerId' => $state]));
+                    })
+            ]);
+    }
     public function table(Tables\Table $table): Tables\Table
 {
     // Obtener solo las categorías importantes

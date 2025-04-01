@@ -1,5 +1,4 @@
-<x-filament::page>
+<x-filament-panels::page>
+    {{ $this->form }}
     {{ $this->table }}
-
-    @livewire('show-order-reference-summaries', [], key('order-references-modal'))
-</x-filament::page>
+</x-filament-panels::page>
