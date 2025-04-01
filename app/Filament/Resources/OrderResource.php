@@ -202,8 +202,8 @@ implements HasShieldPermissions
 
                                     Forms\Components\TextArea::make('order_items_text')
                                 ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f01,Sht-f01\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCam-f01,Sht-f01\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta,Short\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos

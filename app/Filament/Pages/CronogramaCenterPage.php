@@ -223,11 +223,4 @@ public function redirectToSummaryPage(Collection $records)
 
 }
 
-/**
- * Modelo temporal para la consulta dinámica.
- */
-// class OrderSummary extends Model
-// {
-//     protected $table = 'order_summaries';
-//     public $timestamps = false;
-// }
+
