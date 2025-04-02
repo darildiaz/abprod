@@ -225,36 +225,36 @@ implements HasShieldPermissions
                                     // ->live(onBlur: true),
 
 
-                                //     Forms\Components\TextArea::make('order_items_text')
-                                // ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
-                                // ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                // ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                // ->dehydrated(false) // No se guarda en la base de datos
-                                // ->rows(8)
-                                // ->dehydrated(false) // No se guarda en la base de datos
-                                // ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
-                                // ->live(onBlur: true)
-                                // ->afterStateUpdated(function ($state, $set, $get) {
-                                //     // Procesar el texto y actualizar el estado del Repeater
-                                //     $items = self::parseOrderItemsText($state, $set, $get);
-                                //     $set('orderItems', $items); // Actualiza el Repeater
-                                // }),
-
-                                Forms\Components\TextArea::make('order_items_text_price')
-                                ->label('Pedido Items  con precio (Pegue Texto, Reemplazar texto sin el titulo)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\t\t\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCamiseta3\t85000\n2\t\t\t\t\t\t\tShort\t35000")
-                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\tm-cab\t1\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tcamiseta\t85000\n2\t\t\t\t\tm-cab\t1\tShort\t35000")
+                                    Forms\Components\TextArea::make('order_items_text')
+                                ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
+                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
+                                ->dehydrated(false) // No se guarda en la base de datos
                                 ->rows(8)
                                 ->dehydrated(false) // No se guarda en la base de datos
                                 ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(function ($state, $set, $get) {
                                     // Procesar el texto y actualizar el estado del Repeater
-                                   // log::info('Order Items:', $state);
-                                    $items = self::parseOrderItemsTextprice($get('order_items_text_price'),$get('order_items_diccionario'), $set, $get);
+                                    $items = self::parseOrderItemsText($state, $set, $get);
                                     $set('orderItems', $items); // Actualiza el Repeater
                                 }),
-                                ]),
+
+                                // Forms\Components\TextArea::make('order_items_text_price')
+                                // ->label('Pedido Items  con precio (Pegue Texto, Reemplazar texto sin el titulo)')
+                                // ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\t\t\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tCamiseta3\t85000\n2\t\t\t\t\t\t\tShort\t35000")
+                                // ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\tPrecio\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tCamiseta\t85000\n1\t\t\t\t\tm-cab\t1\tShort\t35000\n2\tModelo 1\tJugador 2\t10\t0rh+\tm-cab\t1\tcamiseta\t85000\n2\t\t\t\t\tm-cab\t1\tShort\t35000")
+                                // ->rows(8)
+                                // ->dehydrated(false) // No se guarda en la base de datos
+                                // ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
+                                // ->live(onBlur: true)
+                                // ->afterStateUpdated(function ($state, $set, $get) {
+                                //     // Procesar el texto y actualizar el estado del Repeater
+                                //    // log::info('Order Items:', $state);
+                                //     $items = self::parseOrderItemsTextprice($get('order_items_text_price'),$get('order_items_diccionario'), $set, $get);
+                                //     $set('orderItems', $items); // Actualiza el Repeater
+                                // }),
+                                 ]),
                                 
                             Forms\Components\Wizard\Step::make('Items')
                                             ->schema([
@@ -996,10 +996,22 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
             'name' => $columns[2] ?? '',
             'number' => $columns[3] ?? '',
             'other' => $columns[4] ?? '',
-            'size' => $columns[5] ?? '',
-            'quantity' => (int) ($columns[6] ?? 0),
-            'products' => $nombreprod, // Convertir productos en array
-            'price' => (int) ($columns[8] ?? 0) , // Convertir productos en array
+            'quantity' => (int) ($columns[5] ?? 0),
+            'size1' => $columns[6] ?? '',
+            'product1' => $nombreprod, // Convertir productos en array
+            'price1' => (int) ($columns[8] ?? 0) , // Convertir productos en array
+            'size2' => $columns[9] ?? '',
+            'product2' => $nombreprod, // Convertir productos en array
+            'price2' => (int) ($columns[11] ?? 0) , // Convertir productos en array
+            'size3' => $columns[12] ?? '',
+            'product3' => $nombreprod, // Convertir productos en array
+            'price3' => (int) ($columns[14] ?? 0) , // Convertir productos en array
+            'size4' => $columns[15] ?? '',
+            'product4' => $nombreprod, // Convertir productos en array
+            'price4' => (int) ($columns[17] ?? 0) , // Convertir productos en array
+            'size5' => $columns[18] ?? '',
+            'product5' => $nombreprod, // Convertir productos en array
+            'price5' => (int) ($columns[20] ?? 0) , // Convertir productos en array
         ];
     }, explode("\n", trim($text)));
 
