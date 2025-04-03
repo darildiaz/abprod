@@ -185,20 +185,20 @@ implements HasShieldPermissions
                                     ->default([
                                         [
                                             'product_id' => 1,
-                                            'Category' => 'Camiseta',
+                                            'product_name' => 'Camiseta',
                                         ],
                                         [
                                             'product_id' => 37,
-                                            'Category' => 'Short',
+                                            'product_name' => 'Short',
                                         ],
                                     ])
                               ->label('Order Items')
                             //->relationship('orderItems') // Relación con la tabla order_items
                               ->schema([
 
-                                  Forms\Components\TextInput::make('Category')
+                                  Forms\Components\TextInput::make('product_name')
                                   ->dehydrated(false)
-                                  ->label('Categoria'),
+                                  ->label('Nombre del producto'),
                                   Forms\Components\Select::make('product_id')
                                     ->label('Producto')
                                     ->dehydrated(false)
@@ -889,7 +889,8 @@ protected static function getRefences(callable $set, callable $get)
 }
 protected static function parseOrderItemsText(string $text, $set, $get): array
 {
-    $odr = $get('order_items_import');
+    $odr = $get('order_items_odr');
+    $proddirc = $get('Diccionario');
     $references = [];
     $items = [];
     $total = 0;
@@ -944,9 +945,21 @@ protected static function parseOrderItemsText(string $text, $set, $get): array
 
         // Obtener IDs de productos y calcular precios
         foreach ($line['products'] as $product) {
-            $productId = self::getProductIdByName(trim($product['name']));
+            //$productId = self::getProductIdByName(trim($product['name']));
+            $productId= null;
+            foreach ($proddirc as $dicc) {
+                log::info('Diccionario:', $dicc);
+                if(strtolower($dicc['product_name']) == strtolower($product['name'])){
+                    $productId=$dicc['product_id'];
+                    break; // Salir del bucle si se encuentra una coincidencia
+                } 
+            }
             $sizeId = self::getSizeIdByName(trim($product['size']));
-            $unitPrice = self::getPPrice($productId, $sizeId);
+            $unitPrice = $product['price'] ?? 0;
+            
+            if($unitPrice==0){
+                $unitPrice = self::getPPrice($productId, $sizeId);
+            }
 
             $productIds[] = $productId; // Guardamos solo IDs de productos
             $lineTotal += $unitPrice; // Sumar precio del producto
