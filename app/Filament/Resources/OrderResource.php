@@ -38,7 +38,7 @@ use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
-class OrderResource extends Resource 
+class OrderResource extends Resource
 implements HasShieldPermissions
 {
     protected static ?string $model = Order::class;
@@ -46,7 +46,7 @@ implements HasShieldPermissions
     public static ?string $navigationGroup = 'Pedidos';
     public static ?string $recordTitleAttribute='id';
     protected static ?string $navigationLabel = 'Pedidos';
-    protected static ?string $pluralLabel = 'Pedidos'; 
+    protected static ?string $pluralLabel = 'Pedidos';
 
 //    protected static ?string $navigationParentItem = 'Notifications';
     public static function getNavigationBadge(): ?string
@@ -88,7 +88,7 @@ implements HasShieldPermissions
                                             name: 'customer',
                                             modifyQueryUsing: fn (Builder $query) => $query->orderBy('nif')->orderBy('name'),
                                         )
-                                        
+
                                         ->getOptionLabelFromRecordUsing(fn (Model $record) => "({$record->nif}) {$record->name} - {$record->phone}")
                                         ->searchable(['name', 'nif','phone'])
                                       //  ->default(1) // Predetermina el usuario logueado
@@ -132,7 +132,7 @@ implements HasShieldPermissions
                                         ->relationship('seller', 'name')
                                         ->default(auth()->id()) // Predetermina el usuario logueado
                                         ->live()
-                                        ->afterStateUpdated(fn (callable $set, $state) => 
+                                        ->afterStateUpdated(fn (callable $set, $state) =>
                                         $set('team_id', TeamMember::where('user_id', $state)->first()?->team_id)
                                             ) // Busca el `team_id` del vendedor seleccionado
                                         ->required(),
@@ -160,7 +160,7 @@ implements HasShieldPermissions
                                     ->default(today()->addDays(10)->toDateString())
                                     ->type('date')
                                     ->required(),
-                            
+
                             Forms\Components\Select::make('classification_id')
                                         ->label('Clasificacion')
                                         ->relationship('classification', 'name')
@@ -193,17 +193,22 @@ implements HasShieldPermissions
                                         ],
                                     ])
                               ->label('Order Items')
-                              ->relationship('orderItems') // Relación con la tabla order_items
+                            //->relationship('orderItems') // Relación con la tabla order_items
                               ->schema([
-                                  
+
                                   Forms\Components\TextInput::make('Category')
+                                  ->dehydrated(false)
                                   ->label('Categoria'),
                                   Forms\Components\Select::make('product_id')
                                     ->label('Producto')
-                                    ->relationship('product', 'code') // Relación con la tabla products
+                                    ->dehydrated(false)
+                                    ->relationship('orderItems.product', 'code') // Relación con la tabla products
 
                                   ->searchable(),
                               ]),
+
+
+
                                 //     // Tab 4: Cargar lista de ítems de la orden
                                 //     Forms\Components\Toggle::make('order_items_orden')
                                 //     ->default(true)
@@ -219,26 +224,31 @@ implements HasShieldPermissions
                                     // Forms\Components\TextArea::make('order_items_diccionario')
                                     // ->placeholder("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
                                     // ->default("Producto\tCodigo\nCamiseta\tCam-f03\nShort\tSht-f03")
-                                
+
                                     // ->dehydrated(false) // No se guarda en la base de datos
                                     // ->rows(4)
                                     // ->live(onBlur: true),
 
 
                                     Forms\Components\TextArea::make('order_items_text')
-                                ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el titulo)')
-                                ->placeholder("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                ->default("Item\tModelo\tNombre\tNúmero\tOtros\tTalle\tCantidad\tProductos\n1\tModelo 1\tJugador 1\t10\t0rh+\tm-cab\t1\tcam-f03,sht-f03\n2\tModelo 2\tJugador 2\t1\t0rh+\tg-cab\t1\tCam-f01,Sht-f01")
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->rows(8)
-                                ->dehydrated(false) // No se guarda en la base de datos
-                                ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
-                                ->live(onBlur: true)
-                                ->afterStateUpdated(function ($state, $set, $get) {
-                                    // Procesar el texto y actualizar el estado del Repeater
-                                    $items = self::parseOrderItemsText($state, $set, $get);
-                                    $set('orderItems', $items); // Actualiza el Repeater
-                                }),
+                                        ->label('Pedido Items (Pegue Texto, Reemplazar texto sin el título)')
+                                        ->placeholder("orden\tnombre\tnumero\totros\tcantidad\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\tsubtotal\ttotal
+                                    1\tjugador1\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
+                                    2\tjugador2\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
+                                    3\tjugador3\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000")
+                                        ->default("orden\tnombre\tnumero\totros\tcantidad\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\tsubtotal\ttotal
+                                    1\tjugador1\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
+                                    2\tjugador2\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
+                                    3\tjugador3\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000")
+                                        ->dehydrated(false) // No se guarda en la base de datos
+                                        ->rows(8)
+                                        ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
+                                        ->live(onBlur: true)
+                                        ->afterStateUpdated(function ($state, $set, $get) {
+                                            // Procesar el texto y actualizar el estado del Repeater
+                                            $items = self::parseOrderItemsText($state, $set, $get);
+                                            $set('orderItems', $items); // Actualiza el Repeater
+                                        }),
 
                                 // Forms\Components\TextArea::make('order_items_text_price')
                                 // ->label('Pedido Items  con precio (Pegue Texto, Reemplazar texto sin el titulo)')
@@ -255,7 +265,7 @@ implements HasShieldPermissions
                                 //     $set('orderItems', $items); // Actualiza el Repeater
                                 // }),
                                  ]),
-                                
+
                             Forms\Components\Wizard\Step::make('Items')
                                             ->schema([
                                                 TableRepeater::make('orderItems')
@@ -366,7 +376,7 @@ implements HasShieldPermissions
                                 ->schema([
                                     Forms\Components\TextInput::make('item')
                                         ->readOnly()
-                                   
+
                                     ->default(1),
                                     Forms\Components\Hidden::make('product_id'),
 
@@ -406,7 +416,7 @@ implements HasShieldPermissions
 
                                         ->numeric()
                                         ->required(),
-                                       
+
                                 ])
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getitems($set, $get)),
@@ -423,7 +433,7 @@ implements HasShieldPermissions
                             Forms\Components\Wizard\Step::make('Questions')
                             ->label('Informacion adicional')
 
-                            ->schema([   
+                            ->schema([
                                 Forms\Components\Repeater::make('models')
                                 ->label('Modelos')
                                 ->relationship('orderMolds')
@@ -441,7 +451,7 @@ implements HasShieldPermissions
                                                 $set('title', "MODELO $nextIndex"); // Asignar el valor predeterminado
                                             }
                                         }),
-            
+
                                     Forms\Components\FileUpload::make('imagen')->label('Imagen')
                                     ->required()
                                     ->image()
@@ -450,21 +460,21 @@ implements HasShieldPermissions
                                 ])
                                 ->columns(2)
                                 ->required(),
-                                
-                                
+
+
                                 TableRepeater::make('questionAnswers')
                                ->label('Questions')
                                ->relationship('questionAnswers')
                                ->schema([
                                     Forms\Components\Select::make('question_id')
-                                    ->relationship('question','text')    
+                                    ->relationship('question','text')
                                     ->label('Cuestionario')
                                     ->live()
                                     ->required(),
                                     Forms\Components\TextInput::make('answer')
                                     ->label('Respuesta')
                                     ->live()
-                                    ->datalist(fn (callable $get) => 
+                                    ->datalist(fn (callable $get) =>
                                         Question::where('id', $get('question_id'))
                                             ->pluck('options') // Récupère la colonne JSON
                                             ->flatMap(fn ($options) => json_decode($options, true)) // Décode et aplatit le tableau
@@ -473,9 +483,9 @@ implements HasShieldPermissions
 
                                     ->required(),
                                     ])
-                                
-                               ])                                             
-                            
+
+                               ])
+
                             ])->columnSpan('full')
                             ->afterStateHydrated(function (callable $set, callable $get) {
                                 $classificationId = $get('classification_id');
@@ -490,17 +500,17 @@ implements HasShieldPermissions
     {
         $categories = Category::all();
         return $table
-           ->groups([ 
+           ->groups([
                     Group::make('classification.name')
                     ->label('Clasificacion')
                     ->collapsible(),
                     Group::make('delivery_date')
                     ->label('Fecha de entrega')
                     ->collapsible(),
-                    
+
                     Group::make('issue_date') // Doit être une chaîne, pas une Closure
                     ->label('Mes de Emisión')
-                    ->getTitleFromRecordUsing(fn ($record) => Carbon::parse($record->issue_date)->translatedFormat('F Y')) 
+                    ->getTitleFromRecordUsing(fn ($record) => Carbon::parse($record->issue_date)->translatedFormat('F Y'))
                     ->collapsible(),
                 ])
             ->defaultSort('id', 'desc')
@@ -532,20 +542,20 @@ implements HasShieldPermissions
                 Tables\Columns\TextColumn::make('PaymentHistories.amount')->label('Monto Recibido')
               //  ->summarize('PaymentHistories.amount')
               ->visible(fn () => auth()->user()->can('seller_order'))
-              
+
               ->state(function (Model $record): int {
                 return  $record->paymentHistories()->where('status', true)->sum('amount');
             })
               ->money('Gs.'),
                 Tables\Columns\TextColumn::make('Saldo')->label('Saldo')
                 ->visible(fn () => auth()->user()->can('seller_order'))
-              
+
                 ->state(function (Model $record): int {
                     return $record->total - $record->paymentHistories()->where('status', true)->sum('amount');
                 })
               ->money('Gs.')
                 ,
-                
+
                 Tables\Columns\TextColumn::make('classification.name')->label('Clasificacion'), // Relación con QuestionCategory
                 Tables\Columns\TextColumn::make('status')
                     ->label('Estado')
@@ -567,10 +577,10 @@ implements HasShieldPermissions
                             ->map(fn ($production) => $production->center)
                             ->sortByDesc('level')
                             ->first();
-                            
+
                         return $maxCenter ? $maxCenter->name : '';
                     }),
-                    
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -582,9 +592,9 @@ implements HasShieldPermissions
             ])
             ->filters([
                 Tables\Filters\SelectFilter::make('customer.name')
-                ->label('Cliente') 
+                ->label('Cliente')
                 // Mostrar el nombre del vendedor
-                
+
                 ->relationship('customer', 'name'),
                 Tables\Filters\SelectFilter::make('status')
                 ->multiple()
@@ -600,10 +610,10 @@ implements HasShieldPermissions
                     Tables\Filters\SelectFilter::make('manager.name')
                     ->relationship('manager', 'name')
                  //->hidden(fn () => auth()->user()->can('ver_todos'))
-                 
+
                  ->default(auth()->id())
                     ,
-                     
+
             ])
             ->actions([
 
@@ -621,7 +631,7 @@ implements HasShieldPermissions
                                         ->default(now())
                                         ->required(),
                             Forms\Components\TextInput::make('amount')
-                                
+
                             ->label('Monto')
                             ->required()
                                 ->suffix('Gs.')
@@ -643,7 +653,7 @@ implements HasShieldPermissions
                     ])
                     ->columns(3)
                 ]),
-                Tables\Actions\Action::make('pdf') 
+                Tables\Actions\Action::make('pdf')
                     ->label('PDF')
                     ->color('success')
                     //->icon('heroicon-o-archive')
@@ -664,7 +674,7 @@ implements HasShieldPermissions
                                 $qrCode = QrCode::size(100)->generate( asset('storage/' . $model->imagen ?? 'N/A' ));
                                 // Convertir el QR a Base64 para insertarlo en el PDF
                                 $qrCodeBase64 = base64_encode($qrCode);
-                                
+
                                 // Asignar el QR Base64 al modelo para pasarlo al Blade
                                 $model->qr = 'data:image/svg+xml;base64,' . $qrCodeBase64;
                             }
@@ -672,7 +682,7 @@ implements HasShieldPermissions
                                 Blade::render('pdf.invoice', ['order' => $record])
                             )->stream();
                         }, $record->id . ' Pedido.pdf');
-                    }), 
+                    }),
                 Tables\Actions\Action::make('changeStatus')
                 ->visible(fn ($record) => $record->status < 2)
                 ->visible(fn () => auth()->user()->can('status_production_order'))
@@ -701,14 +711,14 @@ implements HasShieldPermissions
                 ->visible(fn () => auth()->user()->can('planning_order'))
                 ->action(function ($record) {
                     $record->status = 1;
-                   
+
                     $record->save();
                 })
                 ->label('Planificar')
                 ->form([
                     Forms\Components\Section::make('plannings')
                             ->label('Informacion adicional')
-                            
+
                             ->afterStateHydrated(function ($record, callable $set) {
                                 if (!$record) return;
                                 // Obtener fechas base
@@ -723,13 +733,13 @@ implements HasShieldPermissions
                                 $items = $centers->keys(); // Obtener los `items` únicos
                                 $totalSteps = $items->count();
                                 $planning = [];
-                
+
                                 if ($totalSteps > 0) {
                                     $dateStep = $totalSteps > 1 ? $issueDate->diffInDays($deliveryDate) / ($totalSteps - 1) : 0;
-                
+
                                     foreach ($items as $index => $item) {
                                         $currentDate = $issueDate->copy()->addDays(round($index * $dateStep))->toDateString();
-                
+
                                         // Asignar la misma fecha a todos los centros con el mismo `item`
                                         foreach ($centers[$item] as $center) {
                                             $planning[] = [
@@ -739,11 +749,11 @@ implements HasShieldPermissions
                                         }
                                     }
                                 }
-                
+
                                 // Establecer los datos en el formulario
                                 $set('planning', $planning);
                             })
-                            ->schema([ 
+                            ->schema([
                                 Forms\Components\Repeater::make('planning')
                                     ->label('Planificación')
                                     ->relationship('planning') // Relación con la tabla order_references
@@ -757,11 +767,11 @@ implements HasShieldPermissions
                                     ->columns(2)
                             ])
                         ])
-                
-                ->requiresConfirmation(),
-               
 
-                
+                ->requiresConfirmation(),
+
+
+
             ])
             ->bulkActions([
 
@@ -796,14 +806,14 @@ implements HasShieldPermissions
 {
     // Si no hay clasificación, devolver un array vacío
          if ($classificationId) {
-        
+
 
             // Obtener las preguntas relacionadas con esta clasificación
             $questions = Question::where('category_id', $classificationId)->get(['id']);
 
             // Inicializar un array para los campos dinámicos
             $fields = [];
-            
+
             foreach ($questions as $question) {
                 $fields[] = [
                     'question_id' =>$question->id
@@ -822,12 +832,12 @@ $prod=[];
 $total = 0;
 foreach ($itemsorg as $item) {
     $price = 0;
-    
+
     foreach ($references as $ref) {
         if ($ref['item'] == $item['item']) {
             $prod[]= $ref['product_id'];
             $price = $price + $ref['price'];
-        }    
+        }
     }
         $items[] = [
             'item' => $item['item'],
@@ -842,7 +852,7 @@ foreach ($itemsorg as $item) {
             'subtotal' => $price * $item['quantity'],
         ];
 $prod=[];
-        
+
     $total = $total + $price * $item['quantity'];
 }
 
@@ -850,8 +860,8 @@ $set('orderItems', $items);
 $set('total', $total);
 
 }
-    
-    
+
+
 protected static function getRefences(callable $set, callable $get)
 {
     $item = $get('orderItems') ;
@@ -877,59 +887,75 @@ protected static function getRefences(callable $set, callable $get)
     $set('total', $total);
     $set('references', $refences);
 }
-protected static function parseOrderItemsText(string $text, $set,$get): array
+protected static function parseOrderItemsText(string $text, $set, $get): array
 {
-    $odr=$get('order_items_import');
+    $odr = $get('order_items_import');
     $references = [];
     $items = [];
     $total = 0;
     $c = 0;
-    $if_order = true;
 
     // Convertir las líneas en arrays asociativos
     $lines = array_map(function ($line) {
         $columns = explode("\t", trim($line));
+
         return [
             'id' => $columns[0] ?? '',
             'model' => $columns[1] ?? '',
             'name' => $columns[2] ?? '',
             'number' => $columns[3] ?? '',
             'other' => $columns[4] ?? '',
-            'size' => $columns[5] ?? '',
-            'quantity' => (int) ($columns[6] ?? 0),
-            'products' => explode(',', $columns[7] ?? ''), // Convertir productos en array
+            'quantity' => (int) ($columns[5] ?? 1), // Cantidad por defecto es 1 si no está definida
+            'products' => array_filter([
+                ['size' => $columns[6] ?? '', 'name' => $columns[7] ?? '', 'price' => (int) ($columns[8] ?? 0)],
+                ['size' => $columns[9] ?? '', 'name' => $columns[10] ?? '', 'price' => (int) ($columns[11] ?? 0)],
+                ['size' => $columns[12] ?? '', 'name' => $columns[13] ?? '', 'price' => (int) ($columns[14] ?? 0)],
+                ['size' => $columns[15] ?? '', 'name' => $columns[16] ?? '', 'price' => (int) ($columns[17] ?? 0)],
+                ['size' => $columns[18] ?? '', 'name' => $columns[19] ?? '', 'price' => (int) ($columns[20] ?? 0)],
+            ], fn($product) => !empty($product['name'])) // Filtrar productos vacíos
         ];
     }, explode("\n", trim($text)));
 
-    // Ordenar primero por 'size' y luego por 'products'
+    // Validar que cada línea tenga al menos un producto
+    foreach ($lines as &$line) {
+        if (empty($line['products'])) {
+            throw new \Exception("Cada línea debe tener al menos un producto obligatorio.");
+        }
+    }
+
+    // Ordenar por productos y talle si es necesario
     if ($odr) {
         usort($lines, function ($a, $b) {
-            return  strcmp(implode(',', $b['products']), implode(',', $a['products']))?: $a['size'] <=> $b['size'];
+            return strcmp(
+                implode(',', array_column($b['products'], 'name')),
+                implode(',', array_column($a['products'], 'name'))
+            ) ?: $a['products'][0]['size'] <=> $b['products'][0]['size'];
         });
     }
 
     // Procesar cada línea después de ordenar
     foreach ($lines as $line) {
         $c++;
-        $price = 0;
-        $productIds = [];
+        $lineTotal = 0;
+        $productIds = []; // Contendrá solo los IDs de productos
 
-        // Obtener IDs de productos
-        foreach ($line['products'] as $code) {
-            $ids = self::getProductIdByName(trim($code));
-            if (!empty($ids)) {
-                $productIds[] = $ids;
-            }
-        }
+        // Obtener el primer talle de la lista de productos
+        $firstSize = $line['products'][0]['size'] ?? '';
 
-        // Calcular precios
-        foreach ($productIds as $productId) {
-            $unitPrice = self::getPPrice($productId, self::getSizeIdByName($line['size']));
-            $price += $unitPrice;
+        // Obtener IDs de productos y calcular precios
+        foreach ($line['products'] as $product) {
+            $productId = self::getProductIdByName(trim($product['name']));
+            $sizeId = self::getSizeIdByName(trim($product['size']));
+            $unitPrice = self::getPPrice($productId, $sizeId);
+
+            $productIds[] = $productId; // Guardamos solo IDs de productos
+            $lineTotal += $unitPrice; // Sumar precio del producto
+
+            // Agregar a referencias
             $references[] = [
                 'item' => $c,
                 'product_id' => $productId,
-                'size_id' => self::getSizeIdByName($line['size']),
+                'size_id' => $sizeId,
                 'quantity' => $line['quantity'],
                 'price' => $unitPrice,
                 'subtotal' => $line['quantity'] * $unitPrice,
@@ -937,7 +963,7 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
         }
 
         // Calcular subtotal y total
-        $subtotal = $price * $line['quantity'];
+        $subtotal = $lineTotal * $line['quantity'];
         $total += $subtotal;
 
         // Agregar datos al array de items
@@ -947,10 +973,10 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
             'name' => $line['name'],
             'number' => $line['number'],
             'other' => $line['other'],
-            'size_id' => self::getSizeIdByName($line['size']),
+            'size_id' => self::getSizeIdByName($firstSize), // Ahora usamos el primer size
             'quantity' => $line['quantity'],
-            'ProductsItem' => $productIds,
-            'price' => $price,
+            'ProductsItem' => $productIds, // Ahora es un array plano
+            'price' => $lineTotal,
             'subtotal' => $subtotal,
         ];
     }
@@ -961,12 +987,15 @@ protected static function parseOrderItemsText(string $text, $set,$get): array
 
     return $items;
 }
+
+
+
 protected static function parseOrderItemsTextprice(string $text,string $dicctext,  $set,$get): array
 {
     // $hab=false;
 
     // $hab=$get('order_items_hab_diccionario');
-    
+
     $diccss=[];
     $references = [];
     $items = [];
@@ -982,14 +1011,14 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
                     'product_name' => $columnDs[0] ?? '',
                     'code' => $columnDs[1] ?? '',
             ];
-            
+
         }, explode("\n", trim($dicctext)));
-        
+
     // }
     $lines = array_map(function ($line) {
         $columns = explode("\t", trim($line));
         $nombreprod=$columns[7] ?? '';
-       
+
         return [
             'id' => (int) ($columns[0] ?? 0),
             'model' => $columns[1] ?? '',
@@ -1015,7 +1044,7 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
         ];
     }, explode("\n", trim($text)));
 
-   
+
 
     // Procesar cada línea después de ordenar
     foreach ($lines as $line) {
@@ -1048,17 +1077,17 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
         $total += $subtotal;
 
         // Agregar datos al array de items
-        
+
             $c=0;
         foreach ($items as $item) {
-            
+
             if ($c+1== $line['id']) {
                 $items[$c]['ProductsItem'][] = $productId;
                 $items[$c]['price'] = $item['price'] + $line['price'];
                 $items[$c]['subtotal'] = $items[$c]['price'] * $line['quantity'];
                 $item1=false;
-                
-                
+
+
                 // $item['ProductsItem'][] = $productId;
                 // $item['price'] = $item['price'] + $line['price'];
                 // $item['subtotal'] = $item['price'] * $line['quantity'];
@@ -1082,7 +1111,7 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
                 'subtotal' => $line['price'] * $line['quantity'],
             ];
         }
-        
+
     }
 
     // Asignar los valores finales
