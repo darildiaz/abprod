@@ -136,7 +136,7 @@
                         @endif
                         <div class="p-4">
                             <a href="{{ route('product.show', $product) }}" class="text-lg font-semibold hover:text-blue-600">{{ $product->name }}</a>
-                            <p class="text-gray-600">{{ Str::limit($product->description, 100) }}</p>
+                            <p class="text-gray-600">{{ App\Helpers\TextHelper::getFirstLines($product->description) }}</p>
                             <div class="mt-2">
                                 <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">{{ $product->category->name }}</span>
                                 <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded ml-2">{{ $product->line->name }}</span>

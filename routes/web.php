@@ -17,6 +17,7 @@ use App\Http\Controllers\WelcomeController;
 |
 */
 
+// Rutas públicas
 Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
 Route::get('/producto/{product}', [WelcomeController::class, 'show'])->name('product.show');
 
