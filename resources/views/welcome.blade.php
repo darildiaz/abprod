@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,15 +15,76 @@
         .font-family-karla {
             font-family: karla;
         }
+        
+        /* Estilos para el menú móvil */
+        .mobile-filters {
+            display: none;
+        }
+        
+        @media (max-width: 768px) {
+            .mobile-filters {
+                display: block;
+            }
+            .desktop-filters {
+                display: none;
+            }
+            .mobile-menu {
+                display: none;
+            }
+            .mobile-menu.active {
+                display: block;
+            }
+        }
     </style>
-
 
     <!-- Font Awesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" integrity="sha256-KzZiKy0DWYsnwMF+X1DvQngQ2/FxF7MF3Ff72XcpuPs=" crossorigin="anonymous"></script>
 </head>
 <body class="bg-white font-family-karla">
+    <!-- Menú de navegación -->
+    <nav class="bg-white shadow-lg">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="{{ route('welcome') }}" class="text-2xl font-bold text-gray-800">Abprod</a>
+                </div>
 
-    <!-- Top Bar Nav -->
+                <!-- Menú Desktop -->
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ route('welcome') }}" class="text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="{{ route('welcome') }}" class="text-gray-600 hover:text-blue-600">Productos</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Información</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Noticias</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Nosotros</a>
+                    <a href="https://wa.me/595123456789" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Contacto
+                    </a>
+                </div>
+
+                <!-- Botón menú móvil -->
+                <div class="md:hidden">
+                    <button onclick="toggleMenu()" class="text-gray-600 hover:text-blue-600 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menú Móvil -->
+            <div class="mobile-menu md:hidden py-4">
+                <div class="flex flex-col space-y-4">
+                    <a href="{{ route('welcome') }}" class="text-gray-600 hover:text-blue-600">Inicio</a>
+                    <a href="{{ route('welcome') }}" class="text-gray-600 hover:text-blue-600">Productos</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Información</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Noticias</a>
+                    <a href="#" class="text-gray-600 hover:text-blue-600">Nosotros</a>
+                    <a href="https://wa.me/595123456789" target="_blank" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 flex items-center justify-center">
+                        <i class="fab fa-whatsapp mr-2"></i> Contacto
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
 
     <!-- Text Header -->
     <header class="w-full container mx-auto">
@@ -33,61 +93,77 @@
                 Abprod
             </a>
             <p class="text-lg text-gray-600">
-                Escuentra en diseño perfecto
+                Encuentra el diseño perfecto
             </p>
         </div>
     </header>
 
-    <Topic Nav >
-    <nav class="w-full py-4 border-t border-b bg-gray-100" ">
-
-        <div class="w-full flex-grow sm:flex sm:items-center sm:w-auto">
-            <div class="w-full container mx-auto flex flex-col sm:flex-row items-center justify-center text-sm font-bold uppercase mt-0 px-6 py-2">
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Fútbol</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Basket</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Voley</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Futboley</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Pesca</a>
-                <a href="#" class="hover:bg-gray-400 rounded py-2 px-4 mx-2">Natación</a>
-            </div>
-        </div>
-    </nav>
-
-
     <div class="container mx-auto flex flex-wrap py-6">
+        <!-- Botón de filtros móvil -->
+        <div class="mobile-filters w-full px-3 mb-4">
+            <button onclick="toggleFilters()" class="w-full bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded flex items-center justify-center">
+                <i class="fas fa-filter mr-2"></i> Filtros
+            </button>
+        </div>
 
-        <!-- Posts Section -->
-        <section class="w-full md:w-2/3 flex flex-col items-center px-3">
-           <table>
-            <tr>
-                <td>
-                    producto
-                </td>
-            </tr>
-           </table>
-        </section>
-
-        <!-- Sidebar Section -->
-        <aside class="w-full md:w-1/3 flex flex-col items-center px-3">
-
+        <!-- Filtros (Desktop) -->
+        <aside class="desktop-filters w-full md:w-1/4 flex flex-col items-center px-3">
             <div class="w-full bg-white shadow flex flex-col my-4 p-6">
-                <p class="text-xl font-semibold pb-5">Nosotros</p>
-                <p class="pb-2">es un proyecto para la gestion de produccion de abdiez</p>
-                <a href="admin/login" class="w-full bg-blue-800 text-white font-bold text-sm uppercase rounded hover:bg-blue-700 flex items-center justify-center px-2 py-3 mt-4">
-                    Login
-                </a>
+                <h2 class="text-xl font-semibold pb-5">Filtros</h2>
+                @include('partials.filters')
             </div>
-
-
         </aside>
 
+        <!-- Filtros (Mobile) -->
+        <div id="mobileFilters" class="mobile-filters w-full px-3 mb-4 hidden">
+            <div class="w-full bg-white shadow flex flex-col my-4 p-6">
+                <h2 class="text-xl font-semibold pb-5">Filtros</h2>
+                @include('partials.filters')
+            </div>
+        </div>
+
+        <!-- Posts Section -->
+        <section class="w-full md:w-3/4 flex flex-col items-center px-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                @foreach($products as $product)
+                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+                        @if($product->imagen)
+                            <img src="{{ asset('storage/' . $product->imagen) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
+                        @else
+                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center">
+                                <i class="fas fa-image text-gray-400 text-4xl"></i>
+                            </div>
+                        @endif
+                        <div class="p-4">
+                            <a href="{{ route('product.show', $product) }}" class="text-lg font-semibold hover:text-blue-600">{{ $product->name }}</a>
+                            <p class="text-gray-600">{{ Str::limit($product->description, 100) }}</p>
+                            <div class="mt-2">
+                                <span class="text-sm bg-blue-100 text-blue-800 px-2 py-1 rounded">{{ $product->category->name }}</span>
+                                <span class="text-sm bg-green-100 text-green-800 px-2 py-1 rounded ml-2">{{ $product->line->name }}</span>
+                            </div>
+                            @if($product->tags)
+                                <div class="mt-2">
+                                    @foreach($product->tags as $tag)
+                                        <span class="text-sm bg-gray-100 text-gray-800 px-2 py-1 rounded mr-1">{{ $tag }}</span>
+                                    @endforeach
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+
+            <div class="mt-6">
+                {{ $products->links() }}
+            </div>
+        </section>
     </div>
 
     <footer class="w-full border-t bg-white pb-12">
         <div class="w-full container mx-auto flex flex-col items-center">
             <div class="flex flex-col md:flex-row text-center md:text-left md:justify-between py-6">
                 <a href="#" class="uppercase px-3">Nosotros</a>
-                <a href="#" class="uppercase px-3">Politicas de Privacidad</a>
+                <a href="#" class="uppercase px-3">Políticas de Privacidad</a>
                 <a href="#" class="uppercase px-3">Contactos</a>
             </div>
             <div class="uppercase pb-6">&copy; abdiez.com</div>
@@ -95,8 +171,15 @@
     </footer>
 
     <script>
-        
-        </script>
+        function toggleFilters() {
+            const filters = document.getElementById('mobileFilters');
+            filters.classList.toggle('hidden');
+        }
 
+        function toggleMenu() {
+            const menu = document.querySelector('.mobile-menu');
+            menu.classList.toggle('active');
+        }
+    </script>
 </body>
 </html>

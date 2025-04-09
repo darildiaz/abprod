@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Order;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
+use App\Http\Controllers\WelcomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,9 +17,8 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [WelcomeController::class, 'index'])->name('welcome');
+Route::get('/producto/{product}', [WelcomeController::class, 'show'])->name('product.show');
 
 // Ruta pública para visualizar un pedido mediante URL firmada
 Route::get('/pedido-publico/{orderId}', function (string $orderId) {
