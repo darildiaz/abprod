@@ -47,7 +47,9 @@
                     
                     <div class="mt-4">
                         <h2 class="text-lg font-semibold text-gray-700">Descripción</h2>
-                        <p class="mt-2 text-gray-600">{{ $product->description }}</p>
+                        <div class="mt-2 text-gray-600 prose max-w-none">
+                            {!! $product->description !!}
+                        </div>
                     </div>
 
                     <!-- Precios -->
