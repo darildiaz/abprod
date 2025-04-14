@@ -83,7 +83,26 @@ class UserResource extends Resource
             
             ->actions([
                 Tables\Actions\EditAction::make(),
-                
+                Tables\Actions\Action::make('resetPassword')
+                    ->label('Resetear Contraseña')
+                    ->icon('heroicon-o-key')
+                    ->form([
+                        Forms\Components\TextInput::make('password')
+                            ->label('Nueva Contraseña')
+                            ->password()
+                            ->required()
+                            ->minLength(8),
+                        Forms\Components\TextInput::make('password_confirmation')
+                            ->label('Confirmar Contraseña')
+                            ->password()
+                            ->required()
+                            ->same('password'),
+                    ])
+                    ->action(function (User $record, array $data): void {
+                        $record->update([
+                            'password' => bcrypt($data['password']),
+                        ]);
+                    }),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
