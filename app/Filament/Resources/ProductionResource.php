@@ -44,7 +44,7 @@ implements HasShieldPermissions
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('date')
+                Forms\Components\DateTimePicker::make('date')
                     ->default(now()),
 
                 Forms\Components\select::make('order_id')

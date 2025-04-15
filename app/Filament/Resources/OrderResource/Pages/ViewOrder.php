@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
 use Filament\Notifications\Notification;
 use Illuminate\Support\Facades\Log;
+use Filament\Forms;
 
 class ViewOrder extends ViewRecord
 {
@@ -63,6 +64,40 @@ class ViewOrder extends ViewRecord
                             )->stream();
                         }, $record->id . ' Pedido.pdf');
                     }),
+                    Actions\Action::make('paymenthistory')
+                    ->label('Pagos')
+                    ->form([
+                        Forms\Components\Repeater::make('paymenth')
+                        ->label('Planificación')
+                        ->relationship('paymenthistories') // Relación con la tabla order_references
+                        ->schema([
+                                Forms\Components\DatePicker::make('date')
+                                ->label('Fecha')
+                                            ->default(now())
+                                            ->required(),
+                                Forms\Components\TextInput::make('amount')
+    
+                                ->label('Monto')
+                                ->required()
+                                    ->suffix('Gs.')
+                                    ->numeric(),
+                                Forms\Components\Select::make('payment_method_id')
+                                ->label('Metodo de pago')
+                                    ->relationship('paymentMethod', 'name')
+                                    ->required(),
+                                Forms\Components\TextInput::make('reference')
+                                    ->required()
+                                    ->maxLength(255),
+                                Forms\Components\FileUpload::make('image')->label('Image')
+                                ->label('Comprobante')
+                                ->directory('pay')
+                                ->required(),
+                                Forms\Components\Hidden::make('seller_id')
+                                    ->default(auth()->id()) // Predetermina el usuario logueado
+                                     ->required()
+                        ])
+                        ->columns(3)
+                    ]),
             Actions\Action::make('linkPublico') 
                     ->label('Enlace Público')
                     ->color('primary')

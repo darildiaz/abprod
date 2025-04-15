@@ -482,37 +482,50 @@ implements HasShieldPermissions
                                     ->relationship('question','text')
                                     ->label('Cuestionario')
                                     ->live()
-                                    ->afterStateHydrated(function ($state, callable $set, callable $get) {
-                                        $record = $get('../../record');
-                                        if ($record) {
-                                            $questionAnswers = $record->questionAnswers;
-                                            $index = $get('../../index');
-                                            if (isset($questionAnswers[$index])) {
-                                                $set('question_id', $questionAnswers[$index]->question_id);
-                                                $set('answer', $questionAnswers[$index]->answer);
-                                            }
-                                        }
-                                    })
+                                    // ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                    //     $record = $get('../../record');
+                                    //     if ($record) {
+                                    //         $answers = $record->questionAnswers;
+                                    //         $index = $get('../../index');
+                                    //         if (isset($answers[$index])) {
+                                    //             $answer = $answers[$index];
+                                    //             $set('question_id', $answer->question_id);
+                                    //             $set('answer', $answer->answer);
+                                    //         }
+                                    //     }
+                                    // })
                                     ->required(),
                                     Forms\Components\TextInput::make('answer')
                                     ->label('Respuesta')
                                     ->live()
                                     ->datalist(fn (callable $get) =>
                                         Question::where('id', $get('question_id'))
-                                            ->pluck('options') // Récupère la colonne JSON
-                                            ->flatMap(fn ($options) => json_decode($options, true)) // Décode et aplatit le tableau
-                                            ->mapWithKeys(fn ($option) => [$option => $option]) // Formate les clés/valeurs
+                                            ->pluck('options')
+                                            ->flatMap(fn ($options) => json_decode($options, true))
+                                            ->mapWithKeys(fn ($option) => [$option => $option])
                                     )
                                     ->required(),
                                     ])
-
-                               ])
-
-                            ])->columnSpan('full')
-                            ->afterStateHydrated(function (callable $set, callable $get) {
+                               ->defaultItems(0)
+                               ->reorderable()
+                               ->collapsible()
+                               ->afterStateHydrated(function (callable $set, callable $get) {
                                 $classificationId = $get('classification_id');
                                 self::getQuestionFields($classificationId,$set);
                             })
+                               ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                   $record = $get('record');
+                                   if ($record) {
+                                       $answers = $record->questionAnswers;
+                                       if ($answers->isNotEmpty()) {
+                                           $set('questionAnswers', $answers->toArray());
+                                       }
+                                   }
+                               })
+                            ])
+
+                            ])->columnSpan('full')
+                           
 
 
             ]);
@@ -824,406 +837,404 @@ implements HasShieldPermissions
             'edit' => Pages\EditOrder::route('/{record}/edit'),
         ];
     }
-    protected static function getQuestionFields(?int $classificationId,callable $set)
-{
-    // Si no hay clasificación, devolver un array vacío
-         if ($classificationId) {
-
-
-            // Obtener las preguntas relacionadas con esta clasificación
-            $questions = Question::where('category_id', $classificationId)->get(['id']);
-
-            // Inicializar un array para los campos dinámicos
+    protected static function getQuestionFields(?int $classificationId, callable $set)
+    {
+        if ($classificationId) {
+            $questions = Question::where('category_id', $classificationId)->get();
             $fields = [];
 
             foreach ($questions as $question) {
                 $fields[] = [
-                    'question_id' =>$question->id
+                    'question_id' => $question->id,
+                    'answer' => ''
                 ];
             }
-            $set('questionAnswers',$fields);
-     }
-}
-protected static function getitems(callable $set, callable $get)
-{
-$references=$get('references');
-$itemsorg = $get('orderItems') ;
-//Log::info('Order Items:', $references->toarray());
-$items = [];
-$prod=[];
-$total = 0;
-foreach ($itemsorg as $item) {
-    $price = 0;
-
-    foreach ($references as $ref) {
-        if ($ref['item'] == $item['item']) {
-            $prod[]= $ref['product_id'];
-            $price = $price + $ref['price'];
-        }
-    }
-        $items[] = [
-            'item' => $item['item'],
-            'model' => $item['model'],
-            'name' => $item['name'],
-            'number' => $item['number'],
-            'other' => $item['other'],
-            'size_id' => $item['size_id'],
-            'quantity' => $item['quantity'],
-            'products_id' => $prod,
-            'price' => $price,
-            'subtotal' => $price * $item['quantity'],
-        ];
-$prod=[];
-
-    $total = $total + $price * $item['quantity'];
-}
-
-$set('orderItems', $items);
-$set('total', $total);
-
-}
-
-
-protected static function getRefences(callable $set, callable $get)
-{
-    $item = $get('orderItems') ;
-    $refences = [];
-    $c=0;
-    $total=0;
-    foreach ($item as $item) {
-        $c++;
-        foreach ($item['products_id'] as $product) {
-
-                $refences[] = [
-                    'item' => $c,
-                    'product_id' => $product,
-                    'size_id' => $item['size_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => self::getPPrice($product, $item['size_id']),
-                    'subtotal' => ($item['quantity'] * self::getPPrice($product, $item['size_id'])),
-                ];
-                $total=$total+($item['quantity'] * self::getPPrice($product, $item['size_id']));
-
-        }
-    }
-    $set('total', $total);
-    $set('references', $refences);
-}
-protected static function parseOrderItemsText(string $text, $set, $get): array
-{
-    $odr = $get('order_items_odr');
-    $proddirc = $get('Diccionario');
-    $references = [];
-    $items = [];
-    $total = 0;
-    $c = 0;
-
-    // Convertir las líneas en arrays asociativos
-    $lines = array_map(function ($line) {
-        $columns = explode("\t", trim($line));
-
-        return [
-            'id' => $columns[0] ?? '',
-            'model' => $columns[1] ?? '',
-            'name' => $columns[2] ?? '',
-            'number' => $columns[3] ?? '',
-            'other' => $columns[4] ?? '',
-            'quantity' => (int) ($columns[5] ?? 1), // Cantidad por defecto es 1 si no está definida
-            'products' => array_filter([
-                ['size' => $columns[6] ?? '', 'name' => $columns[7] ?? '', 'price' => (int) ($columns[8] ?? 0)],
-                ['size' => $columns[9] ?? '', 'name' => $columns[10] ?? '', 'price' => (int) ($columns[11] ?? 0)],
-                ['size' => $columns[12] ?? '', 'name' => $columns[13] ?? '', 'price' => (int) ($columns[14] ?? 0)],
-                ['size' => $columns[15] ?? '', 'name' => $columns[16] ?? '', 'price' => (int) ($columns[17] ?? 0)],
-                ['size' => $columns[18] ?? '', 'name' => $columns[19] ?? '', 'price' => (int) ($columns[20] ?? 0)],
-            ], fn($product) => !empty($product['name'])) // Filtrar productos vacíos
-        ];
-    }, explode("\n", trim($text)));
-
-    // Validar que cada línea tenga al menos un producto
-    foreach ($lines as &$line) {
-        if (empty($line['products'])) {
-            throw new \Exception("Cada línea debe tener al menos un producto obligatorio.");
-        }
-    }
-
-    // Ordenar por productos y talle si es necesario
-    if ($odr) {
-        usort($lines, function ($a, $b) {
-            return strcmp(
-                implode(',', array_column($b['products'], 'name')),
-                implode(',', array_column($a['products'], 'name'))
-            ) ?: $a['products'][0]['size'] <=> $b['products'][0]['size'];
-        });
-    }
-
-    // Procesar cada línea después de ordenar
-    foreach ($lines as $line) {
-        $c++;
-        $lineTotal = 0;
-        $productIds = []; // Contendrá solo los IDs de productos
-
-        // Obtener el primer talle de la lista de productos
-        $firstSize = $line['products'][0]['size'] ?? '';
-
-        // Obtener IDs de productos y calcular precios
-        foreach ($line['products'] as $product) {
-            //$productId = self::getProductIdByName(trim($product['name']));
-            $productId= null;
-            foreach ($proddirc as $dicc) {
-                log::info('Diccionario:', $dicc);
-                if(strtolower($dicc['product_name']) == strtolower($product['name'])){
-                    $productId=$dicc['product_id'];
-                    break; // Salir del bucle si se encuentra una coincidencia
-                } 
-            }
-            $sizeId = self::getSizeIdByName(trim($product['size']));
-            $unitPrice = $product['price'] ?? 0;
             
-            if($unitPrice==0){
-                $unitPrice = self::getPPrice($productId, $sizeId);
+            if (!empty($fields)) {
+                $set('questionAnswers', $fields);
             }
-
-            $productIds[] = $productId; // Guardamos solo IDs de productos
-            $lineTotal += $unitPrice; // Sumar precio del producto
-
-            // Agregar a referencias
-            $references[] = [
-                'item' => $c,
-                'product_id' => $productId,
-                'size_id' => $sizeId,
-                'quantity' => $line['quantity'],
-                'price' => $unitPrice,
-                'subtotal' => $line['quantity'] * $unitPrice,
-            ];
         }
-
-        // Calcular subtotal y total
-        $subtotal = $lineTotal * $line['quantity'];
-        $total += $subtotal;
-
-        // Agregar datos al array de items
-        $items[] = [
-            'item' => $c,
-            'model' => $line['model'],
-            'name' => $line['name'],
-            'number' => $line['number'],
-            'other' => $line['other'],
-            'size_id' => self::getSizeIdByName($firstSize), // Ahora usamos el primer size
-            'quantity' => $line['quantity'],
-            'products_id' => $productIds, // Ahora es un array plano
-            'price' => $lineTotal,
-            'subtotal' => $subtotal,
-        ];
     }
+    protected static function getitems(callable $set, callable $get)
+    {
+        $references=$get('references');
+        $itemsorg = $get('orderItems') ;
+        //Log::info('Order Items:', $references->toarray());
+        $items = [];
+        $prod=[];
+        $total = 0;
+        foreach ($itemsorg as $item) {
+            $price = 0;
 
-    // Asignar los valores finales
-    $set('references', $references);
-    $set('total', $total);
-
-    return $items;
-}
-
-
-
-protected static function parseOrderItemsTextprice(string $text,string $dicctext,  $set,$get): array
-{
-    // $hab=false;
-
-    // $hab=$get('order_items_hab_diccionario');
-
-    $diccss=[];
-    $references = [];
-    $items = [];
-    $total = 0;
-    $item1 = true;
-
-    // Convertir las líneas en arrays asociativos
-    // if($hab){
-        //$dicctext = $get('order_items_diccionario');
-        $Ddiccs= array_map(function($diccs){
-            $columnDs = explode("\t", trim($diccs));
-            return[
-                    'product_name' => $columnDs[0] ?? '',
-                    'code' => $columnDs[1] ?? '',
-            ];
-
-        }, explode("\n", trim($dicctext)));
-
-    // }
-    $lines = array_map(function ($line) {
-        $columns = explode("\t", trim($line));
-        $nombreprod=$columns[7] ?? '';
-
-        return [
-            'id' => (int) ($columns[0] ?? 0),
-            'model' => $columns[1] ?? '',
-            'name' => $columns[2] ?? '',
-            'number' => $columns[3] ?? '',
-            'other' => $columns[4] ?? '',
-            'quantity' => (int) ($columns[5] ?? 0),
-            'size1' => $columns[6] ?? '',
-            'product1' => $nombreprod, // Convertir productos en array
-            'price1' => (int) ($columns[8] ?? 0) , // Convertir productos en array
-            'size2' => $columns[9] ?? '',
-            'product2' => $nombreprod, // Convertir productos en array
-            'price2' => (int) ($columns[11] ?? 0) , // Convertir productos en array
-            'size3' => $columns[12] ?? '',
-            'product3' => $nombreprod, // Convertir productos en array
-            'price3' => (int) ($columns[14] ?? 0) , // Convertir productos en array
-            'size4' => $columns[15] ?? '',
-            'product4' => $nombreprod, // Convertir productos en array
-            'price4' => (int) ($columns[17] ?? 0) , // Convertir productos en array
-            'size5' => $columns[18] ?? '',
-            'product5' => $nombreprod, // Convertir productos en array
-            'price5' => (int) ($columns[20] ?? 0) , // Convertir productos en array
-        ];
-    }, explode("\n", trim($text)));
-
-
-
-    // Procesar cada línea después de ordenar
-    foreach ($lines as $line) {
-        $item1 = true;
-        $productIds = [];
-        // Obtener IDs de productos
-         // if($hab){
-            foreach ($Ddiccs as $dicc) {
-                if($dicc['product_name']==$line['products']){
-                    $nombreprod=$dicc['code'];
-                    break; // Salir del bucle si se encuentra una coincidencia
-                } else {
-                    $nombreprod=$line['products'];
+            foreach ($references as $ref) {
+                if ($ref['item'] == $item['item']) {
+                    $prod[]= $ref['product_id'];
+                    $price = $price + $ref['price'];
                 }
             }
-        // }
-        $productId = self::getProductIdByName(trim($nombreprod, ' '));
-        // Calcular precios
-            $references[] = [
-                'item' => $line['id'],
-                'product_id' => $productId,
-                'size_id' => self::getSizeIdByName($line['size']),
-                'quantity' => $line['quantity'],
-                'price' => $line['price'],
-                'subtotal' => $line['quantity'] * $line['price'],
-            ];
-
-        // Calcular subtotal y total
-        $subtotal =$line['price'] * $line['quantity'];
-        $total += $subtotal;
-
-        // Agregar datos al array de items
-
-            $c=0;
-        foreach ($items as $item) {
-
-            if ($c+1== $line['id']) {
-                $items[$c]['products_id'][] = $productId;
-                $items[$c]['price'] = $item['price'] + $line['price'];
-                $items[$c]['subtotal'] = $items[$c]['price'] * $line['quantity'];
-                $item1=false;
-
-
-                // $item['products_id'][] = $productId;
-                // $item['price'] = $item['price'] + $line['price'];
-                // $item['subtotal'] = $item['price'] * $line['quantity'];
-                // $item1=false;
-            }
-            $c++;
-        }
-        if($item1){
-            $item1=true;
-            $productIds[] = $productId;
             $items[] = [
-                'item' => (int)($line['id']),
+                'item' => $item['item'],
+                'model' => $item['model'],
+                'name' => $item['name'],
+                'number' => $item['number'],
+                'other' => $item['other'],
+                'size_id' => $item['size_id'],
+                'quantity' => $item['quantity'],
+                'products_id' => $prod,
+                'price' => $price,
+                'subtotal' => $price * $item['quantity'],
+            ];
+            $prod=[];
+
+            $total = $total + $price * $item['quantity'];
+        }
+
+        $set('orderItems', $items);
+        $set('total', $total);
+
+    }
+
+
+    protected static function getRefences(callable $set, callable $get)
+    {
+        $item = $get('orderItems') ;
+        $refences = [];
+        $c=0;
+        $total=0;
+        foreach ($item as $item) {
+            $c++;
+            foreach ($item['products_id'] as $product) {
+
+                    $refences[] = [
+                        'item' => $c,
+                        'product_id' => $product,
+                        'size_id' => $item['size_id'],
+                        'quantity' => $item['quantity'],
+                        'price' => self::getPPrice($product, $item['size_id']),
+                        'subtotal' => ($item['quantity'] * self::getPPrice($product, $item['size_id'])),
+                    ];
+                    $total=$total+($item['quantity'] * self::getPPrice($product, $item['size_id']));
+
+            }
+        }
+        $set('total', $total);
+        $set('references', $refences);
+    }
+    protected static function parseOrderItemsText(string $text, $set, $get): array
+    {
+        $odr = $get('order_items_odr');
+        $proddirc = $get('Diccionario');
+        $references = [];
+        $items = [];
+        $total = 0;
+        $c = 0;
+
+        // Convertir las líneas en arrays asociativos
+        $lines = array_map(function ($line) {
+            $columns = explode("\t", trim($line));
+
+            return [
+                'id' => $columns[0] ?? '',
+                'model' => $columns[1] ?? '',
+                'name' => $columns[2] ?? '',
+                'number' => $columns[3] ?? '',
+                'other' => $columns[4] ?? '',
+                'quantity' => (int) ($columns[5] ?? 1), // Cantidad por defecto es 1 si no está definida
+                'products' => array_filter([
+                    ['size' => $columns[6] ?? '', 'name' => $columns[7] ?? '', 'price' => (int) ($columns[8] ?? 0)],
+                    ['size' => $columns[9] ?? '', 'name' => $columns[10] ?? '', 'price' => (int) ($columns[11] ?? 0)],
+                    ['size' => $columns[12] ?? '', 'name' => $columns[13] ?? '', 'price' => (int) ($columns[14] ?? 0)],
+                    ['size' => $columns[15] ?? '', 'name' => $columns[16] ?? '', 'price' => (int) ($columns[17] ?? 0)],
+                    ['size' => $columns[18] ?? '', 'name' => $columns[19] ?? '', 'price' => (int) ($columns[20] ?? 0)],
+                ], fn($product) => !empty($product['name'])) // Filtrar productos vacíos
+            ];
+        }, explode("\n", trim($text)));
+
+        // Validar que cada línea tenga al menos un producto
+        foreach ($lines as &$line) {
+            if (empty($line['products'])) {
+                throw new \Exception("Cada línea debe tener al menos un producto obligatorio.");
+            }
+        }
+
+        // Ordenar por productos y talle si es necesario
+        if ($odr) {
+            usort($lines, function ($a, $b) {
+                return strcmp(
+                    implode(',', array_column($b['products'], 'name')),
+                    implode(',', array_column($a['products'], 'name'))
+                ) ?: $a['products'][0]['size'] <=> $b['products'][0]['size'];
+            });
+        }
+
+        // Procesar cada línea después de ordenar
+        foreach ($lines as $line) {
+            $c++;
+            $lineTotal = 0;
+            $productIds = []; // Contendrá solo los IDs de productos
+
+            // Obtener el primer talle de la lista de productos
+            $firstSize = $line['products'][0]['size'] ?? '';
+
+            // Obtener IDs de productos y calcular precios
+            foreach ($line['products'] as $product) {
+                //$productId = self::getProductIdByName(trim($product['name']));
+                $productId= null;
+                foreach ($proddirc as $dicc) {
+                    log::info('Diccionario:', $dicc);
+                    if(strtolower($dicc['product_name']) == strtolower($product['name'])){
+                        $productId=$dicc['product_id'];
+                        break; // Salir del bucle si se encuentra una coincidencia
+                    } 
+                }
+                $sizeId = self::getSizeIdByName(trim($product['size']));
+                $unitPrice = $product['price'] ?? 0;
+                
+                if($unitPrice==0){
+                    $unitPrice = self::getPPrice($productId, $sizeId);
+                }
+
+                $productIds[] = $productId; // Guardamos solo IDs de productos
+                $lineTotal += $unitPrice; // Sumar precio del producto
+
+                // Agregar a referencias
+                $references[] = [
+                    'item' => $c,
+                    'product_id' => $productId,
+                    'size_id' => $sizeId,
+                    'quantity' => $line['quantity'],
+                    'price' => $unitPrice,
+                    'subtotal' => $line['quantity'] * $unitPrice,
+                ];
+            }
+
+            // Calcular subtotal y total
+            $subtotal = $lineTotal * $line['quantity'];
+            $total += $subtotal;
+
+            // Agregar datos al array de items
+            $items[] = [
+                'item' => $c,
                 'model' => $line['model'],
                 'name' => $line['name'],
                 'number' => $line['number'],
                 'other' => $line['other'],
-                'size_id' => self::getSizeIdByName($line['size']),
+                'size_id' => self::getSizeIdByName($firstSize), // Ahora usamos el primer size
                 'quantity' => $line['quantity'],
-                'products_id' => $productIds,
-                'price' =>  $line['price'],
-                'subtotal' => $line['price'] * $line['quantity'],
+                'products_id' => $productIds, // Ahora es un array plano
+                'price' => $lineTotal,
+                'subtotal' => $subtotal,
             ];
         }
 
+        // Asignar los valores finales
+        $set('references', $references);
+        $set('total', $total);
+
+        return $items;
     }
 
-    // Asignar los valores finales
-    $set('references', $references);
-    $set('total', $total);
 
-    return $items;
-}
-    private static function getPrice(callable $set, callable $get)
+
+    protected static function parseOrderItemsTextprice(string $text,string $dicctext,  $set,$get): array
     {
-        $productIds = $get('products_id'); // Es un array porque es múltiple
-        $sizeId = $get('size_id');
+        // $hab=false;
 
-        if (!empty($productIds) && $sizeId) {
-            $price = 0;
-            $id=0;
-            foreach ($productIds as $productId) {
-                $price=$price+  self::getPPrice($productId, $sizeId);
-            }
-            $set('price', $price ?: 0);
-        self::updateSubtotal($set, $get);
+        // $hab=$get('order_items_hab_diccionario');
 
-        } else {
-            $set('price', 0);
-        }
-    }
-    private static function getPPrice($productId, $sizeId): int
-    {
-        $price = Price::where('product_id', $productId)
-            ->where('size_id', $sizeId)
-            ->value('price');
-        // Si no hay precio para el tamaño seleccionado, buscar el tamaño 1 (Normal)
-        if (!$price) {
-            $price = Price::where('product_id', $productId)
-                ->where('size_id', 1)
-                ->value('price');
-        }
-
-        return $price ?: 0;
-
-    }
-
-    protected static function updateSubtotal($set, $get): void
-    {
-
-        $quantity = $get('quantity') ?? 1;
-        $price = $get('price') ?? 1;
-        $subtotal = 0;
+        $diccss=[];
+        $references = [];
+        $items = [];
         $total = 0;
+        $item1 = true;
 
-        if ($quantity && $price) {
-            $subtotal = $price * $quantity;
-            $set('subtotal', $subtotal );
-            $total = $total + $subtotal;
+        // Convertir las líneas en arrays asociativos
+        // if($hab){
+            //$dicctext = $get('order_items_diccionario');
+            $Ddiccs= array_map(function($diccs){
+                $columnDs = explode("\t", trim($diccs));
+                return[
+                        'product_name' => $columnDs[0] ?? '',
+                        'code' => $columnDs[1] ?? '',
+                ];
+
+            }, explode("\n", trim($dicctext)));
+
+        // }
+        $lines = array_map(function ($line) {
+            $columns = explode("\t", trim($line));
+            $nombreprod=$columns[7] ?? '';
+
+            return [
+                'id' => (int) ($columns[0] ?? 0),
+                'model' => $columns[1] ?? '',
+                'name' => $columns[2] ?? '',
+                'number' => $columns[3] ?? '',
+                'other' => $columns[4] ?? '',
+                'quantity' => (int) ($columns[5] ?? 0),
+                'size1' => $columns[6] ?? '',
+                'product1' => $nombreprod, // Convertir productos en array
+                'price1' => (int) ($columns[8] ?? 0) , // Convertir productos en array
+                'size2' => $columns[9] ?? '',
+                'product2' => $nombreprod, // Convertir productos en array
+                'price2' => (int) ($columns[11] ?? 0) , // Convertir productos en array
+                'size3' => $columns[12] ?? '',
+                'product3' => $nombreprod, // Convertir productos en array
+                'price3' => (int) ($columns[14] ?? 0) , // Convertir productos en array
+                'size4' => $columns[15] ?? '',
+                'product4' => $nombreprod, // Convertir productos en array
+                'price4' => (int) ($columns[17] ?? 0) , // Convertir productos en array
+                'size5' => $columns[18] ?? '',
+                'product5' => $nombreprod, // Convertir productos en array
+                'price5' => (int) ($columns[20] ?? 0) , // Convertir productos en array
+            ];
+        }, explode("\n", trim($text)));
+
+
+
+        // Procesar cada línea después de ordenar
+        foreach ($lines as $line) {
+            $item1 = true;
+            $productIds = [];
+            // Obtener IDs de productos
+             // if($hab){
+                foreach ($Ddiccs as $dicc) {
+                    if($dicc['product_name']==$line['products']){
+                        $nombreprod=$dicc['code'];
+                        break; // Salir del bucle si se encuentra una coincidencia
+                    } else {
+                        $nombreprod=$line['products'];
+                    }
+                }
+            // }
+            $productId = self::getProductIdByName(trim($nombreprod, ' '));
+            // Calcular precios
+                $references[] = [
+                    'item' => $line['id'],
+                    'product_id' => $productId,
+                    'size_id' => self::getSizeIdByName($line['size']),
+                    'quantity' => $line['quantity'],
+                    'price' => $line['price'],
+                    'subtotal' => $line['quantity'] * $line['price'],
+                ];
+
+            // Calcular subtotal y total
+            $subtotal =$line['price'] * $line['quantity'];
+            $total += $subtotal;
+
+            // Agregar datos al array de items
+
+                $c=0;
+            foreach ($items as $item) {
+
+                if ($c+1== $line['id']) {
+                    $items[$c]['products_id'][] = $productId;
+                    $items[$c]['price'] = $item['price'] + $line['price'];
+                    $items[$c]['subtotal'] = $items[$c]['price'] * $line['quantity'];
+                    $item1=false;
+
+
+                    // $item['products_id'][] = $productId;
+                    // $item['price'] = $item['price'] + $line['price'];
+                    // $item['subtotal'] = $item['price'] * $line['quantity'];
+                    // $item1=false;
+                }
+                $c++;
+            }
+            if($item1){
+                $item1=true;
+                $productIds[] = $productId;
+                $items[] = [
+                    'item' => (int)($line['id']),
+                    'model' => $line['model'],
+                    'name' => $line['name'],
+                    'number' => $line['number'],
+                    'other' => $line['other'],
+                    'size_id' => self::getSizeIdByName($line['size']),
+                    'quantity' => $line['quantity'],
+                    'products_id' => $productIds,
+                    'price' =>  $line['price'],
+                    'subtotal' => $line['price'] * $line['quantity'],
+                ];
+            }
+
+        }
+
+        // Asignar los valores finales
+        $set('references', $references);
+        $set('total', $total);
+
+        return $items;
+    }
+        private static function getPrice(callable $set, callable $get)
+        {
+            $productIds = $get('products_id'); // Es un array porque es múltiple
+            $sizeId = $get('size_id');
+
+            if (!empty($productIds) && $sizeId) {
+                $price = 0;
+                $id=0;
+                foreach ($productIds as $productId) {
+                    $price=$price+  self::getPPrice($productId, $sizeId);
+                }
+                $set('price', $price ?: 0);
+            self::updateSubtotal($set, $get);
+
+            } else {
+                $set('price', 0);
+            }
+        }
+        private static function getPPrice($productId, $sizeId): int
+        {
+            $price = Price::where('product_id', $productId)
+                ->where('size_id', $sizeId)
+                ->value('price');
+            // Si no hay precio para el tamaño seleccionado, buscar el tamaño 1 (Normal)
+            if (!$price) {
+                $price = Price::where('product_id', $productId)
+                    ->where('size_id', 1)
+                    ->value('price');
+            }
+
+            return $price ?: 0;
+
+        }
+
+        protected static function updateSubtotal($set, $get): void
+        {
+
+            $quantity = $get('quantity') ?? 1;
+            $price = $get('price') ?? 1;
+            $subtotal = 0;
+            $total = 0;
+
+            if ($quantity && $price) {
+                $subtotal = $price * $quantity;
+                $set('subtotal', $subtotal );
+                $total = $total + $subtotal;
+                $set('total', $total );
+            }
+        }
+        protected static function getTotal($set, $get): void
+        {
+            $items = $get('orderItems') ;
+            $total = 0;
+            foreach ($items as $item) {
+                $total = $total + $item['subtotal'];
+            }
             $set('total', $total );
         }
-    }
-    protected static function getTotal($set, $get): void
-    {
-        $items = $get('orderItems') ;
-        $total = 0;
-        foreach ($items as $item) {
-            $total = $total + $item['subtotal'];
+
+
+
+        protected static function getproductIdByName(?string $sizeName): ?int
+        {
+            return Product::where('code', $sizeName)->value('id');
         }
-        $set('total', $total );
-    }
 
-
-
-    protected static function getproductIdByName(?string $sizeName): ?int
-    {
-        return Product::where('code', $sizeName)->value('id');
-    }
-
-    protected static function getSizeIdByName(?string $sizeName): ?int
-    {
-        return Size::where('name', $sizeName)->value('id');
-    }
+        protected static function getSizeIdByName(?string $sizeName): ?int
+        {
+            return Size::where('name', $sizeName)->value('id');
+        }
 
 }
