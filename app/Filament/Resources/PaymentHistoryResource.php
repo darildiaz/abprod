@@ -63,6 +63,10 @@ class PaymentHistoryResource extends Resource
                     ->label('orden')
 
                     ->sortable(),
+                Tables\Columns\TextColumn::make('order.seller.name')
+                    ->label('Vendedor')
+                    ->sortable(),
+                
                 Tables\Columns\TextColumn::make('date_confirmation')
                     ->date()
                     ->label('fecha de confirmacion')
@@ -104,7 +108,9 @@ class PaymentHistoryResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                tables\Filters\Filter::make('status')
+                    ->query(fn (Builder $query): Builder => $query->where('status', false))
+                    ->label('No Confirmados'),
             ])
             ->actions([
                 Tables\Actions\ViewAction::make(),
