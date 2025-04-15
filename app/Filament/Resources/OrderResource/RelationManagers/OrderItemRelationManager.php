@@ -62,11 +62,11 @@ class OrderItemRelationManager extends RelationManager
             ->where('order_references.order_id', $record->order_id)
             ->where('order_references.item', $record->item)
             ->join('sizes', 'order_references.size_id', '=', 'sizes.id') // Asumimos que hay una tabla sizes
-            ->select('categories.name', 'sizes.name') // Obtener la categoría y el tamaño
+            ->select('categories.name as catname', 'sizes.name as sizename') // Obtener la categoría y el tamaño
             ->get()
             ->map(function ($row) {
                 // Devolver la categoría seguida del tamaño entre paréntesis
-                return "{$row->name}({$row->name})";
+                return "{$row->catname}({$row->sizename})";
             })
             ->implode(' + '); // Unir todo con un signo de más
                 
