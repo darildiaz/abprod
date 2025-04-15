@@ -236,10 +236,6 @@ implements HasShieldPermissions
                                     1\tjugador1\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
                                     2\tjugador2\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
                                     3\tjugador3\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000")
-                                        ->default("orden\tnombre\tnumero\totros\tcantidad\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\ttalle\tProducto\tPrecio\tsubtotal\ttotal
-                                    1\tjugador1\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
-                                    2\tjugador2\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000
-                                    3\tjugador3\t10\tg\t1\tm-cab\tCamiseta\t45000\tm-cab\tCamiseta\t45000\tm-cab\tshort\t45000\tm-cab\tmedia\t45000\tm-cab\tcamisilla\t45000\t225000\t225000")
                                         ->dehydrated(false) // No se guarda en la base de datos
                                         ->rows(8)
                                         ->helperText('Pegue los elementos del pedido separados por TAB para las columnas y ENTER para las filas.')
@@ -338,15 +334,31 @@ implements HasShieldPermissions
                                             ->required(),
 
 
-                                        Forms\Components\select::make('ProductsItem')
+                                        Forms\Components\select::make('products_id')
                                             ->label('Productos')
                                             ->searchable()
                                             ->multiple()
-                                            ->relationship('product', 'code') // Relación con la tabla products
+                                            ->relationship('product', 'code')
                                             ->live()
-                    //            ->dehydrated(false) // No se guarda en la base de datos
-
-                                        ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
+                                            ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                                // Obtener el índice actual del repeater
+                                                $index = $get('../../index');
+                                                // Obtener todos los items
+                                                $items = $get('../../orderItems') ?? [];
+                                                
+                                                // Verificar si existe el item actual
+                                                if (isset($items[$index])) {
+                                                    $currentItem = $items[$index];
+                                                    // Si existe product_id, decodificar y establecer los productos
+                                                    if (isset($currentItem['product_id'])) {
+                                                        $productIds = json_decode($currentItem['product_id'], true);
+                                                        if (is_array($productIds)) {
+                                                            $set('products_id', $productIds);
+                                                        }
+                                                    }
+                                                }
+                                            })
+                                            ->afterStateUpdated(fn ($state, callable $set, callable $get) => self::getPrice($set, $get))
 
                                     ])
                                     ->columns(9)
@@ -470,6 +482,17 @@ implements HasShieldPermissions
                                     ->relationship('question','text')
                                     ->label('Cuestionario')
                                     ->live()
+                                    ->afterStateHydrated(function ($state, callable $set, callable $get) {
+                                        $record = $get('../../record');
+                                        if ($record) {
+                                            $questionAnswers = $record->questionAnswers;
+                                            $index = $get('../../index');
+                                            if (isset($questionAnswers[$index])) {
+                                                $set('question_id', $questionAnswers[$index]->question_id);
+                                                $set('answer', $questionAnswers[$index]->answer);
+                                            }
+                                        }
+                                    })
                                     ->required(),
                                     Forms\Components\TextInput::make('answer')
                                     ->label('Respuesta')
@@ -480,7 +503,6 @@ implements HasShieldPermissions
                                             ->flatMap(fn ($options) => json_decode($options, true)) // Décode et aplatit le tableau
                                             ->mapWithKeys(fn ($option) => [$option => $option]) // Formate les clés/valeurs
                                     )
-
                                     ->required(),
                                     ])
 
@@ -847,7 +869,7 @@ foreach ($itemsorg as $item) {
             'other' => $item['other'],
             'size_id' => $item['size_id'],
             'quantity' => $item['quantity'],
-            'ProductsItem' => $prod,
+            'products_id' => $prod,
             'price' => $price,
             'subtotal' => $price * $item['quantity'],
         ];
@@ -870,7 +892,7 @@ protected static function getRefences(callable $set, callable $get)
     $total=0;
     foreach ($item as $item) {
         $c++;
-        foreach ($item['ProductsItem'] as $product) {
+        foreach ($item['products_id'] as $product) {
 
                 $refences[] = [
                     'item' => $c,
@@ -988,7 +1010,7 @@ protected static function parseOrderItemsText(string $text, $set, $get): array
             'other' => $line['other'],
             'size_id' => self::getSizeIdByName($firstSize), // Ahora usamos el primer size
             'quantity' => $line['quantity'],
-            'ProductsItem' => $productIds, // Ahora es un array plano
+            'products_id' => $productIds, // Ahora es un array plano
             'price' => $lineTotal,
             'subtotal' => $subtotal,
         ];
@@ -1095,13 +1117,13 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
         foreach ($items as $item) {
 
             if ($c+1== $line['id']) {
-                $items[$c]['ProductsItem'][] = $productId;
+                $items[$c]['products_id'][] = $productId;
                 $items[$c]['price'] = $item['price'] + $line['price'];
                 $items[$c]['subtotal'] = $items[$c]['price'] * $line['quantity'];
                 $item1=false;
 
 
-                // $item['ProductsItem'][] = $productId;
+                // $item['products_id'][] = $productId;
                 // $item['price'] = $item['price'] + $line['price'];
                 // $item['subtotal'] = $item['price'] * $line['quantity'];
                 // $item1=false;
@@ -1119,7 +1141,7 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
                 'other' => $line['other'],
                 'size_id' => self::getSizeIdByName($line['size']),
                 'quantity' => $line['quantity'],
-                'ProductsItem' => $productIds,
+                'products_id' => $productIds,
                 'price' =>  $line['price'],
                 'subtotal' => $line['price'] * $line['quantity'],
             ];
@@ -1135,7 +1157,7 @@ protected static function parseOrderItemsTextprice(string $text,string $dicctext
 }
     private static function getPrice(callable $set, callable $get)
     {
-        $productIds = $get('ProductsItem'); // Es un array porque es múltiple
+        $productIds = $get('products_id'); // Es un array porque es múltiple
         $sizeId = $get('size_id');
 
         if (!empty($productIds) && $sizeId) {

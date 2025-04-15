@@ -26,11 +26,11 @@ class OrderItem extends Model
     }
     public function product()
 {
-    return $this->belongsTo(Product::class);
+    return $this->belongsTo(Product::class,"products_id");
 }
 
     protected $casts = [
-        'productsItem' => 'array', // Convierte automáticamente a array
+        'products_id' => 'array', // Convierte automáticamente a array
     ];
     
 
