@@ -509,10 +509,7 @@ implements HasShieldPermissions
                                ->defaultItems(0)
                                ->reorderable()
                                ->collapsible()
-                               ->afterStateHydrated(function (callable $set, callable $get) {
-                                $classificationId = $get('classification_id');
-                                self::getQuestionFields($classificationId,$set);
-                            })
+                              
                                ->afterStateHydrated(function ($state, callable $set, callable $get) {
                                    $record = $get('record');
                                    if ($record) {
@@ -520,6 +517,9 @@ implements HasShieldPermissions
                                        if ($answers->isNotEmpty()) {
                                            $set('questionAnswers', $answers->toArray());
                                        }
+                                   }else{
+                                    $classificationId = $get('classification_id');
+                                self::getQuestionFields($classificationId,$set);
                                    }
                                })
                             ])
