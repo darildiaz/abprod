@@ -20,4 +20,8 @@ class SalesGoal extends Model
     {
         return $this->belongsTo(User::class);
     }
+    public function goaldDet()
+    {
+        return $this->hasMany(goaldDet::class);
+    }
 }

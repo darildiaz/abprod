@@ -13,6 +13,7 @@ use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Icetalker\FilamentTableRepeater\Forms\Components\TableRepeater;
 
 class SalesGoalResource extends Resource
 {
@@ -71,14 +72,73 @@ class SalesGoalResource extends Resource
 
                 ->required()
                     ->numeric(),
+                
+                TableRepeater::make('goaldDet')
+                ->relationship('goaldDet')
+                ->schema([
+                    Forms\Components\Select::make('category_id')
+                    ->label('Categoria')
+                    ->relationship('category', 'name'),
+                    Forms\Components\TextInput::make('quantity')
+                    ->label('Cantidad')
+                    ->default(1)
+                    ->required()
+                    ->live(onBlur: true)
+                    // ->afterStateUpdated(function (callable $set, callable $get) {
+                    //     $set('amount', $get('quantity') * $get('price'));
+                    // })
+                    ->numeric(),
+                    Forms\Components\TextInput::make('price')
+                    ->label('Precio')
+                    ->default(1)
+                    ->suffix('Gs.')
+                    ->live(onBlur: true)
+                    // ->afterStateUpdated(function (callable $set, callable $get) {
+                    //     $set('amount', $get('quantity') * $get('price'));
+                    // })
+                    ->required()
+                    ->numeric(),
+                    Forms\Components\TextInput::make('amount')
+                    ->label('Monto')
+                    ->readOnly()
+                    ->live(onBlur: true)
+                    ->suffix('Gs.')
+                    ->required()
+                    ->numeric(),
+                ])
+                ->columns(4)
+                ->live(onBlur: true)
+                ->afterStateUpdated(function (callable $set, callable $get) {
+                    self::getTotal($set, $get);
+                })
+                ->columnSpanFull(),
                 Forms\Components\TextInput::make('amount')
-                ->label('Monto')    
-->suffix('Gs.')
-                ->required()
+                    ->label('Monto')    
+                    ->default(0)
+                    ->suffix('Gs.')
+                    ->live(onBlur: true)
+                    ->readOnly()
+                    ->required()
                     ->numeric(),
             ]);
     }
-
+public static function getTotal(callable $set, callable $get){
+    $total = 0;
+    $det=[];
+    foreach ($get('goaldDet') as $item) {
+        $total += $item['amount'];
+        $det[]=[
+            'category_id'=>$item['category_id'],
+            'quantity'=>$item['quantity'],
+            'price'=>$item['price'],
+            'amount'=>$item['quantity']*$item['price'],
+        ];
+        
+        
+    }
+    $set('goaldDet', $det);
+     $set('amount', $total);
+}
     public static function table(Table $table): Table
     {
         return $table

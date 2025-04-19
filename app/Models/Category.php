@@ -12,4 +12,8 @@ class Category extends Model
     {
         return $this->hasMany(Product::class);
     }
+    public function goaldDet()
+    {
+        return $this->hasMany(goaldDet::class);
+    }
 }
